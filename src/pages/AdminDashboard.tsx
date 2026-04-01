@@ -312,6 +312,21 @@ const AdminDashboard = () => {
             />
           )}
 
+          {activeTab === "team" && (
+            <AdminCrudTable
+              title="Équipe"
+              tableName="site_team_members"
+              fields={[
+                { key: "name", label: "Nom", type: "text" },
+                { key: "role", label: "Rôle", type: "text" },
+                { key: "image_url", label: "Photo URL", type: "url" },
+                { key: "sort_order", label: "Ordre", type: "number" },
+              ]}
+              data={data.team || []}
+              onRefresh={fetchAll}
+            />
+          )}
+
           {activeTab === "settings" && (
             <AdminCrudTable
               title="Paramètres du Site"

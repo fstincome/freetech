@@ -39,6 +39,7 @@ const App = () => (
         <Sonner />
         <BrowserRouter>
           <AppContent />
+          <PWAInstallButton />
         </BrowserRouter>
       </LanguageProvider>
     </TooltipProvider>
