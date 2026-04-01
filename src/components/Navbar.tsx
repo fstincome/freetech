@@ -134,7 +134,7 @@ const Navbar = () => {
                   {t(link.labelKey)}
                 </Link>
               ))}
-              <div className="flex gap-2 pt-2">
+              <div className="flex gap-2 pt-2 items-center">
                 {(["en", "fr", "sw"] as Lang[]).map((l) => (
                   <button
                     key={l}
@@ -144,6 +144,7 @@ const Navbar = () => {
                     {langLabels[l]}
                   </button>
                 ))}
+                <ThemeToggle className="text-white/80 ml-2" />
               </div>
             </div>
           </motion.div>
