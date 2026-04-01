@@ -20,6 +20,7 @@ const tabs: { key: Tab; label: string }[] = [
   { key: "partners", label: "🤝 Partenaires" },
   { key: "testimonials", label: "💬 Témoignages" },
   { key: "impact", label: "📈 Impact" },
+  { key: "team", label: "👥 Équipe" },
   { key: "settings", label: "⚙️ Paramètres" },
 ];
 
