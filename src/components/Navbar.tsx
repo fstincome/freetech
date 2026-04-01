@@ -89,6 +89,8 @@ const Navbar = () => {
             )}
           </div>
 
+          <ThemeToggle className="text-white/80" />
+
           <a
             href="https://freeti.org"
             target="_blank"
