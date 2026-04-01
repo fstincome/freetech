@@ -3,6 +3,7 @@ import { Link, useLocation } from "react-router-dom";
 import { Menu, X, Globe } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useLanguage, Lang } from "@/contexts/LanguageContext";
+import ThemeToggle from "@/components/ThemeToggle";
 import logo from "@/assets/logo.png";
 
 const sectionLinks = [
@@ -88,6 +89,8 @@ const Navbar = () => {
             )}
           </div>
 
+          <ThemeToggle className="text-white/80" />
+
           <a
             href="https://freeti.org"
             target="_blank"
@@ -133,7 +136,7 @@ const Navbar = () => {
                   {t(link.labelKey)}
                 </Link>
               ))}
-              <div className="flex gap-2 pt-2">
+              <div className="flex gap-2 pt-2 items-center">
                 {(["en", "fr", "sw"] as Lang[]).map((l) => (
                   <button
                     key={l}
@@ -143,6 +146,7 @@ const Navbar = () => {
                     {langLabels[l]}
                   </button>
                 ))}
+                <ThemeToggle className="text-white/80 ml-2" />
               </div>
             </div>
           </motion.div>
