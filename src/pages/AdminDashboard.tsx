@@ -9,7 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { LogOut, BarChart3, Globe, Eye, Calendar } from "lucide-react";
 import logo from "@/assets/logo.png";
 
-type Tab = "stats" | "hero" | "programs" | "workshops" | "events" | "partners" | "testimonials" | "impact" | "settings";
+type Tab = "stats" | "hero" | "programs" | "workshops" | "events" | "partners" | "testimonials" | "impact" | "team" | "settings";
 
 const tabs: { key: Tab; label: string }[] = [
   { key: "stats", label: "📊 Statistiques" },
