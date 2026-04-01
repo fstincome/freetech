@@ -7,6 +7,7 @@ import { LanguageProvider } from "@/contexts/LanguageContext";
 import { useVisitorTracking } from "@/hooks/useVisitorTracking";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import PWAInstallButton from "@/components/PWAInstallButton";
 import Index from "./pages/Index.tsx";
 import GitegaStudySpace from "./pages/GitegaStudySpace.tsx";
 import OurTeam from "./pages/OurTeam.tsx";
@@ -38,6 +39,7 @@ const App = () => (
         <Sonner />
         <BrowserRouter>
           <AppContent />
+          <PWAInstallButton />
         </BrowserRouter>
       </LanguageProvider>
     </TooltipProvider>

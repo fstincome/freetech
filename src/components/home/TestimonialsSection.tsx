@@ -3,24 +3,29 @@ import { motion, AnimatePresence } from "framer-motion";
 import SectionHeading from "@/components/SectionHeading";
 import { ChevronLeft, ChevronRight, Quote } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
-
-const testimonials = [
-  { text: "As the Director of Lycée Technique New Generation, I would like to express my deep gratitude to the Free Tech Institute and its partner SkyNet Burundi for integrating our school into their digital training program. The relevance of the modules, especially those on research techniques and digital marketing, has been remarkable, offering a strong complement to our existing curriculum. I strongly encourage the continuation and expansion of this program.", name: "NIBAYEMERE Joseph", role: "Director of Lycée Technique New Generation", img: "https://freeti.org/img/directeur.jpg" },
-  { text: "As someone passionate about marketing, I saw the opportunity offered by the Free Tech Institute and SkyNet Burundi as the perfect chance to deepen my knowledge in digital marketing. This experience truly inspired me. It led me to co-found the 'Vision Digital Club,' an initiative dedicated to promoting responsible and inclusive digital engagement, especially among young girls in Burundi.", name: "DUSHIME Delly Santiana", role: "Student at École Sociale de Gitega and Laureate of the Program", img: "https://freeti.org/img/santhiana.jpg" },
-  { text: "As a university, we're proud to have contributed to organizing this event. We were truly impressed by the quality and creativity of our students' presentations—especially their innovative spirit and ability to address complex concepts rarely explored in our country. We strongly encourage them to keep innovating and working on ideas with global relevance.", name: "Senene François Xavier", role: "Directeur académique, UPG", img: "https://freeti.org/img/dac.jpg" },
-];
+import { supabase } from "@/integrations/supabase/client";
 
 const TestimonialsSection = () => {
   const [current, setCurrent] = useState(0);
+  const [testimonials, setTestimonials] = useState<any[]>([]);
   const { t } = useLanguage();
 
-  const next = useCallback(() => setCurrent((p) => (p + 1) % testimonials.length), []);
-  const prev = useCallback(() => setCurrent((p) => (p - 1 + testimonials.length) % testimonials.length), []);
+  useEffect(() => {
+    supabase.from("site_testimonials").select("*").order("sort_order").then(({ data }) => {
+      if (data) setTestimonials(data);
+    });
+  }, []);
+
+  const next = useCallback(() => setCurrent((p) => (p + 1) % (testimonials.length || 1)), [testimonials.length]);
+  const prev = useCallback(() => setCurrent((p) => (p - 1 + (testimonials.length || 1)) % (testimonials.length || 1)), [testimonials.length]);
 
   useEffect(() => {
+    if (testimonials.length === 0) return;
     const timer = setInterval(next, 6000);
     return () => clearInterval(timer);
-  }, [next]);
+  }, [next, testimonials.length]);
+
+  if (testimonials.length === 0) return null;
 
   return (
     <section id="testimonials" className="section-padding bg-section-alt w-full">
@@ -35,10 +40,10 @@ const TestimonialsSection = () => {
                 "{testimonials[current].text}"
               </p>
               <div className="flex items-center gap-4">
-                <img src={testimonials[current].img} alt={testimonials[current].name} className="w-14 h-14 rounded-full object-cover border-2 border-cyan/30" />
+                <img src={testimonials[current].author_image_url} alt={testimonials[current].author_name} className="w-14 h-14 rounded-full object-cover border-2 border-cyan/30" />
                 <div>
-                  <p className="font-heading font-bold text-foreground">{testimonials[current].name}</p>
-                  <p className="text-sm text-muted-foreground">{testimonials[current].role}</p>
+                  <p className="font-heading font-bold text-foreground">{testimonials[current].author_name}</p>
+                  <p className="text-sm text-muted-foreground">{testimonials[current].author_role}</p>
                 </div>
               </div>
             </motion.div>

@@ -200,6 +200,36 @@ export type Database = {
         }
         Relationships: []
       }
+      site_team_members: {
+        Row: {
+          created_at: string
+          id: string
+          image_url: string
+          name: string
+          role: string
+          sort_order: number
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          image_url: string
+          name: string
+          role?: string
+          sort_order?: number
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          image_url?: string
+          name?: string
+          role?: string
+          sort_order?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
       site_testimonials: {
         Row: {
           author_image_url: string

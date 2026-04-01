@@ -4,28 +4,28 @@ import SectionHeading from "@/components/SectionHeading";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 30 },
   visible: (i: number) => ({ opacity: 1, y: 0, transition: { delay: i * 0.1, duration: 0.5 } }),
 };
 
-const programs = [
-  { name: "Global Networking Program", img: "https://freeti.org/images/programs/gnp.jpg", desc: "Our Global Networking Program connects Burundian youth with international tech communities, fostering cross-cultural collaboration and knowledge exchange. Participants gain exposure to global best practices in technology and innovation." },
-  { name: "Bitdevs Program", img: "https://freeti.org/images/programs/bidevs.jpg", desc: "The Bitdevs Program focuses on Bitcoin development and blockchain technology. Through seminars and hands-on workshops, participants learn about decentralized finance, cryptographic protocols, and open-source Bitcoin development." },
-  { name: "Trezor Academy Program", img: "https://freeti.org/images/programs/trezoro.jpg", desc: "In partnership with Trezor, this program educates participants on digital security, hardware wallets, and cryptocurrency self-custody." },
-  { name: "Talk Tech Liberty Program", img: "https://freeti.org/images/programs/talk.jpg", desc: "Talk Tech Liberty brings together speakers and thought leaders to discuss the intersection of technology, freedom, and human rights." },
-  { name: "Digital Inclusion", img: "https://freeti.org/images/programs/digita.jpg", desc: "Our Digital Inclusion program bridges the digital divide by providing basic computer training, internet literacy, and digital skills to underserved communities across Burundi." },
-];
-
 const ProgramsSection = () => {
   const [selected, setSelected] = useState<number | null>(null);
+  const [programs, setPrograms] = useState<any[]>([]);
   const { t } = useLanguage();
   const scrollRef = useRef<HTMLDivElement>(null);
   const [autoScroll, setAutoScroll] = useState(true);
 
   useEffect(() => {
-    if (!autoScroll || !scrollRef.current) return;
+    supabase.from("site_programs").select("*").order("sort_order").then(({ data }) => {
+      if (data) setPrograms(data);
+    });
+  }, []);
+
+  useEffect(() => {
+    if (!autoScroll || !scrollRef.current || programs.length === 0) return;
     const container = scrollRef.current;
     let animationId: number;
     let scrollPos = 0;
@@ -38,7 +38,7 @@ const ProgramsSection = () => {
     };
     animationId = requestAnimationFrame(step);
     return () => cancelAnimationFrame(animationId);
-  }, [autoScroll]);
+  }, [autoScroll, programs.length]);
 
   const scroll = (dir: number) => {
     if (!scrollRef.current) return;
@@ -46,6 +46,8 @@ const ProgramsSection = () => {
     scrollRef.current.scrollBy({ left: dir * 320, behavior: "smooth" });
     setTimeout(() => setAutoScroll(true), 5000);
   };
+
+  if (programs.length === 0) return null;
 
   return (
     <section id="programs" className="section-padding w-full">
@@ -64,7 +66,7 @@ const ProgramsSection = () => {
         <div ref={scrollRef} className="flex gap-6 overflow-x-hidden px-4 md:px-8 py-4 scrollbar-hide">
           {[...programs, ...programs].map((p, i) => (
             <motion.div
-              key={`${p.name}-${i}`}
+              key={`${p.id}-${i}`}
               custom={i % programs.length}
               variants={fadeUp}
               initial="hidden"
@@ -73,7 +75,7 @@ const ProgramsSection = () => {
               onClick={() => { setSelected(i % programs.length); setAutoScroll(false); }}
               className="group relative rounded-2xl overflow-hidden h-72 min-w-[280px] w-[280px] flex-shrink-0 cursor-pointer"
             >
-              <img src={p.img} alt={p.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
+              <img src={p.image_url} alt={p.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
               <div className="absolute inset-0 bg-gradient-to-t from-navy via-navy/30 to-transparent" />
               <div className="absolute bottom-0 left-0 right-0 p-6">
                 <h3 className="text-white font-heading font-bold text-lg">{p.name}</h3>
@@ -92,8 +94,8 @@ const ProgramsSection = () => {
                 <DialogTitle className="text-xl font-heading">{programs[selected].name}</DialogTitle>
                 <DialogDescription>Program Details</DialogDescription>
               </DialogHeader>
-              <img src={programs[selected].img} alt={programs[selected].name} className="w-full h-48 object-cover rounded-lg" />
-              <p className="text-muted-foreground text-sm leading-relaxed">{programs[selected].desc}</p>
+              <img src={programs[selected].image_url} alt={programs[selected].name} className="w-full h-48 object-cover rounded-lg" />
+              <p className="text-muted-foreground text-sm leading-relaxed">{programs[selected].description}</p>
             </>
           )}
         </DialogContent>

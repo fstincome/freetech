@@ -7,9 +7,9 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { LogOut, BarChart3, Globe, Eye, Calendar } from "lucide-react";
-import logo from "@/assets/logo.jpg";
+import logo from "@/assets/logo.png";
 
-type Tab = "stats" | "hero" | "programs" | "workshops" | "events" | "partners" | "testimonials" | "impact" | "settings";
+type Tab = "stats" | "hero" | "programs" | "workshops" | "events" | "partners" | "testimonials" | "impact" | "team" | "settings";
 
 const tabs: { key: Tab; label: string }[] = [
   { key: "stats", label: "📊 Statistiques" },
@@ -20,6 +20,7 @@ const tabs: { key: Tab; label: string }[] = [
   { key: "partners", label: "🤝 Partenaires" },
   { key: "testimonials", label: "💬 Témoignages" },
   { key: "impact", label: "📈 Impact" },
+  { key: "team", label: "👥 Équipe" },
   { key: "settings", label: "⚙️ Paramètres" },
 ];
 
@@ -36,7 +37,7 @@ const AdminDashboard = () => {
   }, [user, isAdmin, loading, navigate]);
 
   const fetchAll = async () => {
-    const [hero, programs, workshops, events, partners, testimonials, impact, settings] = await Promise.all([
+    const [hero, programs, workshops, events, partners, testimonials, impact, team, settings] = await Promise.all([
       supabase.from("site_hero_slides").select("*").order("sort_order"),
       supabase.from("site_programs").select("*").order("sort_order"),
       supabase.from("site_workshops").select("*").order("sort_order"),
@@ -44,12 +45,13 @@ const AdminDashboard = () => {
       supabase.from("site_partners").select("*").order("sort_order"),
       supabase.from("site_testimonials").select("*").order("sort_order"),
       supabase.from("site_impact_stats").select("*").order("sort_order"),
+      supabase.from("site_team_members" as any).select("*").order("sort_order"),
       supabase.from("site_settings").select("*"),
     ]);
     setData({
       hero: hero.data || [], programs: programs.data || [], workshops: workshops.data || [],
       events: events.data || [], partners: partners.data || [], testimonials: testimonials.data || [],
-      impact: impact.data || [], settings: settings.data || [],
+      impact: impact.data || [], team: team.data || [], settings: settings.data || [],
     });
   };
 
@@ -306,6 +308,21 @@ const AdminDashboard = () => {
                 { key: "sort_order", label: "Ordre", type: "number" },
               ]}
               data={data.impact || []}
+              onRefresh={fetchAll}
+            />
+          )}
+
+          {activeTab === "team" && (
+            <AdminCrudTable
+              title="Équipe"
+              tableName="site_team_members"
+              fields={[
+                { key: "name", label: "Nom", type: "text" },
+                { key: "role", label: "Rôle", type: "text" },
+                { key: "image_url", label: "Photo URL", type: "url" },
+                { key: "sort_order", label: "Ordre", type: "number" },
+              ]}
+              data={data.team || []}
               onRefresh={fetchAll}
             />
           )}
