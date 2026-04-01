@@ -1,54 +1,41 @@
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import SectionHeading from "@/components/SectionHeading";
 import { useLanguage } from "@/contexts/LanguageContext";
-
-const partners = [
-  "https://freeti.org/images/parterners/atlas.png",
-  "https://freeti.org/images/parterners/hrf.png",
-  "https://freeti.org/images/parterners/kbf.webp",
-  "https://freeti.org/images/parterners/trezorac.webp",
-  "https://freeti.org/images/parterners/thewhy.webp",
-  "https://freeti.org/images/parterners/sfl.png",
-  "https://freeti.org/images/parterners/isoc.png",
-  "https://freeti.org/images/parterners/btrust.png",
-  "https://freeti.org/images/parterners/atassi.png",
-];
-
-const supportingPartners = [
-  "https://freeti.org/images/parterners/333.jpg",
-  "https://freeti.org/images/parterners/111.jpg",
-  "https://freeti.org/images/parterners/444.jpg",
-  "https://freeti.org/images/parterners/666.jpg",
-  "https://freeti.org/images/parterners/777.jpg",
-  "https://freeti.org/images/parterners/222.jpg",
-  "https://freeti.org/images/parterners/555.jpg",
-  "https://freeti.org/img/isoc.jpg",
-  "https://freeti.org/images/parterners/bitnob.jpg",
-  "https://freeti.org/images/parterners/ged.jpg",
-  "https://freeti.org/images/parterners/sky.jpg",
-  "https://freeti.org/images/parterners/arct.jpg",
-  "https://freeti.org/images/parterners/UPG.jpg",
-];
+import { supabase } from "@/integrations/supabase/client";
 
 const PartnersSection = () => {
   const { t } = useLanguage();
+  const [mainPartners, setMainPartners] = useState<any[]>([]);
+  const [supportingPartners, setSupportingPartners] = useState<any[]>([]);
+
+  useEffect(() => {
+    supabase.from("site_partners").select("*").order("sort_order").then(({ data }) => {
+      if (data) {
+        setMainPartners(data.filter(p => p.partner_type === "main"));
+        setSupportingPartners(data.filter(p => p.partner_type === "supporting"));
+      }
+    });
+  }, []);
 
   return (
     <section id="partners" className="section-padding w-full">
       <div className="max-w-7xl mx-auto">
         <SectionHeading label={t("partners.label")} title={t("partners.title")} description={t("partners.desc")} />
         <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} className="flex flex-wrap justify-center items-center gap-8 md:gap-12 mb-16">
-          {partners.map((src, i) => (
-            <img key={i} src={src} alt={`Partner ${i + 1}`} className="h-12 md:h-16 object-contain opacity-70 hover:opacity-100 transition-opacity grayscale hover:grayscale-0" />
+          {mainPartners.map((p) => (
+            <img key={p.id} src={p.logo_url} alt={p.name} className="h-12 md:h-16 object-contain opacity-70 hover:opacity-100 transition-opacity grayscale hover:grayscale-0" />
           ))}
         </motion.div>
-        <div className="overflow-hidden py-8">
-          <motion.div animate={{ x: [0, -1200] }} transition={{ repeat: Infinity, duration: 25, ease: "linear" }} className="flex gap-10 items-center w-max">
-            {[...supportingPartners, ...supportingPartners].map((src, i) => (
-              <img key={i} src={src} alt="Supporting Partner" className="h-16 md:h-20 object-contain rounded-lg" />
-            ))}
-          </motion.div>
-        </div>
+        {supportingPartners.length > 0 && (
+          <div className="overflow-hidden py-8">
+            <motion.div animate={{ x: [0, -1200] }} transition={{ repeat: Infinity, duration: 25, ease: "linear" }} className="flex gap-10 items-center w-max">
+              {[...supportingPartners, ...supportingPartners].map((p, i) => (
+                <img key={`${p.id}-${i}`} src={p.logo_url} alt={p.name} className="h-16 md:h-20 object-contain rounded-lg" />
+              ))}
+            </motion.div>
+          </div>
+        )}
       </div>
     </section>
   );

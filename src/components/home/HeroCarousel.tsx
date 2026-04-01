@@ -2,26 +2,31 @@ import { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
-
-const slideKeys = [
-  { labelKey: "hero.slide1.label", titleKey: "hero.slide1.title", subtitleKey: "hero.slide1.subtitle", descKey: "hero.slide1.desc", img: "https://freeti.org/images/diapos/TECH1.jpg" },
-  { labelKey: "hero.slide2.label", titleKey: "hero.slide2.title", subtitleKey: "hero.slide2.subtitle", descKey: "hero.slide2.desc", img: "https://freeti.org/images/frb/ZZY_7754.jpg" },
-  { labelKey: "hero.slide3.label", titleKey: "hero.slide3.title", subtitleKey: "hero.slide3.subtitle", descKey: "hero.slide3.desc", img: "https://freeti.org/images/diapos/INST.jpg" },
-];
+import { supabase } from "@/integrations/supabase/client";
 
 const HeroCarousel = () => {
   const [current, setCurrent] = useState(0);
+  const [slides, setSlides] = useState<any[]>([]);
   const { t } = useLanguage();
 
-  const next = useCallback(() => setCurrent((p) => (p + 1) % slideKeys.length), []);
-  const prev = useCallback(() => setCurrent((p) => (p - 1 + slideKeys.length) % slideKeys.length), []);
+  useEffect(() => {
+    supabase.from("site_hero_slides").select("*").order("sort_order").then(({ data }) => {
+      if (data && data.length > 0) setSlides(data);
+    });
+  }, []);
+
+  const next = useCallback(() => setCurrent((p) => (p + 1) % (slides.length || 1)), [slides.length]);
+  const prev = useCallback(() => setCurrent((p) => (p - 1 + (slides.length || 1)) % (slides.length || 1)), [slides.length]);
 
   useEffect(() => {
+    if (slides.length === 0) return;
     const timer = setInterval(next, 5000);
     return () => clearInterval(timer);
-  }, [next]);
+  }, [next, slides.length]);
 
-  const slide = slideKeys[current];
+  if (slides.length === 0) return <section className="h-screen w-full bg-navy" />;
+
+  const slide = slides[current];
 
   return (
     <section className="relative h-screen w-full overflow-hidden">
@@ -34,7 +39,7 @@ const HeroCarousel = () => {
           transition={{ duration: 0.8 }}
           className="absolute inset-0"
         >
-          <img src={slide.img} alt={t(slide.labelKey)} className="w-full h-full object-cover" />
+          <img src={slide.image_url} alt={slide.label} className="w-full h-full object-cover" />
           <div className="absolute inset-0 bg-gradient-to-r from-navy/85 via-navy/60 to-transparent" />
         </motion.div>
       </AnimatePresence>
@@ -51,16 +56,16 @@ const HeroCarousel = () => {
               className="max-w-2xl"
             >
               <span className="inline-block px-4 py-1.5 rounded-full bg-cyan/15 text-cyan text-xs font-heading font-semibold tracking-widest uppercase mb-4 border border-cyan/25">
-                {t(slide.labelKey)}
+                {slide.label}
               </span>
               <h1 className="text-3xl md:text-5xl lg:text-6xl font-heading font-bold text-white leading-[1.1] mb-4">
-                {t(slide.titleKey)}
+                {slide.title}
               </h1>
               <p className="text-cyan font-heading font-medium text-lg md:text-xl mb-4">
-                {t(slide.subtitleKey)}
+                {slide.subtitle}
               </p>
               <p className="text-white/70 text-sm md:text-base leading-relaxed mb-8 max-w-lg">
-                {t(slide.descKey)}
+                {slide.description}
               </p>
               <div className="flex gap-4">
                 <a href="#programs" className="px-7 py-3 rounded-full bg-cyan text-navy font-heading font-semibold text-sm hover:bg-cyan/90 transition-all shadow-lg shadow-cyan/25">
@@ -83,7 +88,7 @@ const HeroCarousel = () => {
       </button>
 
       <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-20 flex gap-2">
-        {slideKeys.map((_, i) => (
+        {slides.map((_, i) => (
           <button key={i} onClick={() => setCurrent(i)} className={`h-2 rounded-full transition-all duration-300 ${i === current ? "w-8 bg-cyan" : "w-2 bg-white/40"}`} />
         ))}
       </div>
