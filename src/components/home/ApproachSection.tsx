@@ -2,6 +2,8 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import SectionHeading from "@/components/SectionHeading";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { Search, BookOpen, Compass } from "lucide-react";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 30 },
@@ -9,41 +11,23 @@ const fadeUp = {
 };
 
 const approachSteps = [
-  {
-    title: "Detect",
-    img: "https://freeti.org/images/diapos/INST.jpg",
-    short: "How we do it",
-    detail: "We identify promising youth across Burundi's provinces by partnering with schools, community centers, and local leaders. Through outreach programs and assessments, we evaluate their digital needs, potential, and readiness to engage with technology. This step ensures our resources reach those who need them most.",
-  },
-  {
-    title: "Instill",
-    img: "https://freeti.org/images/diapos/DET.jpg",
-    short: "Our process",
-    detail: "Through hands-on training sessions, workshops, and bootcamps, we provide practical skills in digital literacy, blockchain technology, Bitcoin, cybersecurity, and open-source development. Our curriculum is designed to be accessible, engaging, and relevant to the Burundian context.",
-  },
-  {
-    title: "Guide",
-    img: "https://freeti.org/images/diapos/GRAD.jpg",
-    short: "How it works",
-    detail: "We mentor and support learners as they build real projects, launch initiatives, and enter the workforce. From co-founding digital clubs to creating innovative solutions, our graduates are empowered to become leaders in their communities and champions of digital inclusion.",
-  },
+  { titleKey: "approach.detect", shortKey: "approach.detect.short", detailKey: "approach.detect.detail", img: "https://freeti.org/images/diapos/INST.jpg", Icon: Search },
+  { titleKey: "approach.instill", shortKey: "approach.instill.short", detailKey: "approach.instill.detail", img: "https://freeti.org/images/diapos/DET.jpg", Icon: BookOpen },
+  { titleKey: "approach.guide", shortKey: "approach.guide.short", detailKey: "approach.guide.detail", img: "https://freeti.org/images/diapos/GRAD.jpg", Icon: Compass },
 ];
 
 const ApproachSection = () => {
   const [selected, setSelected] = useState<number | null>(null);
+  const { t } = useLanguage();
 
   return (
-    <section className="section-padding bg-section-alt">
+    <section id="approach" className="section-padding bg-section-alt w-full">
       <div className="max-w-7xl mx-auto">
-        <SectionHeading
-          label="Our Approach"
-          title="Progressive & Human-Centered"
-          description="At FREETI, we believe that transformation happens through a progressive and human-centered approach:"
-        />
+        <SectionHeading label={t("approach.label")} title={t("approach.title")} description={t("approach.desc")} />
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {approachSteps.map((step, i) => (
             <motion.div
-              key={step.title}
+              key={step.titleKey}
               custom={i}
               variants={fadeUp}
               initial="hidden"
@@ -53,11 +37,14 @@ const ApproachSection = () => {
               className="glass-card overflow-hidden group cursor-pointer hover:border-cyan/30 transition-colors"
             >
               <div className="h-52 overflow-hidden">
-                <img src={step.img} alt={step.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                <img src={step.img} alt={t(step.titleKey)} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
               </div>
               <div className="p-6 text-center">
-                <h3 className="text-xl font-heading font-bold text-foreground">{step.title}</h3>
-                <p className="text-cyan text-sm font-medium mt-1">{step.short}</p>
+                <div className="w-12 h-12 rounded-xl bg-cyan/15 flex items-center justify-center mx-auto mb-3">
+                  <step.Icon className="w-6 h-6 text-cyan" />
+                </div>
+                <h3 className="text-xl font-heading font-bold text-foreground">{t(step.titleKey)}</h3>
+                <p className="text-cyan text-sm font-medium mt-1">{t(step.shortKey)}</p>
               </div>
             </motion.div>
           ))}
@@ -69,11 +56,11 @@ const ApproachSection = () => {
           {selected !== null && (
             <>
               <DialogHeader>
-                <DialogTitle className="text-2xl font-heading">{approachSteps[selected].title}</DialogTitle>
-                <DialogDescription className="text-cyan font-medium">{approachSteps[selected].short}</DialogDescription>
+                <DialogTitle className="text-2xl font-heading">{t(approachSteps[selected].titleKey)}</DialogTitle>
+                <DialogDescription className="text-cyan font-medium">{t(approachSteps[selected].shortKey)}</DialogDescription>
               </DialogHeader>
-              <img src={approachSteps[selected].img} alt={approachSteps[selected].title} className="w-full h-48 object-cover rounded-lg" />
-              <p className="text-muted-foreground text-sm leading-relaxed">{approachSteps[selected].detail}</p>
+              <img src={approachSteps[selected].img} alt={t(approachSteps[selected].titleKey)} className="w-full h-48 object-cover rounded-lg" />
+              <p className="text-muted-foreground text-sm leading-relaxed">{t(approachSteps[selected].detailKey)}</p>
             </>
           )}
         </DialogContent>

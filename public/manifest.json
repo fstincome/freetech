@@ -1,0 +1,17 @@
+{
+  "name": "Free Tech Institute",
+  "short_name": "FREETI",
+  "description": "Empowering Burundi's youth through digital inclusion",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0f172a",
+  "theme_color": "#0ea5e9",
+  "icons": [
+    {
+      "src": "/logo.jpg",
+      "sizes": "512x512",
+      "type": "image/jpeg",
+      "purpose": "any maskable"
+    }
+  ]
+}

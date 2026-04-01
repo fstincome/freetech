@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import SectionHeading from "@/components/SectionHeading";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 const partners = [
   "https://freeti.org/images/parterners/atlas.png",
@@ -29,49 +30,28 @@ const supportingPartners = [
   "https://freeti.org/images/parterners/UPG.jpg",
 ];
 
-const PartnersSection = () => (
-  <section className="section-padding">
-    <div className="max-w-7xl mx-auto">
-      <SectionHeading
-        label="Our Partners"
-        title="Building Together"
-        description="We proudly collaborate with institutions and organizations that share our vision for a digitally inclusive Burundi."
-      />
-      <motion.div
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        viewport={{ once: true }}
-        className="flex flex-wrap justify-center items-center gap-8 md:gap-12 mb-16"
-      >
-        {partners.map((src, i) => (
-          <img
-            key={i}
-            src={src}
-            alt={`Partner ${i + 1}`}
-            className="h-12 md:h-16 object-contain opacity-70 hover:opacity-100 transition-opacity grayscale hover:grayscale-0"
-          />
-        ))}
-      </motion.div>
+const PartnersSection = () => {
+  const { t } = useLanguage();
 
-      {/* Supporting partners marquee */}
-      <div className="overflow-hidden py-8">
-        <motion.div
-          animate={{ x: [0, -1200] }}
-          transition={{ repeat: Infinity, duration: 25, ease: "linear" }}
-          className="flex gap-10 items-center w-max"
-        >
-          {[...supportingPartners, ...supportingPartners].map((src, i) => (
-            <img
-              key={i}
-              src={src}
-              alt={`Supporting Partner`}
-              className="h-16 md:h-20 object-contain rounded-lg"
-            />
+  return (
+    <section id="partners" className="section-padding w-full">
+      <div className="max-w-7xl mx-auto">
+        <SectionHeading label={t("partners.label")} title={t("partners.title")} description={t("partners.desc")} />
+        <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} className="flex flex-wrap justify-center items-center gap-8 md:gap-12 mb-16">
+          {partners.map((src, i) => (
+            <img key={i} src={src} alt={`Partner ${i + 1}`} className="h-12 md:h-16 object-contain opacity-70 hover:opacity-100 transition-opacity grayscale hover:grayscale-0" />
           ))}
         </motion.div>
+        <div className="overflow-hidden py-8">
+          <motion.div animate={{ x: [0, -1200] }} transition={{ repeat: Infinity, duration: 25, ease: "linear" }} className="flex gap-10 items-center w-max">
+            {[...supportingPartners, ...supportingPartners].map((src, i) => (
+              <img key={i} src={src} alt="Supporting Partner" className="h-16 md:h-20 object-contain rounded-lg" />
+            ))}
+          </motion.div>
+        </div>
       </div>
-    </div>
-  </section>
-);
+    </section>
+  );
+};
 
 export default PartnersSection;
