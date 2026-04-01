@@ -2,6 +2,7 @@ import HeroCarousel from "@/components/home/HeroCarousel";
 import ApproachSection from "@/components/home/ApproachSection";
 import WhoWeAreSection from "@/components/home/WhoWeAreSection";
 import ProgramsSection from "@/components/home/ProgramsSection";
+import VideoSection from "@/components/home/VideoSection";
 import WorkshopsSection from "@/components/home/WorkshopsSection";
 import EventsSection from "@/components/home/EventsSection";
 import PartnersSection from "@/components/home/PartnersSection";
@@ -14,6 +15,7 @@ const Index = () => (
     <ApproachSection />
     <WhoWeAreSection />
     <ProgramsSection />
+    <VideoSection />
     <WorkshopsSection />
     <EventsSection />
     <PartnersSection />

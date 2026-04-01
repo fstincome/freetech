@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import SectionHeading from "@/components/SectionHeading";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 30 },
@@ -20,14 +21,58 @@ const programs = [
 const ProgramsSection = () => {
   const [selected, setSelected] = useState<number | null>(null);
   const { t } = useLanguage();
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const [autoScroll, setAutoScroll] = useState(true);
+
+  useEffect(() => {
+    if (!autoScroll || !scrollRef.current) return;
+    const container = scrollRef.current;
+    let animationId: number;
+    let scrollPos = 0;
+
+    const step = () => {
+      scrollPos += 0.5;
+      if (scrollPos >= container.scrollWidth / 2) scrollPos = 0;
+      container.scrollLeft = scrollPos;
+      animationId = requestAnimationFrame(step);
+    };
+    animationId = requestAnimationFrame(step);
+    return () => cancelAnimationFrame(animationId);
+  }, [autoScroll]);
+
+  const scroll = (dir: number) => {
+    if (!scrollRef.current) return;
+    setAutoScroll(false);
+    scrollRef.current.scrollBy({ left: dir * 320, behavior: "smooth" });
+    setTimeout(() => setAutoScroll(true), 5000);
+  };
 
   return (
     <section id="programs" className="section-padding w-full">
       <div className="max-w-7xl mx-auto">
         <SectionHeading label={t("programs.label")} title={t("programs.title")} description={t("programs.desc")} />
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {programs.map((p, i) => (
-            <motion.div key={p.name} custom={i} variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }} onClick={() => setSelected(i)} className="group relative rounded-2xl overflow-hidden h-64 cursor-pointer">
+      </div>
+
+      <div className="relative max-w-full">
+        <button onClick={() => scroll(-1)} className="absolute left-2 top-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-full bg-navy/70 backdrop-blur flex items-center justify-center text-white hover:bg-cyan/30 transition-colors">
+          <ChevronLeft size={20} />
+        </button>
+        <button onClick={() => scroll(1)} className="absolute right-2 top-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-full bg-navy/70 backdrop-blur flex items-center justify-center text-white hover:bg-cyan/30 transition-colors">
+          <ChevronRight size={20} />
+        </button>
+
+        <div ref={scrollRef} className="flex gap-6 overflow-x-hidden px-4 md:px-8 py-4 scrollbar-hide">
+          {[...programs, ...programs].map((p, i) => (
+            <motion.div
+              key={`${p.name}-${i}`}
+              custom={i % programs.length}
+              variants={fadeUp}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true }}
+              onClick={() => { setSelected(i % programs.length); setAutoScroll(false); }}
+              className="group relative rounded-2xl overflow-hidden h-72 min-w-[280px] w-[280px] flex-shrink-0 cursor-pointer"
+            >
               <img src={p.img} alt={p.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
               <div className="absolute inset-0 bg-gradient-to-t from-navy via-navy/30 to-transparent" />
               <div className="absolute bottom-0 left-0 right-0 p-6">
@@ -39,7 +84,7 @@ const ProgramsSection = () => {
         </div>
       </div>
 
-      <Dialog open={selected !== null} onOpenChange={() => setSelected(null)}>
+      <Dialog open={selected !== null} onOpenChange={() => { setSelected(null); setAutoScroll(true); }}>
         <DialogContent className="sm:max-w-lg">
           {selected !== null && (
             <>

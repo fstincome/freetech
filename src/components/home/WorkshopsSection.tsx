@@ -17,28 +17,18 @@ const WorkshopsSection = () => {
   const { t } = useLanguage();
 
   return (
-    <section id="workshops" className="section-padding w-full">
+    <section id="workshops" className="section-padding bg-section-alt w-full">
       <div className="max-w-7xl mx-auto">
-        <SectionHeading label={t("workshops.label")} title={t("workshops.title")} description={t("workshops.desc")} />
-
-        {/* YouTube embed with autoplay */}
-        <div className="max-w-3xl mx-auto mb-12">
-          <div className="aspect-video rounded-2xl overflow-hidden shadow-xl">
-            <iframe
-              src="https://www.youtube.com/embed/8jeI5Io5w5I?autoplay=1&mute=1&loop=1&playlist=8jeI5Io5w5I"
-              title="Campus Tech Hackathon"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowFullScreen
-              className="w-full h-full"
-            />
-          </div>
-        </div>
+        <SectionHeading label="Workshops Gallery" title="Our Workshops, Bootcamps & Hackathons" description="Click on any event to see more photos from the workshop." />
 
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
           {workshops.map((w, i) => (
             <motion.div key={w.title} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.08 }} onClick={() => setSelectedWorkshop(i)} className="group relative rounded-xl overflow-hidden h-48 cursor-pointer">
               <img src={w.img} alt={w.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
               <div className="absolute inset-0 bg-navy/40 group-hover:bg-navy/20 transition-colors" />
+              <div className="absolute bottom-0 left-0 right-0 p-3 bg-gradient-to-t from-navy/80 to-transparent">
+                <p className="text-white text-xs font-heading font-semibold">{w.title}</p>
+              </div>
               <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
                 <span className="text-white text-sm font-heading font-semibold bg-cyan/80 px-4 py-1.5 rounded-full">Open</span>
               </div>
