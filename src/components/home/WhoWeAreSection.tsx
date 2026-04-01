@@ -1,7 +1,9 @@
 import { motion } from "framer-motion";
+import { useState, useEffect } from "react";
 import SectionHeading from "@/components/SectionHeading";
 import { Shield, Eye, Zap, Key } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { supabase } from "@/integrations/supabase/client";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 30 },
