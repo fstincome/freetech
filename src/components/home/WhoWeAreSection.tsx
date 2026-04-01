@@ -12,6 +12,12 @@ const fadeUp = {
 
 const WhoWeAreSection = () => {
   const { t } = useLanguage();
+  const [videoUrl, setVideoUrl] = useState("");
+
+  useEffect(() => {
+    supabase.from("site_settings").select("value").eq("key", "about_bg_video").single()
+      .then(({ data }) => { if (data) setVideoUrl(data.value); });
+  }, []);
 
   const coreValues = [
     { icon: Eye, titleKey: "about.accessibility", descKey: "about.accessibility.desc" },
@@ -21,17 +27,18 @@ const WhoWeAreSection = () => {
   ];
 
   return (
-    <section
-      id="about"
-      className="section-padding w-full relative"
-      style={{
-        backgroundImage: "url('https://freeti.org/images/frb/ZZY_7754.jpg')",
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        backgroundAttachment: "fixed",
-      }}
-    >
-      <div className="absolute inset-0 bg-navy/90" />
+    <section id="about" className="section-padding w-full relative overflow-hidden">
+      {videoUrl && (
+        <iframe
+          src={videoUrl}
+          className="absolute inset-0 w-full h-full object-cover pointer-events-none"
+          style={{ border: 0, transform: "scale(1.5)", transformOrigin: "center center" }}
+          allow="autoplay; encrypted-media"
+          tabIndex={-1}
+          aria-hidden="true"
+        />
+      )}
+      <div className="absolute inset-0 bg-navy/85" />
       <div className="relative z-10 max-w-7xl mx-auto">
         <SectionHeading label={t("about.label")} title={t("about.title")} light />
 
