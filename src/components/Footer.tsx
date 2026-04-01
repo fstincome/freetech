@@ -1,33 +1,25 @@
 import { Link } from "react-router-dom";
+import { useLanguage } from "@/contexts/LanguageContext";
+import logo from "@/assets/logo.jpg";
 
 const Footer = () => {
+  const { t } = useLanguage();
+
   return (
-    <footer className="bg-navy text-white/70">
+    <footer className="bg-navy text-white/70 w-full">
       <div className="max-w-7xl mx-auto px-4 md:px-8 py-16">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-10">
           <div className="md:col-span-2">
-            <img
-              src="https://freeti.org/images/logo-header.png"
-              alt="Free Tech Institute"
-              className="h-12 mb-4"
-            />
-            <p className="text-sm leading-relaxed max-w-md">
-              Secure data for a free and prosperous society. Free Tech Institute promotes digital inclusion and technological freedom in Burundi.
-            </p>
+            <img src={logo} alt="Free Tech Institute" className="h-12 mb-4" />
+            <p className="text-sm leading-relaxed max-w-md">{t("footer.tagline")}</p>
             <div className="flex gap-3 mt-6">
               {[
-                { href: "https://facebook.com", icon: "f" },
-                { href: "https://twitter.com", icon: "𝕏" },
+                { href: "https://facebook.com/freetechinstitute", icon: "f" },
+                { href: "https://twitter.com/freaborundi", icon: "𝕏" },
                 { href: "https://instagram.com", icon: "◎" },
-                { href: "https://linkedin.com", icon: "in" },
+                { href: "https://linkedin.com/company/free-tech-institute", icon: "in" },
               ].map((s, i) => (
-                <a
-                  key={i}
-                  href={s.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-9 h-9 rounded-full bg-white/10 flex items-center justify-center text-xs font-bold hover:bg-cyan hover:text-navy transition-colors"
-                >
+                <a key={i} href={s.href} target="_blank" rel="noopener noreferrer" className="w-9 h-9 rounded-full bg-white/10 flex items-center justify-center text-xs font-bold hover:bg-cyan hover:text-navy transition-colors">
                   {s.icon}
                 </a>
               ))}
@@ -35,16 +27,16 @@ const Footer = () => {
           </div>
 
           <div>
-            <h4 className="text-white font-heading font-semibold text-sm mb-4">Quick Links</h4>
+            <h4 className="text-white font-heading font-semibold text-sm mb-4">{t("footer.quicklinks")}</h4>
             <div className="flex flex-col gap-2">
-              <Link to="/" className="text-sm hover:text-cyan transition-colors">Home</Link>
-              <Link to="/gitega-study-space" className="text-sm hover:text-cyan transition-colors">Our Digital Hub</Link>
-              <Link to="/our-team" className="text-sm hover:text-cyan transition-colors">Team</Link>
+              <Link to="/" className="text-sm hover:text-cyan transition-colors">{t("nav.home")}</Link>
+              <Link to="/gitega-study-space" className="text-sm hover:text-cyan transition-colors">{t("nav.hub")}</Link>
+              <Link to="/our-team" className="text-sm hover:text-cyan transition-colors">{t("nav.team")}</Link>
             </div>
           </div>
 
           <div>
-            <h4 className="text-white font-heading font-semibold text-sm mb-4">Contact</h4>
+            <h4 className="text-white font-heading font-semibold text-sm mb-4">{t("footer.contact")}</h4>
             <div className="flex flex-col gap-2 text-sm">
               <span>Bujumbura, Burundi</span>
               <a href="https://freeti.org" className="hover:text-cyan transition-colors">freeti.org</a>
