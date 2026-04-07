@@ -4,10 +4,17 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
 
+// Translation keys for slides loaded from DB (index-based fallback)
+const slideTranslationKeys = [
+  { label: "hero.slide1.label", title: "hero.slide1.title", subtitle: "hero.slide1.subtitle", desc: "hero.slide1.desc" },
+  { label: "hero.slide2.label", title: "hero.slide2.title", subtitle: "hero.slide2.subtitle", desc: "hero.slide2.desc" },
+  { label: "hero.slide3.label", title: "hero.slide3.title", subtitle: "hero.slide3.subtitle", desc: "hero.slide3.desc" },
+];
+
 const HeroCarousel = () => {
   const [current, setCurrent] = useState(0);
   const [slides, setSlides] = useState<any[]>([]);
-  const { t } = useLanguage();
+  const { t, lang } = useLanguage();
 
   useEffect(() => {
     supabase.from("site_hero_slides").select("*").order("sort_order").then(({ data }) => {
@@ -27,6 +34,12 @@ const HeroCarousel = () => {
   if (slides.length === 0) return <section className="h-screen w-full bg-navy" />;
 
   const slide = slides[current];
+  const keys = slideTranslationKeys[current];
+  const useTranslation = lang !== "en" && keys;
+  const slideLabel = useTranslation ? t(keys.label) : slide.label;
+  const slideTitle = useTranslation ? t(keys.title) : slide.title;
+  const slideSubtitle = useTranslation ? t(keys.subtitle) : slide.subtitle;
+  const slideDesc = useTranslation ? t(keys.desc) : slide.description;
 
   return (
     <section className="relative h-screen w-full overflow-hidden">
@@ -56,16 +69,16 @@ const HeroCarousel = () => {
               className="max-w-2xl"
             >
               <span className="inline-block px-4 py-1.5 rounded-full bg-cyan/15 text-cyan text-xs font-heading font-semibold tracking-widest uppercase mb-4 border border-cyan/25">
-                {slide.label}
+                {slideLabel}
               </span>
               <h1 className="text-3xl md:text-5xl lg:text-6xl font-heading font-bold text-white leading-[1.1] mb-4">
-                {slide.title}
+                {slideTitle}
               </h1>
               <p className="text-cyan font-heading font-medium text-lg md:text-xl mb-4">
-                {slide.subtitle}
+                {slideSubtitle}
               </p>
               <p className="text-white/70 text-sm md:text-base leading-relaxed mb-8 max-w-lg">
-                {slide.description}
+                {slideDesc}
               </p>
               <div className="flex gap-4">
                 <a href="#programs" className="px-7 py-3 rounded-full bg-cyan text-navy font-heading font-semibold text-sm hover:bg-cyan/90 transition-all shadow-lg shadow-cyan/25">
