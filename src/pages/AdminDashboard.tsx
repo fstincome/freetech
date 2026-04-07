@@ -314,6 +314,23 @@ const AdminDashboard = () => {
             />
           )}
 
+          {activeTab === "reports" && (
+            <AdminCrudTable
+              title="Rapports Annuels"
+              tableName="site_reports"
+              fields={[
+                { key: "title", label: "Titre", type: "text" },
+                { key: "year", label: "Année", type: "number" },
+                { key: "description", label: "Description", type: "textarea" },
+                { key: "drive_link", label: "Lien Google Drive", type: "text" },
+                { key: "cover_image_url", label: "Image de couverture URL", type: "url" },
+                { key: "sort_order", label: "Ordre", type: "number" },
+              ]}
+              data={data.reports || []}
+              onRefresh={fetchAll}
+            />
+          )}
+
           {activeTab === "team" && (
             <AdminCrudTable
               title="Équipe"
