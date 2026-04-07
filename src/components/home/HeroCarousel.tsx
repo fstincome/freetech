@@ -4,10 +4,17 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
 
+// Translation keys for slides loaded from DB (index-based fallback)
+const slideTranslationKeys = [
+  { label: "hero.slide1.label", title: "hero.slide1.title", subtitle: "hero.slide1.subtitle", desc: "hero.slide1.desc" },
+  { label: "hero.slide2.label", title: "hero.slide2.title", subtitle: "hero.slide2.subtitle", desc: "hero.slide2.desc" },
+  { label: "hero.slide3.label", title: "hero.slide3.title", subtitle: "hero.slide3.subtitle", desc: "hero.slide3.desc" },
+];
+
 const HeroCarousel = () => {
   const [current, setCurrent] = useState(0);
   const [slides, setSlides] = useState<any[]>([]);
-  const { t } = useLanguage();
+  const { t, lang } = useLanguage();
 
   useEffect(() => {
     supabase.from("site_hero_slides").select("*").order("sort_order").then(({ data }) => {
