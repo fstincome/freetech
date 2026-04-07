@@ -34,6 +34,12 @@ const HeroCarousel = () => {
   if (slides.length === 0) return <section className="h-screen w-full bg-navy" />;
 
   const slide = slides[current];
+  const keys = slideTranslationKeys[current];
+  const useTranslation = lang !== "en" && keys;
+  const slideLabel = useTranslation ? t(keys.label) : slide.label;
+  const slideTitle = useTranslation ? t(keys.title) : slide.title;
+  const slideSubtitle = useTranslation ? t(keys.subtitle) : slide.subtitle;
+  const slideDesc = useTranslation ? t(keys.desc) : slide.description;
 
   return (
     <section className="relative h-screen w-full overflow-hidden">
