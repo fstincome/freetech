@@ -28,7 +28,7 @@ const AdminCrudTable = ({ title, tableName, fields, data, onRefresh }: AdminCrud
 
   const openNew = () => {
     const empty: Record<string, any> = {};
-    fields.forEach(f => { empty[f.key] = f.type === "number" ? 0 : f.type === "array" ? "" : ""; });
+    fields.forEach(f => { empty[f.key] = f.type === "number" ? (f.key === "year" ? new Date().getFullYear() : 0) : f.type === "array" ? "" : ""; });
     setFormData(empty);
     setIsNew(true);
     setEditItem({});
