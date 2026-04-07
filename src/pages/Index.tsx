@@ -8,6 +8,7 @@ import EventsSection from "@/components/home/EventsSection";
 import PartnersSection from "@/components/home/PartnersSection";
 import ImpactSection from "@/components/home/ImpactSection";
 import TestimonialsSection from "@/components/home/TestimonialsSection";
+import ReportsSection from "@/components/home/ReportsSection";
 
 const Index = () => (
   <>
@@ -20,6 +21,7 @@ const Index = () => (
     <EventsSection />
     <PartnersSection />
     <ImpactSection />
+    <ReportsSection />
     <TestimonialsSection />
   </>
 );
