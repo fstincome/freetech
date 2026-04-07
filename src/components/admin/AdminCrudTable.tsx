@@ -2,7 +2,7 @@ import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "@/hooks/use-toast";
 import { Pencil, Trash2, Plus } from "lucide-react";
@@ -125,6 +125,9 @@ const AdminCrudTable = ({ title, tableName, fields, data, onRefresh }: AdminCrud
         <DialogContent className="sm:max-w-lg max-h-[85vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle className="font-heading">{isNew ? "Ajouter" : "Modifier"} — {title}</DialogTitle>
+            <DialogDescription className="text-sm text-muted-foreground">
+              {isNew ? "Remplissez les champs pour créer un nouvel élément." : "Modifiez les champs ci-dessous."}
+            </DialogDescription>
           </DialogHeader>
           <div className="space-y-4">
             {fields.map(f => (
