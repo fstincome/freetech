@@ -14,7 +14,7 @@ const EventsSection = () => {
   const [events, setEvents] = useState<any[]>([]);
 
   useEffect(() => {
-    supabase.from("site_events").select("*").order("sort_order").then(({ data }) => {
+    supabase.from("site_events").select("*").gte("sort_order", 0).order("sort_order").then(({ data }) => {
       if (data) setEvents(data);
     });
   }, []);
