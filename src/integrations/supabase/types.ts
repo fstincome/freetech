@@ -176,6 +176,42 @@ export type Database = {
         }
         Relationships: []
       }
+      site_reports: {
+        Row: {
+          cover_image_url: string
+          created_at: string
+          description: string
+          drive_link: string
+          id: string
+          sort_order: number
+          title: string
+          updated_at: string
+          year: number
+        }
+        Insert: {
+          cover_image_url?: string
+          created_at?: string
+          description?: string
+          drive_link?: string
+          id?: string
+          sort_order?: number
+          title: string
+          updated_at?: string
+          year?: number
+        }
+        Update: {
+          cover_image_url?: string
+          created_at?: string
+          description?: string
+          drive_link?: string
+          id?: string
+          sort_order?: number
+          title?: string
+          updated_at?: string
+          year?: number
+        }
+        Relationships: []
+      }
       site_settings: {
         Row: {
           created_at: string
