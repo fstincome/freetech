@@ -1,43 +1,162 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Menu, X, Globe } from "lucide-react";
+import { Menu, X, Globe, ChevronDown } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useLanguage, Lang } from "@/contexts/LanguageContext";
 import ThemeToggle from "@/components/ThemeToggle";
 import logo from "@/assets/logo.png";
 
-const sectionLinks = [
-  { labelKey: "nav.approach", hash: "#approach" },
-  { labelKey: "nav.about", hash: "#about" },
-  { labelKey: "nav.programs", hash: "#programs" },
-  { labelKey: "nav.workshops", hash: "#workshops" },
-  { labelKey: "nav.events", hash: "#events" },
-  { labelKey: "nav.partners", hash: "#partners" },
-  { labelKey: "nav.impact", hash: "#impact" },
-  { labelKey: "nav.testimonials", hash: "#testimonials" },
-];
-
-const pageLinks = [
-  { labelKey: "nav.hub", path: "/gitega-study-space" },
-  { labelKey: "nav.team", path: "/our-team" },
-];
-
 const langLabels: Record<Lang, string> = { en: "EN", fr: "FR", sw: "SW" };
+
+interface DropdownItem {
+  labelKey: string;
+  hash?: string;
+  path?: string;
+}
+
+interface NavMenu {
+  labelKey: string;
+  items?: DropdownItem[];
+  hash?: string;
+  path?: string;
+  highlight?: boolean;
+}
+
+const navMenus: NavMenu[] = [
+  { labelKey: "nav.home", hash: "#hero" },
+  {
+    labelKey: "nav.aboutus",
+    items: [
+      { labelKey: "nav.approach", hash: "#approach" },
+      { labelKey: "nav.about", hash: "#about" },
+      { labelKey: "nav.team", path: "/our-team" },
+      { labelKey: "nav.partners", hash: "#partners" },
+      { labelKey: "nav.reports", hash: "#reports" },
+    ],
+  },
+  {
+    labelKey: "nav.programs",
+    items: [
+      { labelKey: "nav.ourprograms", hash: "#programs" },
+      { labelKey: "nav.workshops", hash: "#workshops" },
+      { labelKey: "nav.events", hash: "#events" },
+      { labelKey: "nav.impact", hash: "#impact" },
+      { labelKey: "nav.testimonials", hash: "#testimonials" },
+    ],
+  },
+  { labelKey: "nav.hub", path: "/gitega-study-space", highlight: true },
+];
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [langOpen, setLangOpen] = useState(false);
+  const [openDropdown, setOpenDropdown] = useState<string | null>(null);
+  const [mobileExpanded, setMobileExpanded] = useState<string | null>(null);
+  const dropdownTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
   const location = useLocation();
   const { t, lang, setLang } = useLanguage();
   const isHome = location.pathname === "/";
 
-  const handleSectionClick = (hash: string) => {
+  const handleNavigate = (item: DropdownItem | NavMenu) => {
     setIsOpen(false);
-    if (isHome) {
-      document.querySelector(hash)?.scrollIntoView({ behavior: "smooth" });
-    } else {
-      window.location.href = "/" + hash;
+    setOpenDropdown(null);
+    setMobileExpanded(null);
+    if (item.path) return; // Link handles it
+    if (item.hash) {
+      if (item.hash === "#hero") {
+        if (isHome) window.scrollTo({ top: 0, behavior: "smooth" });
+        else window.location.href = "/";
+      } else if (isHome) {
+        document.querySelector(item.hash)?.scrollIntoView({ behavior: "smooth" });
+      } else {
+        window.location.href = "/" + item.hash;
+      }
     }
+  };
+
+  const handleDropdownEnter = (key: string) => {
+    if (dropdownTimeout.current) clearTimeout(dropdownTimeout.current);
+    setOpenDropdown(key);
+  };
+
+  const handleDropdownLeave = () => {
+    dropdownTimeout.current = setTimeout(() => setOpenDropdown(null), 150);
+  };
+
+  useEffect(() => {
+    return () => { if (dropdownTimeout.current) clearTimeout(dropdownTimeout.current); };
+  }, []);
+
+  const renderDesktopItem = (menu: NavMenu) => {
+    if (menu.items) {
+      return (
+        <div
+          key={menu.labelKey}
+          className="relative"
+          onMouseEnter={() => handleDropdownEnter(menu.labelKey)}
+          onMouseLeave={handleDropdownLeave}
+        >
+          <button className="flex items-center gap-1 text-sm font-medium transition-colors hover:text-cyan text-white/80">
+            {t(menu.labelKey)}
+            <ChevronDown size={14} className={`transition-transform ${openDropdown === menu.labelKey ? "rotate-180" : ""}`} />
+          </button>
+          <AnimatePresence>
+            {openDropdown === menu.labelKey && (
+              <motion.div
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 8 }}
+                transition={{ duration: 0.15 }}
+                className="absolute top-full left-0 mt-2 min-w-[200px] bg-navy border border-cyan/20 rounded-xl overflow-hidden shadow-2xl"
+              >
+                {menu.items.map((item) =>
+                  item.path ? (
+                    <Link
+                      key={item.labelKey}
+                      to={item.path}
+                      onClick={() => setOpenDropdown(null)}
+                      className={`block px-4 py-2.5 text-sm hover:bg-cyan/10 transition-colors ${location.pathname === item.path ? "text-cyan" : "text-white/70 hover:text-white"}`}
+                    >
+                      {t(item.labelKey)}
+                    </Link>
+                  ) : (
+                    <button
+                      key={item.labelKey}
+                      onClick={() => handleNavigate(item)}
+                      className="block w-full text-left px-4 py-2.5 text-sm text-white/70 hover:text-white hover:bg-cyan/10 transition-colors"
+                    >
+                      {t(item.labelKey)}
+                    </button>
+                  )
+                )}
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+      );
+    }
+
+    if (menu.path) {
+      return (
+        <Link
+          key={menu.labelKey}
+          to={menu.path}
+          className={`text-sm font-semibold transition-colors hover:text-cyan ${menu.highlight ? "text-cyan" : location.pathname === menu.path ? "text-cyan" : "text-white/80"}`}
+        >
+          {t(menu.labelKey)}
+        </Link>
+      );
+    }
+
+    return (
+      <button
+        key={menu.labelKey}
+        onClick={() => handleNavigate(menu)}
+        className="text-sm font-medium transition-colors hover:text-cyan text-white/80"
+      >
+        {t(menu.labelKey)}
+      </button>
+    );
   };
 
   return (
@@ -48,25 +167,8 @@ const Navbar = () => {
         </Link>
 
         {/* Desktop */}
-        <div className="hidden lg:flex items-center gap-5">
-          {sectionLinks.map((link) => (
-            <button
-              key={link.hash}
-              onClick={() => handleSectionClick(link.hash)}
-              className="text-xs font-medium transition-colors hover:text-cyan text-white/80"
-            >
-              {t(link.labelKey)}
-            </button>
-          ))}
-          {pageLinks.map((link) => (
-            <Link
-              key={link.path}
-              to={link.path}
-              className={`text-xs font-medium transition-colors hover:text-cyan ${location.pathname === link.path ? "text-cyan" : "text-white/80"}`}
-            >
-              {t(link.labelKey)}
-            </Link>
-          ))}
+        <div className="hidden lg:flex items-center gap-6">
+          {navMenus.map(renderDesktopItem)}
 
           {/* Language Switcher */}
           <div className="relative">
@@ -116,31 +218,83 @@ const Navbar = () => {
             exit={{ opacity: 0, height: 0 }}
             className="lg:hidden bg-navy/95 backdrop-blur-xl border-t border-cyan/10 max-h-[70vh] overflow-y-auto"
           >
-            <div className="flex flex-col px-4 py-4 gap-2">
-              {sectionLinks.map((link) => (
-                <button
-                  key={link.hash}
-                  onClick={() => handleSectionClick(link.hash)}
-                  className="py-2 text-sm font-medium text-white/70 hover:text-cyan text-left"
-                >
-                  {t(link.labelKey)}
-                </button>
-              ))}
-              {pageLinks.map((link) => (
-                <Link
-                  key={link.path}
-                  to={link.path}
-                  onClick={() => setIsOpen(false)}
-                  className={`py-2 text-sm font-medium ${location.pathname === link.path ? "text-cyan" : "text-white/70 hover:text-cyan"}`}
-                >
-                  {t(link.labelKey)}
-                </Link>
-              ))}
-              <div className="flex gap-2 pt-2 items-center">
+            <div className="flex flex-col px-4 py-4 gap-1">
+              {navMenus.map((menu) => {
+                if (menu.items) {
+                  const isExpanded = mobileExpanded === menu.labelKey;
+                  return (
+                    <div key={menu.labelKey}>
+                      <button
+                        onClick={() => setMobileExpanded(isExpanded ? null : menu.labelKey)}
+                        className="w-full flex items-center justify-between py-2.5 text-sm font-medium text-white/70 hover:text-cyan"
+                      >
+                        {t(menu.labelKey)}
+                        <ChevronDown size={16} className={`transition-transform ${isExpanded ? "rotate-180" : ""}`} />
+                      </button>
+                      <AnimatePresence>
+                        {isExpanded && (
+                          <motion.div
+                            initial={{ opacity: 0, height: 0 }}
+                            animate={{ opacity: 1, height: "auto" }}
+                            exit={{ opacity: 0, height: 0 }}
+                            className="pl-4 border-l border-cyan/10 ml-2"
+                          >
+                            {menu.items.map((item) =>
+                              item.path ? (
+                                <Link
+                                  key={item.labelKey}
+                                  to={item.path}
+                                  onClick={() => setIsOpen(false)}
+                                  className={`block py-2 text-sm ${location.pathname === item.path ? "text-cyan" : "text-white/60 hover:text-cyan"}`}
+                                >
+                                  {t(item.labelKey)}
+                                </Link>
+                              ) : (
+                                <button
+                                  key={item.labelKey}
+                                  onClick={() => handleNavigate(item)}
+                                  className="block w-full text-left py-2 text-sm text-white/60 hover:text-cyan"
+                                >
+                                  {t(item.labelKey)}
+                                </button>
+                              )
+                            )}
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+                    </div>
+                  );
+                }
+
+                if (menu.path) {
+                  return (
+                    <Link
+                      key={menu.labelKey}
+                      to={menu.path}
+                      onClick={() => setIsOpen(false)}
+                      className={`py-2.5 text-sm font-semibold ${menu.highlight ? "text-cyan" : location.pathname === menu.path ? "text-cyan" : "text-white/70 hover:text-cyan"}`}
+                    >
+                      {t(menu.labelKey)}
+                    </Link>
+                  );
+                }
+
+                return (
+                  <button
+                    key={menu.labelKey}
+                    onClick={() => handleNavigate(menu)}
+                    className="py-2.5 text-sm font-medium text-white/70 hover:text-cyan text-left"
+                  >
+                    {t(menu.labelKey)}
+                  </button>
+                );
+              })}
+
+              <div className="flex gap-2 pt-3 items-center border-t border-cyan/10 mt-2">
                 {(["en", "fr", "sw"] as Lang[]).map((l) => (
                   <button
                     key={l}
-                    onClick={() => { setLang(l); }}
+                    onClick={() => setLang(l)}
                     className={`px-3 py-1.5 rounded-full text-xs font-medium ${lang === l ? "bg-cyan text-navy" : "bg-white/10 text-white/70"}`}
                   >
                     {langLabels[l]}

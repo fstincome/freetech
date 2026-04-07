@@ -5,14 +5,17 @@ export type Lang = "en" | "fr" | "sw";
 const translations: Record<string, Record<Lang, string>> = {
   // Navbar
   "nav.home": { en: "Home", fr: "Accueil", sw: "Nyumbani" },
+  "nav.aboutus": { en: "About Us", fr: "À Propos", sw: "Kuhusu Sisi" },
   "nav.approach": { en: "Our Approach", fr: "Notre Approche", sw: "Mbinu Yetu" },
   "nav.about": { en: "Who We Are", fr: "Qui Sommes-Nous", sw: "Sisi Ni Nani" },
   "nav.programs": { en: "Programs", fr: "Programmes", sw: "Programu" },
+  "nav.ourprograms": { en: "Our Programs", fr: "Nos Programmes", sw: "Programu Zetu" },
   "nav.workshops": { en: "Workshops", fr: "Ateliers", sw: "Warsha" },
   "nav.events": { en: "Events", fr: "Événements", sw: "Matukio" },
   "nav.partners": { en: "Partners", fr: "Partenaires", sw: "Washirika" },
   "nav.impact": { en: "Impact", fr: "Impact", sw: "Athari" },
   "nav.testimonials": { en: "Testimonials", fr: "Témoignages", sw: "Ushuhuda" },
+  "nav.reports": { en: "Reports", fr: "Rapports", sw: "Ripoti" },
   "nav.hub": { en: "Our Digital Hub", fr: "Notre Hub Digital", sw: "Kituo Chetu cha Dijitali" },
   "nav.team": { en: "Team", fr: "Équipe", sw: "Timu" },
   "nav.blog": { en: "Read our blog", fr: "Lire notre blog", sw: "Soma blogu yetu" },
