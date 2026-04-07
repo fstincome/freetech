@@ -69,16 +69,16 @@ const HeroCarousel = () => {
               className="max-w-2xl"
             >
               <span className="inline-block px-4 py-1.5 rounded-full bg-cyan/15 text-cyan text-xs font-heading font-semibold tracking-widest uppercase mb-4 border border-cyan/25">
-                {slide.label}
+                {slideLabel}
               </span>
               <h1 className="text-3xl md:text-5xl lg:text-6xl font-heading font-bold text-white leading-[1.1] mb-4">
-                {slide.title}
+                {slideTitle}
               </h1>
               <p className="text-cyan font-heading font-medium text-lg md:text-xl mb-4">
-                {slide.subtitle}
+                {slideSubtitle}
               </p>
               <p className="text-white/70 text-sm md:text-base leading-relaxed mb-8 max-w-lg">
-                {slide.description}
+                {slideDesc}
               </p>
               <div className="flex gap-4">
                 <a href="#programs" className="px-7 py-3 rounded-full bg-cyan text-navy font-heading font-semibold text-sm hover:bg-cyan/90 transition-all shadow-lg shadow-cyan/25">
