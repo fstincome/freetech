@@ -125,6 +125,9 @@ const AdminCrudTable = ({ title, tableName, fields, data, onRefresh }: AdminCrud
         <DialogContent className="sm:max-w-lg max-h-[85vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle className="font-heading">{isNew ? "Ajouter" : "Modifier"} — {title}</DialogTitle>
+            <DialogDescription className="text-sm text-muted-foreground">
+              {isNew ? "Remplissez les champs pour créer un nouvel élément." : "Modifiez les champs ci-dessous."}
+            </DialogDescription>
           </DialogHeader>
           <div className="space-y-4">
             {fields.map(f => (

@@ -135,6 +135,8 @@ const ReportsSection = () => {
         <DialogContent className="max-w-4xl w-[95vw] h-[85vh] p-0 overflow-hidden">
           {previewReport && (
             <div className="flex flex-col h-full">
+              <DialogTitle className="sr-only">{previewReport.title}</DialogTitle>
+              <DialogDescription className="sr-only">Aperçu du rapport {previewReport.title}</DialogDescription>
               <div className="flex items-center justify-between p-4 border-b border-border bg-card">
                 <div>
                   <h3 className="font-heading font-bold text-foreground">{previewReport.title}</h3>
