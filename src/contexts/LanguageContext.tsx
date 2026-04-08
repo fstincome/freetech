@@ -16,6 +16,7 @@ const translations: Record<string, Record<Lang, string>> = {
   "nav.impact": { en: "Impact", fr: "Impact", sw: "Athari" },
   "nav.testimonials": { en: "Testimonials", fr: "Témoignages", sw: "Ushuhuda" },
   "nav.reports": { en: "Reports", fr: "Rapports", sw: "Ripoti" },
+  "nav.latestreports": { en: "Our Latest Reports", fr: "Nos Derniers Rapports", sw: "Ripoti Zetu za Hivi Karibuni" },
   "nav.hub": { en: "Our Digital Hub", fr: "Notre Hub Digital", sw: "Kituo Chetu cha Dijitali" },
   "nav.team": { en: "Team", fr: "Équipe", sw: "Timu" },
   "nav.blog": { en: "Read our blog", fr: "Lire notre blog", sw: "Soma blogu yetu" },

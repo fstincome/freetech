@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { useLanguage } from "@/contexts/LanguageContext";
-import logo from "@/assets/logo.jpg";
+
 
 const Footer = () => {
   const { t } = useLanguage();
@@ -10,7 +10,6 @@ const Footer = () => {
       <div className="max-w-7xl mx-auto px-4 md:px-8 py-16">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-10">
           <div className="md:col-span-2">
-            <img src={logo} alt="Free Tech Institute" className="h-12 mb-4" />
             <p className="text-sm leading-relaxed max-w-md">{t("footer.tagline")}</p>
             <div className="flex gap-3 mt-6">
               {[

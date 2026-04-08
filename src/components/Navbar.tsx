@@ -31,7 +31,7 @@ const navMenus: NavMenu[] = [
       { labelKey: "nav.about", hash: "#about" },
       { labelKey: "nav.team", path: "/our-team" },
       { labelKey: "nav.partners", hash: "#partners" },
-      { labelKey: "nav.reports", hash: "#reports" },
+      { labelKey: "nav.latestreports", hash: "#reports" },
     ],
   },
   {
