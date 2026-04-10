@@ -1,0 +1,1 @@
+UPDATE site_settings SET value = 'https://www.youtube.com/embed/av7KgNM5PhA?autoplay=1&mute=1&loop=1&playlist=av7KgNM5PhA&controls=0&showinfo=0' WHERE key = 'about_bg_video';
