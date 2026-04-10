@@ -168,12 +168,16 @@ const ReportsSection = () => {
                 </div>
               </div>
               {/* Book content - Google Drive viewer */}
-              <iframe
-                src={getGoogleDrivePreviewUrl(readingReport.drive_link)}
-                className="flex-1 w-full border-none"
-                allow="autoplay"
-                title={readingReport.title}
-              />
+              <div className="relative flex-1">
+                <iframe
+                  src={getGoogleDrivePreviewUrl(readingReport.drive_link)}
+                  className="w-full h-full border-none"
+                  allow="autoplay"
+                  title={readingReport.title}
+                />
+                {/* Hide the Google Drive "open in new window" button */}
+                <div className="absolute top-0 right-0 w-12 h-12 bg-[#2d2d2d]" />
+              </div>
             </div>
           )}
         </DialogContent>
