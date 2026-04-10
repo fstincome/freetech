@@ -12,7 +12,7 @@ const VideoSection = () => {
         </div>
         <div className="w-full aspect-video">
           <iframe
-            src="https://www.youtube.com/embed/8jeI5Io5w5I?autoplay=1&mute=1&loop=1&playlist=8jeI5Io5w5I"
+            src="https://www.youtube.com/embed/av7KgNM5PhA?autoplay=1&mute=1&loop=1&playlist=av7KgNM5PhA"
             title="Campus Tech Hackathon"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
             allowFullScreen
