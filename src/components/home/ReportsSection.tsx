@@ -134,10 +134,14 @@ const ReportsSection = () => {
                   {report.title}
                 </h3>
                 {report.description && (
-                  <p className="text-sm text-muted-foreground line-clamp-3">
+                  <p className="text-sm text-muted-foreground line-clamp-3 mb-4">
                     {report.description}
                   </p>
                 )}
+                <span className="inline-flex items-center gap-2 text-cyan text-sm font-heading font-semibold">
+                  <BookOpen size={16} />
+                  {t("reports.read")}
+                </span>
               </div>
             </div>
           ))}
