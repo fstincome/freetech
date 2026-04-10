@@ -111,8 +111,7 @@ const translations: Record<string, Record<Lang, string>> = {
   "reports.label": { en: "Annual Reports", fr: "Rapports Annuels", sw: "Ripoti za Mwaka" },
   "reports.title": { en: "Our Annual Reports", fr: "Nos Rapports Annuels", sw: "Ripoti Zetu za Mwaka" },
   "reports.desc": { en: "Explore our annual reports to see our progress, achievements, and impact over the years.", fr: "Explorez nos rapports annuels pour voir nos progrès, réalisations et impact au fil des années.", sw: "Chunguza ripoti zetu za kila mwaka kuona maendeleo yetu, mafanikio, na athari kwa miaka." },
-  "reports.preview": { en: "Preview", fr: "Aperçu", sw: "Hakiki" },
-  "reports.download": { en: "Download", fr: "Télécharger", sw: "Pakua" },
+  "reports.read": { en: "Read Report", fr: "Lire le rapport", sw: "Soma Ripoti" },
 
   // Footer
   "footer.tagline": { en: "Secure data for a free and prosperous society. Free Tech Institute promotes digital inclusion and technological freedom in Burundi.", fr: "Des données sécurisées pour une société libre et prospère. Free Tech Institute promeut l'inclusion numérique et la liberté technologique au Burundi.", sw: "Data salama kwa jamii huru na yenye mafanikio. Free Tech Institute inakuza ujumuishaji wa dijitali na uhuru wa kiteknolojia nchini Burundi." },
