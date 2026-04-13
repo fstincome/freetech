@@ -96,7 +96,7 @@ const Navbar = () => {
           onMouseEnter={() => handleDropdownEnter(menu.labelKey)}
           onMouseLeave={handleDropdownLeave}
         >
-          <button className="flex items-center gap-1 text-sm font-medium transition-colors hover:text-cyan text-white/80">
+          <button className="flex items-center gap-1 text-sm font-medium transition-colors hover:text-cyan text-foreground/80">
             {t(menu.labelKey)}
             <ChevronDown size={14} className={`transition-transform ${openDropdown === menu.labelKey ? "rotate-180" : ""}`} />
           </button>
@@ -107,7 +107,7 @@ const Navbar = () => {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: 8 }}
                 transition={{ duration: 0.15 }}
-                className="absolute top-full left-0 mt-2 min-w-[200px] bg-navy border border-cyan/20 rounded-xl overflow-hidden shadow-2xl"
+                className="absolute top-full left-0 mt-2 min-w-[200px] bg-popover border border-border rounded-xl overflow-hidden shadow-2xl"
               >
                 {menu.items.map((item) =>
                   item.path ? (
@@ -115,7 +115,7 @@ const Navbar = () => {
                       key={item.labelKey}
                       to={item.path}
                       onClick={() => setOpenDropdown(null)}
-                      className={`block px-4 py-2.5 text-sm hover:bg-cyan/10 transition-colors ${location.pathname === item.path ? "text-cyan" : "text-white/70 hover:text-white"}`}
+                      className={`block px-4 py-2.5 text-sm hover:bg-accent transition-colors ${location.pathname === item.path ? "text-cyan" : "text-foreground/70 hover:text-foreground"}`}
                     >
                       {t(item.labelKey)}
                     </Link>
@@ -123,7 +123,7 @@ const Navbar = () => {
                     <button
                       key={item.labelKey}
                       onClick={() => handleNavigate(item)}
-                      className="block w-full text-left px-4 py-2.5 text-sm text-white/70 hover:text-white hover:bg-cyan/10 transition-colors"
+                      className="block w-full text-left px-4 py-2.5 text-sm text-foreground/70 hover:text-foreground hover:bg-accent transition-colors"
                     >
                       {t(item.labelKey)}
                     </button>
@@ -141,7 +141,7 @@ const Navbar = () => {
         <Link
           key={menu.labelKey}
           to={menu.path}
-          className={`text-sm font-semibold transition-colors hover:text-cyan ${menu.highlight ? "text-cyan" : location.pathname === menu.path ? "text-cyan" : "text-white/80"}`}
+          className={`text-sm font-semibold transition-colors hover:text-cyan ${menu.highlight ? "text-cyan" : location.pathname === menu.path ? "text-cyan" : "text-foreground/80"}`}
         >
           {t(menu.labelKey)}
         </Link>
@@ -152,7 +152,7 @@ const Navbar = () => {
       <button
         key={menu.labelKey}
         onClick={() => handleNavigate(menu)}
-        className="text-sm font-medium transition-colors hover:text-cyan text-white/80"
+        className="text-sm font-medium transition-colors hover:text-cyan text-foreground/80"
       >
         {t(menu.labelKey)}
       </button>
@@ -172,17 +172,17 @@ const Navbar = () => {
 
           {/* Language Switcher */}
           <div className="relative">
-            <button onClick={() => setLangOpen(!langOpen)} className="flex items-center gap-1 text-white/80 hover:text-cyan transition-colors text-xs font-medium">
+            <button onClick={() => setLangOpen(!langOpen)} className="flex items-center gap-1 text-foreground/80 hover:text-cyan transition-colors text-xs font-medium">
               <Globe size={14} />
               {langLabels[lang]}
             </button>
             {langOpen && (
-              <div className="absolute top-full right-0 mt-2 bg-navy border border-cyan/20 rounded-lg overflow-hidden shadow-xl">
+              <div className="absolute top-full right-0 mt-2 bg-popover border border-border rounded-lg overflow-hidden shadow-xl">
                 {(["en", "fr", "sw"] as Lang[]).map((l) => (
                   <button
                     key={l}
                     onClick={() => { setLang(l); setLangOpen(false); }}
-                    className={`block w-full px-4 py-2 text-xs text-left hover:bg-cyan/10 transition-colors ${lang === l ? "text-cyan" : "text-white/70"}`}
+                    className={`block w-full px-4 py-2 text-xs text-left hover:bg-accent transition-colors ${lang === l ? "text-cyan" : "text-foreground/70"}`}
                   >
                     {l === "en" ? "English" : l === "fr" ? "Français" : "Kiswahili"}
                   </button>
@@ -191,20 +191,20 @@ const Navbar = () => {
             )}
           </div>
 
-          <ThemeToggle className="text-white/80" />
+          <ThemeToggle className="text-foreground/80" />
 
           <a
             href="https://freeti.org"
             target="_blank"
             rel="noopener noreferrer"
-            className="px-5 py-2 rounded-full bg-cyan text-navy text-xs font-semibold hover:bg-cyan/90 transition-colors"
+            className="px-5 py-2 rounded-full bg-cyan text-primary-foreground text-xs font-semibold hover:bg-cyan/90 transition-colors"
           >
             {t("nav.blog")}
           </a>
         </div>
 
         {/* Mobile toggle */}
-        <button onClick={() => setIsOpen(!isOpen)} className="lg:hidden text-white/80 hover:text-cyan transition-colors">
+        <button onClick={() => setIsOpen(!isOpen)} className="lg:hidden text-foreground/80 hover:text-cyan transition-colors">
           {isOpen ? <X size={24} /> : <Menu size={24} />}
         </button>
       </div>
@@ -216,7 +216,7 @@ const Navbar = () => {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
-            className="lg:hidden bg-navy/95 backdrop-blur-xl border-t border-cyan/10 max-h-[70vh] overflow-y-auto"
+            className="lg:hidden bg-background/95 backdrop-blur-xl border-t border-border max-h-[70vh] overflow-y-auto"
           >
             <div className="flex flex-col px-4 py-4 gap-1">
               {navMenus.map((menu) => {
@@ -226,7 +226,7 @@ const Navbar = () => {
                     <div key={menu.labelKey}>
                       <button
                         onClick={() => setMobileExpanded(isExpanded ? null : menu.labelKey)}
-                        className="w-full flex items-center justify-between py-2.5 text-sm font-medium text-white/70 hover:text-cyan"
+                        className="w-full flex items-center justify-between py-2.5 text-sm font-medium text-foreground/70 hover:text-cyan"
                       >
                         {t(menu.labelKey)}
                         <ChevronDown size={16} className={`transition-transform ${isExpanded ? "rotate-180" : ""}`} />
@@ -237,7 +237,7 @@ const Navbar = () => {
                             initial={{ opacity: 0, height: 0 }}
                             animate={{ opacity: 1, height: "auto" }}
                             exit={{ opacity: 0, height: 0 }}
-                            className="pl-4 border-l border-cyan/10 ml-2"
+                            className="pl-4 border-l border-border ml-2"
                           >
                             {menu.items.map((item) =>
                               item.path ? (
@@ -245,7 +245,7 @@ const Navbar = () => {
                                   key={item.labelKey}
                                   to={item.path}
                                   onClick={() => setIsOpen(false)}
-                                  className={`block py-2 text-sm ${location.pathname === item.path ? "text-cyan" : "text-white/60 hover:text-cyan"}`}
+                                  className={`block py-2 text-sm ${location.pathname === item.path ? "text-cyan" : "text-foreground/60 hover:text-cyan"}`}
                                 >
                                   {t(item.labelKey)}
                                 </Link>
@@ -253,7 +253,7 @@ const Navbar = () => {
                                 <button
                                   key={item.labelKey}
                                   onClick={() => handleNavigate(item)}
-                                  className="block w-full text-left py-2 text-sm text-white/60 hover:text-cyan"
+                                  className="block w-full text-left py-2 text-sm text-foreground/60 hover:text-cyan"
                                 >
                                   {t(item.labelKey)}
                                 </button>
@@ -272,7 +272,7 @@ const Navbar = () => {
                       key={menu.labelKey}
                       to={menu.path}
                       onClick={() => setIsOpen(false)}
-                      className={`py-2.5 text-sm font-semibold ${menu.highlight ? "text-cyan" : location.pathname === menu.path ? "text-cyan" : "text-white/70 hover:text-cyan"}`}
+                      className={`py-2.5 text-sm font-semibold ${menu.highlight ? "text-cyan" : location.pathname === menu.path ? "text-cyan" : "text-foreground/70 hover:text-cyan"}`}
                     >
                       {t(menu.labelKey)}
                     </Link>
@@ -283,24 +283,24 @@ const Navbar = () => {
                   <button
                     key={menu.labelKey}
                     onClick={() => handleNavigate(menu)}
-                    className="py-2.5 text-sm font-medium text-white/70 hover:text-cyan text-left"
+                    className="py-2.5 text-sm font-medium text-foreground/70 hover:text-cyan text-left"
                   >
                     {t(menu.labelKey)}
                   </button>
                 );
               })}
 
-              <div className="flex gap-2 pt-3 items-center border-t border-cyan/10 mt-2">
+              <div className="flex gap-2 pt-3 items-center border-t border-border mt-2">
                 {(["en", "fr", "sw"] as Lang[]).map((l) => (
                   <button
                     key={l}
                     onClick={() => setLang(l)}
-                    className={`px-3 py-1.5 rounded-full text-xs font-medium ${lang === l ? "bg-cyan text-navy" : "bg-white/10 text-white/70"}`}
+                    className={`px-3 py-1.5 rounded-full text-xs font-medium ${lang === l ? "bg-cyan text-primary-foreground" : "bg-muted text-foreground/70"}`}
                   >
                     {langLabels[l]}
                   </button>
                 ))}
-                <ThemeToggle className="text-white/80 ml-2" />
+                <ThemeToggle className="text-foreground/80 ml-2" />
               </div>
             </div>
           </motion.div>
