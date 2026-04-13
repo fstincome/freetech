@@ -1,9 +1,7 @@
 import { motion } from "framer-motion";
-import { useState, useEffect } from "react";
 import SectionHeading from "@/components/SectionHeading";
 import { Shield, Eye, Zap, Key } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
-import { supabase } from "@/integrations/supabase/client";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 30 },
@@ -12,12 +10,6 @@ const fadeUp = {
 
 const WhoWeAreSection = () => {
   const { t } = useLanguage();
-  const [videoUrl, setVideoUrl] = useState("");
-
-  useEffect(() => {
-    supabase.from("site_settings").select("value").eq("key", "about_bg_video").single()
-      .then(({ data }) => { if (data) setVideoUrl(data.value); });
-  }, []);
 
   const coreValues = [
     { icon: Eye, titleKey: "about.accessibility", descKey: "about.accessibility.desc" },
@@ -28,16 +20,14 @@ const WhoWeAreSection = () => {
 
   return (
     <section id="about" className="section-padding w-full relative overflow-hidden">
-      {videoUrl && (
-        <iframe
-          src={videoUrl}
-          className="absolute inset-0 w-full h-full object-cover pointer-events-none"
-          style={{ border: 0, transform: "scale(1.5)", transformOrigin: "center center" }}
-          allow="autoplay; encrypted-media"
-          tabIndex={-1}
-          aria-hidden="true"
-        />
-      )}
+      <iframe
+        src="https://www.youtube.com/embed/av7KgNM5PhA?autoplay=1&mute=1&loop=1&playlist=av7KgNM5PhA&controls=0&showinfo=0&modestbranding=1"
+        className="absolute inset-0 w-full h-full object-cover pointer-events-none"
+        style={{ border: 0, transform: "scale(1.5)", transformOrigin: "center center" }}
+        allow="autoplay; encrypted-media"
+        tabIndex={-1}
+        aria-hidden="true"
+      />
       <div className="absolute inset-0 bg-navy/85" />
       <div className="relative z-10 max-w-7xl mx-auto">
         <SectionHeading label={t("about.label")} title={t("about.title")} light />
