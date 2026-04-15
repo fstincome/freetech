@@ -1,11 +1,11 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "@/hooks/use-toast";
-import { Pencil, Trash2, Plus } from "lucide-react";
+import { Pencil, Trash2, Plus, Upload, Loader2 } from "lucide-react";
 
 interface FieldConfig {
   key: string;
@@ -25,6 +25,8 @@ const AdminCrudTable = ({ title, tableName, fields, data, onRefresh }: AdminCrud
   const [editItem, setEditItem] = useState<any | null>(null);
   const [isNew, setIsNew] = useState(false);
   const [formData, setFormData] = useState<Record<string, any>>({});
+  const [uploading, setUploading] = useState<string | null>(null);
+  const fileRefs = useRef<Record<string, HTMLInputElement | null>>({});
 
   const openNew = () => {
     const empty: Record<string, any> = {};
@@ -42,6 +44,24 @@ const AdminCrudTable = ({ title, tableName, fields, data, onRefresh }: AdminCrud
     setFormData(d);
     setIsNew(false);
     setEditItem(item);
+  };
+
+  const handleUpload = async (fieldKey: string, file: File) => {
+    setUploading(fieldKey);
+    const ext = file.name.split(".").pop();
+    const path = `${tableName}/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
+    
+    const { error } = await supabase.storage.from("site-images").upload(path, file, { upsert: true });
+    if (error) {
+      toast({ title: "Erreur upload", description: error.message, variant: "destructive" });
+      setUploading(null);
+      return;
+    }
+    
+    const { data: urlData } = supabase.storage.from("site-images").getPublicUrl(path);
+    setFormData(p => ({ ...p, [fieldKey]: urlData.publicUrl }));
+    setUploading(null);
+    toast({ title: "Photo uploadée ✓" });
   };
 
   const handleSave = async () => {
@@ -135,6 +155,40 @@ const AdminCrudTable = ({ title, tableName, fields, data, onRefresh }: AdminCrud
                 <label className="text-sm font-medium text-foreground mb-1 block">{f.label}</label>
                 {f.type === "textarea" ? (
                   <Textarea value={formData[f.key] || ""} onChange={e => setFormData(p => ({ ...p, [f.key]: e.target.value }))} rows={3} />
+                ) : f.type === "url" ? (
+                  <div className="space-y-2">
+                    {formData[f.key] && (
+                      <img src={formData[f.key]} alt="Preview" className="h-24 w-full object-cover rounded-lg border border-border" />
+                    )}
+                    <div className="flex gap-2">
+                      <Input
+                        type="text"
+                        value={formData[f.key] ?? ""}
+                        onChange={e => setFormData(p => ({ ...p, [f.key]: e.target.value }))}
+                        placeholder="URL ou uploader une photo"
+                        className="flex-1"
+                      />
+                      <input
+                        type="file"
+                        accept="image/*"
+                        className="hidden"
+                        ref={el => { fileRefs.current[f.key] = el; }}
+                        onChange={e => {
+                          const file = e.target.files?.[0];
+                          if (file) handleUpload(f.key, file);
+                        }}
+                      />
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="icon"
+                        disabled={uploading === f.key}
+                        onClick={() => fileRefs.current[f.key]?.click()}
+                      >
+                        {uploading === f.key ? <Loader2 size={16} className="animate-spin" /> : <Upload size={16} />}
+                      </Button>
+                    </div>
+                  </div>
                 ) : (
                   <Input
                     type={f.type === "number" ? "number" : "text"}
