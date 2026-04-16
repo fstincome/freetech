@@ -46,11 +46,15 @@ const Footer = () => {
                 <Mail size={16} />
                 info@freeti.org
               </a>
+              <div className="flex items-start gap-2 text-white/70">
+                <MapPin size={16} className="mt-0.5 flex-shrink-0" />
+                <span>Gitega, Quartier Musinzira, Avenue de la Culture, N°15</span>
+              </div>
               <a 
                 href="https://maps.app.goo.gl/RqERs6wXL2vHwrBK6"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 px-4 py-2 bg-cyan text-navy rounded-lg hover:bg-cyan/90 transition-colors font-medium mt-2"
+                className="inline-flex items-center justify-center gap-2 px-4 py-2 bg-cyan text-navy rounded-lg hover:bg-cyan/90 transition-colors font-medium"
               >
                 <MapPin size={16} />
                 Voir sur Google Maps
