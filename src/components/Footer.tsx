@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { MapPin, Phone, Mail } from "lucide-react";
 
 
 const Footer = () => {
@@ -36,24 +37,28 @@ const Footer = () => {
 
           <div>
             <h4 className="text-white font-heading font-semibold text-sm mb-4">{t("footer.contact")}</h4>
-            <div className="flex flex-col gap-2 text-sm">
-              <a href="https://freeti.org" className="hover:text-cyan transition-colors">freeti.org</a>
+            <div className="flex flex-col gap-3 text-sm">
+              <a href="tel:+25769034965" className="flex items-center gap-2 hover:text-cyan transition-colors">
+                <Phone size={16} />
+                +257 69 03 49 65
+              </a>
+              <a href="mailto:info@freeti.org" className="flex items-center gap-2 hover:text-cyan transition-colors">
+                <Mail size={16} />
+                info@freeti.org
+              </a>
+              <a 
+                href="https://www.google.com/maps/dir//Study+Space+de+Gitega,+HWGG%2BG6P,+Gitega/@-3.4313155,29.916227,15z/data=!4m8!4m7!1m0!1m5!1m1!1s0x19c145002134af6b:0x8699dd911d059c90!2m2!1d29.9256132!2d-3.4236658"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-start gap-2 hover:text-cyan transition-colors"
+              >
+                <MapPin size={16} className="mt-0.5 flex-shrink-0" />
+                <span>Gitega, Quartier Musinzira, Avenue de la Culture, N°15</span>
+              </a>
             </div>
           </div>
         </div>
 
-        <div className="mt-10 border-t border-white/10 pt-8">
-          <h4 className="text-white font-heading font-semibold text-sm mb-3">📍 {t("footer.location") || "Notre adresse"}</h4>
-          <p className="text-sm leading-relaxed">Gitega, Quartier Musinzira, Avenue de la Culture, Numéro 15</p>
-          <a
-            href="https://www.google.com/maps/dir//Study+Space+de+Gitega,+HWGG%2BG6P,+Gitega/@-3.4313155,29.916227,15z/data=!4m8!4m7!1m0!1m5!1m1!1s0x19c145002134af6b:0x8699dd911d059c90!2m2!1d29.9256132!2d-3.4236658"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 mt-3 text-sm text-cyan hover:underline transition-colors"
-          >
-            Voir sur Google Maps →
-          </a>
-        </div>
 
         <div className="border-t border-white/10 mt-12 pt-8 text-center text-xs">
           © 2026 Free Tech Institute, All rights reserved.
