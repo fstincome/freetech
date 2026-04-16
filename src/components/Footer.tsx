@@ -47,13 +47,13 @@ const Footer = () => {
                 info@freeti.org
               </a>
               <a 
-                href="https://www.google.com/maps/dir//Study+Space+de+Gitega,+HWGG%2BG6P,+Gitega/@-3.4313155,29.916227,15z/data=!4m8!4m7!1m0!1m5!1m1!1s0x19c145002134af6b:0x8699dd911d059c90!2m2!1d29.9256132!2d-3.4236658"
+                href="https://maps.app.goo.gl/RqERs6wXL2vHwrBK6"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-start gap-2 hover:text-cyan transition-colors"
+                className="inline-flex items-center gap-2 px-4 py-2 bg-cyan text-navy rounded-lg hover:bg-cyan/90 transition-colors font-medium mt-2"
               >
-                <MapPin size={16} className="mt-0.5 flex-shrink-0" />
-                <span>Gitega, Quartier Musinzira, Avenue de la Culture, N°15</span>
+                <MapPin size={16} />
+                Voir sur Google Maps
               </a>
             </div>
           </div>
