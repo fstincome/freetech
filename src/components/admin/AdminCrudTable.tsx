@@ -10,7 +10,7 @@ import { Pencil, Trash2, Plus, Upload, Loader2 } from "lucide-react";
 interface FieldConfig {
   key: string;
   label: string;
-  type: "text" | "textarea" | "url" | "number" | "array";
+  type: "text" | "textarea" | "url" | "number" | "array" | "boolean";
 }
 
 interface AdminCrudTableProps {
