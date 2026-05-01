@@ -85,6 +85,8 @@ const AdminCrudTable = ({ title, tableName, fields, data, onRefresh }: AdminCrud
         payload[f.key] = formData[f.key].split(",").map((s: string) => s.trim()).filter(Boolean);
       } else if (f.type === "number") {
         payload[f.key] = Number(formData[f.key]) || 0;
+      } else if (f.type === "boolean") {
+        payload[f.key] = !!formData[f.key];
       } else {
         payload[f.key] = formData[f.key];
       }
