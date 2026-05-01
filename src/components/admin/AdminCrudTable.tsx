@@ -225,6 +225,16 @@ const AdminCrudTable = ({ title, tableName, fields, data, onRefresh }: AdminCrud
                       </Button>
                     </div>
                   </div>
+                ) : f.type === "boolean" ? (
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={!!formData[f.key]}
+                      onChange={e => setFormData(p => ({ ...p, [f.key]: e.target.checked }))}
+                      className="h-4 w-4 accent-cyan"
+                    />
+                    <span className="text-sm text-muted-foreground">Membre du Board</span>
+                  </label>
                 ) : (
                   <Input
                     type={f.type === "number" ? "number" : "text"}
