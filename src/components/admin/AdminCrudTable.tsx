@@ -30,7 +30,12 @@ const AdminCrudTable = ({ title, tableName, fields, data, onRefresh }: AdminCrud
 
   const openNew = () => {
     const empty: Record<string, any> = {};
-    fields.forEach(f => { empty[f.key] = f.type === "number" ? (f.key === "year" ? new Date().getFullYear() : 0) : f.type === "array" ? "" : ""; });
+    fields.forEach(f => {
+      empty[f.key] = f.type === "number" ? (f.key === "year" ? new Date().getFullYear() : 0)
+        : f.type === "array" ? ""
+        : f.type === "boolean" ? false
+        : "";
+    });
     setFormData(empty);
     setIsNew(true);
     setEditItem({});
@@ -39,11 +44,20 @@ const AdminCrudTable = ({ title, tableName, fields, data, onRefresh }: AdminCrud
   const openEdit = (item: any) => {
     const d: Record<string, any> = {};
     fields.forEach(f => {
-      d[f.key] = f.type === "array" ? (item[f.key] || []).join(", ") : item[f.key] ?? "";
+      d[f.key] = f.type === "array" ? (item[f.key] || []).join(", ")
+        : f.type === "boolean" ? !!item[f.key]
+        : item[f.key] ?? "";
     });
     setFormData(d);
     setIsNew(false);
     setEditItem(item);
+  };
+
+  const toggleBoard = async (item: any) => {
+    const { error } = await supabase.from(tableName as any).update({ is_board: !item.is_board } as any).eq("id", item.id);
+    if (error) { toast({ title: "Erreur", description: error.message, variant: "destructive" }); return; }
+    toast({ title: !item.is_board ? "Envoyé au Board ✓" : "Retourné dans l'équipe ✓" });
+    onRefresh();
   };
 
   const handleUpload = async (fieldKey: string, file: File) => {
