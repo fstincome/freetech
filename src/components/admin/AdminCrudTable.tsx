@@ -53,11 +53,25 @@ const AdminCrudTable = ({ title, tableName, fields, data, onRefresh }: AdminCrud
     setEditItem(item);
   };
 
-  const toggleBoard = async (item: any) => {
-    const { error } = await supabase.from(tableName as any).update({ is_board: !item.is_board } as any).eq("id", item.id);
-    if (error) { toast({ title: "Erreur", description: error.message, variant: "destructive" }); return; }
-    toast({ title: !item.is_board ? "Envoyé au Board ✓" : "Retourné dans l'équipe ✓" });
-    onRefresh();
+  const [togglingId, setTogglingId] = useState<string | null>(null);
+  const toggleBoard = async (item: any, e?: React.MouseEvent) => {
+    e?.preventDefault();
+    e?.stopPropagation();
+    setTogglingId(item.id);
+    const newVal = !item.is_board;
+    const { data: updated, error } = await supabase
+      .from(tableName as any)
+      .update({ is_board: newVal } as any)
+      .eq("id", item.id)
+      .select()
+      .maybeSingle();
+    setTogglingId(null);
+    if (error || !updated) {
+      toast({ title: "Erreur", description: error?.message || "Mise à jour impossible (droits admin requis)", variant: "destructive" });
+      return;
+    }
+    toast({ title: newVal ? "Envoyé au Board ✓" : "Retourné dans l'équipe ✓" });
+    await onRefresh();
   };
 
   const handleUpload = async (fieldKey: string, file: File) => {
