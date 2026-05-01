@@ -238,33 +238,42 @@ export type Database = {
       }
       site_team_members: {
         Row: {
+          bio: string
           created_at: string
           id: string
           image_url: string
           is_board: boolean
+          linkedin_url: string
           name: string
           role: string
           sort_order: number
+          twitter_url: string
           updated_at: string
         }
         Insert: {
+          bio?: string
           created_at?: string
           id?: string
           image_url: string
           is_board?: boolean
+          linkedin_url?: string
           name: string
           role?: string
           sort_order?: number
+          twitter_url?: string
           updated_at?: string
         }
         Update: {
+          bio?: string
           created_at?: string
           id?: string
           image_url?: string
           is_board?: boolean
+          linkedin_url?: string
           name?: string
           role?: string
           sort_order?: number
+          twitter_url?: string
           updated_at?: string
         }
         Relationships: []
