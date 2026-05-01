@@ -338,6 +338,7 @@ const AdminDashboard = () => {
               fields={[
                 { key: "name", label: "Nom", type: "text" },
                 { key: "role", label: "Rôle", type: "text" },
+                { key: "is_board", label: "Board", type: "boolean" },
                 { key: "image_url", label: "Photo URL", type: "url" },
                 { key: "sort_order", label: "Ordre", type: "number" },
               ]}
