@@ -340,6 +340,9 @@ const AdminDashboard = () => {
                 { key: "role", label: "Rôle", type: "text" },
                 { key: "is_board", label: "Board", type: "boolean" },
                 { key: "image_url", label: "Photo URL", type: "url" },
+                { key: "bio", label: "Bio", type: "textarea" },
+                { key: "linkedin_url", label: "LinkedIn URL", type: "text" },
+                { key: "twitter_url", label: "Twitter / X URL", type: "text" },
                 { key: "sort_order", label: "Ordre", type: "number" },
               ]}
               data={data.team || []}
