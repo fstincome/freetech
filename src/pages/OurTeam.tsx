@@ -1,7 +1,9 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
+import { Linkedin, Twitter } from "lucide-react";
 import SectionHeading from "@/components/SectionHeading";
 import { supabase } from "@/integrations/supabase/client";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 30 },
@@ -11,14 +13,59 @@ const fadeUp = {
   }),
 };
 
+interface TeamMember {
+  id: string;
+  name: string;
+  role: string;
+  image_url: string;
+  is_board?: boolean;
+  bio?: string;
+  linkedin_url?: string;
+  twitter_url?: string;
+}
+
+const SocialButtons = ({ member, onStop }: { member: TeamMember; onStop: (e: React.MouseEvent) => void }) => (
+  <div className="flex items-center justify-center gap-2 mt-3">
+    {member.linkedin_url ? (
+      <a
+        href={member.linkedin_url}
+        target="_blank"
+        rel="noopener noreferrer"
+        onClick={onStop}
+        aria-label={`LinkedIn de ${member.name}`}
+        className="h-8 w-8 inline-flex items-center justify-center rounded-full bg-cyan/10 text-cyan hover:bg-cyan hover:text-navy transition-colors"
+      >
+        <Linkedin size={14} />
+      </a>
+    ) : null}
+    {member.twitter_url ? (
+      <a
+        href={member.twitter_url}
+        target="_blank"
+        rel="noopener noreferrer"
+        onClick={onStop}
+        aria-label={`Twitter de ${member.name}`}
+        className="h-8 w-8 inline-flex items-center justify-center rounded-full bg-cyan/10 text-cyan hover:bg-cyan hover:text-navy transition-colors"
+      >
+        <Twitter size={14} />
+      </a>
+    ) : null}
+  </div>
+);
+
 const OurTeam = () => {
-  const [teamMembers, setTeamMembers] = useState<any[]>([]);
+  const [teamMembers, setTeamMembers] = useState<TeamMember[]>([]);
+  const [selected, setSelected] = useState<TeamMember | null>(null);
 
   useEffect(() => {
     supabase.from("site_team_members").select("*").order("sort_order").then(({ data }) => {
-      if (data) setTeamMembers(data);
+      if (data) setTeamMembers(data as TeamMember[]);
     });
   }, []);
+
+  const stop = (e: React.MouseEvent) => e.stopPropagation();
+  const board = teamMembers.filter(m => m.is_board);
+  const team = teamMembers.filter(m => !m.is_board);
 
   return (
     <>
@@ -39,60 +86,108 @@ const OurTeam = () => {
 
       <section className="section-padding">
         <div className="max-w-7xl mx-auto">
-          {(() => {
-            const board = teamMembers.filter(m => m.is_board);
-            const team = teamMembers.filter(m => !m.is_board);
-            return (
-              <>
-                {/* Board Members */}
-                <SectionHeading label="Leadership" title="Board Members" description="Our executive board guiding FREETI's vision and strategy." />
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-5xl mx-auto">
-                  {board.map((member, i) => (
-                    <motion.div key={member.id} custom={i} variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }} className="glass-card overflow-hidden group text-center border-2 border-cyan/30">
-                      <div className="h-72 overflow-hidden bg-section-alt">
-                        <img src={member.image_url} alt={member.name} loading="lazy" className="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500" />
-                      </div>
-                      <div className="p-5">
-                        <h3 className="font-heading font-bold text-foreground text-base">{member.name}</h3>
-                        <p className="text-cyan text-xs mt-1 font-semibold">{member.role}</p>
-                      </div>
-                    </motion.div>
-                  ))}
+          {/* Board Members */}
+          <SectionHeading label="Leadership" title="Board Members" description="Our executive board guiding FREETI's vision and strategy." />
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-5xl mx-auto">
+            {board.map((member, i) => (
+              <motion.button
+                type="button"
+                key={member.id}
+                custom={i}
+                variants={fadeUp}
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true }}
+                onClick={() => setSelected(member)}
+                className="glass-card overflow-hidden group text-center border-2 border-cyan/30 cursor-pointer text-left focus:outline-none focus:ring-2 focus:ring-cyan"
+              >
+                <div className="h-72 overflow-hidden bg-section-alt">
+                  <img src={member.image_url} alt={member.name} loading="lazy" className="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500" />
                 </div>
+                <div className="p-5 text-center">
+                  <h3 className="font-heading font-bold text-foreground text-base">{member.name}</h3>
+                  <p className="text-cyan text-xs mt-1 font-semibold">{member.role}</p>
+                  <SocialButtons member={member} onStop={stop} />
+                </div>
+              </motion.button>
+            ))}
+          </div>
 
-                {/* Visible Separator */}
-                {team.length > 0 && (
-                  <div className="my-16 flex items-center gap-4" aria-hidden="true">
-                    <div className="flex-1 h-px bg-gradient-to-r from-transparent via-cyan to-transparent" />
-                    <span className="text-cyan font-heading font-semibold text-xs tracking-widest uppercase">Our Team</span>
-                    <div className="flex-1 h-px bg-gradient-to-r from-transparent via-cyan to-transparent" />
-                  </div>
-                )}
+          {team.length > 0 && (
+            <div className="my-16 flex items-center gap-4" aria-hidden="true">
+              <div className="flex-1 h-px bg-gradient-to-r from-transparent via-cyan to-transparent" />
+              <span className="text-cyan font-heading font-semibold text-xs tracking-widest uppercase">Our Team</span>
+              <div className="flex-1 h-px bg-gradient-to-r from-transparent via-cyan to-transparent" />
+            </div>
+          )}
 
-                {/* Team Members */}
-                {team.length > 0 && (
-                  <>
-                    <SectionHeading label="The Team" title="Meet The Rest of The Team" description="Talented individuals dedicated to making a difference." />
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                      {team.map((member, i) => (
-                        <motion.div key={member.id} custom={i} variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }} className="glass-card overflow-hidden group text-center">
-                          <div className="h-64 overflow-hidden bg-section-alt">
-                            <img src={member.image_url} alt={member.name} loading="lazy" className="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500" />
-                          </div>
-                          <div className="p-5">
-                            <h3 className="font-heading font-bold text-foreground text-sm">{member.name}</h3>
-                            <p className="text-muted-foreground text-xs mt-1">{member.role}</p>
-                          </div>
-                        </motion.div>
-                      ))}
+          {team.length > 0 && (
+            <>
+              <SectionHeading label="The Team" title="Meet The Rest of The Team" description="Talented individuals dedicated to making a difference." />
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                {team.map((member, i) => (
+                  <motion.button
+                    type="button"
+                    key={member.id}
+                    custom={i}
+                    variants={fadeUp}
+                    initial="hidden"
+                    whileInView="visible"
+                    viewport={{ once: true }}
+                    onClick={() => setSelected(member)}
+                    className="glass-card overflow-hidden group text-center cursor-pointer text-left focus:outline-none focus:ring-2 focus:ring-cyan"
+                  >
+                    <div className="h-64 overflow-hidden bg-section-alt">
+                      <img src={member.image_url} alt={member.name} loading="lazy" className="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500" />
                     </div>
-                  </>
-                )}
-              </>
-            );
-          })()}
+                    <div className="p-5 text-center">
+                      <h3 className="font-heading font-bold text-foreground text-sm">{member.name}</h3>
+                      <p className="text-muted-foreground text-xs mt-1">{member.role}</p>
+                      <SocialButtons member={member} onStop={stop} />
+                    </div>
+                  </motion.button>
+                ))}
+              </div>
+            </>
+          )}
         </div>
       </section>
+
+      {/* Bio Modal */}
+      <Dialog open={selected !== null} onOpenChange={(o) => !o && setSelected(null)}>
+        <DialogContent className="sm:max-w-md">
+          {selected && (
+            <>
+              <div className="flex items-center gap-4">
+                <img src={selected.image_url} alt={selected.name} className="h-20 w-20 rounded-full object-cover object-top border-2 border-cyan/30" />
+                <div>
+                  <DialogHeader className="text-left space-y-1">
+                    <DialogTitle className="font-heading text-xl">{selected.name}</DialogTitle>
+                    <DialogDescription className="text-cyan font-semibold text-xs uppercase tracking-wide">
+                      {selected.role}
+                    </DialogDescription>
+                  </DialogHeader>
+                </div>
+              </div>
+              <p className="text-sm text-muted-foreground leading-relaxed mt-2 whitespace-pre-line">
+                {selected.bio?.trim() ? selected.bio : "Aucune biographie disponible pour le moment."}
+              </p>
+              <div className="flex items-center gap-3 pt-2">
+                {selected.linkedin_url && (
+                  <a href={selected.linkedin_url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-cyan/10 text-cyan hover:bg-cyan hover:text-navy transition-colors text-sm font-semibold">
+                    <Linkedin size={14} /> LinkedIn
+                  </a>
+                )}
+                {selected.twitter_url && (
+                  <a href={selected.twitter_url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-cyan/10 text-cyan hover:bg-cyan hover:text-navy transition-colors text-sm font-semibold">
+                    <Twitter size={14} /> Twitter
+                  </a>
+                )}
+              </div>
+            </>
+          )}
+        </DialogContent>
+      </Dialog>
     </>
   );
 };
