@@ -133,23 +133,43 @@ const AdminCrudTable = ({ title, tableName, fields, data, onRefresh }: AdminCrud
             </tr>
           </thead>
           <tbody>
-            {data.map((item) => (
+            {data.map((item) => {
+              const hasBoardField = fields.some(f => f.key === "is_board");
+              return (
               <tr key={item.id} className="border-t border-border hover:bg-muted/50">
                 {fields.filter(f => f.type !== "array" && f.type !== "textarea").slice(0, 4).map(f => (
                   <td key={f.key} className="p-3 max-w-[200px] truncate">
                     {f.type === "url" && item[f.key] ? (
                       <img src={item[f.key]} alt="" className="h-10 w-16 object-cover rounded" />
+                    ) : f.type === "boolean" ? (
+                      item[f.key] ? (
+                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-cyan/20 text-cyan text-xs font-semibold"><Crown size={12} /> Board</span>
+                      ) : (
+                        <span className="text-muted-foreground text-xs">Équipe</span>
+                      )
                     ) : String(item[f.key] ?? "")}
                   </td>
                 ))}
                 <td className="p-3">
                   <div className="flex gap-1">
+                    {hasBoardField && (
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        onClick={() => toggleBoard(item)}
+                        title={item.is_board ? "Retirer du Board" : "Envoyer au Board"}
+                        className={item.is_board ? "text-cyan" : ""}
+                      >
+                        {item.is_board ? <UserMinus size={14} /> : <Crown size={14} />}
+                      </Button>
+                    )}
                     <Button size="sm" variant="ghost" onClick={() => openEdit(item)}><Pencil size={14} /></Button>
                     <Button size="sm" variant="ghost" onClick={() => handleDelete(item.id)} className="text-destructive"><Trash2 size={14} /></Button>
                   </div>
                 </td>
               </tr>
-            ))}
+              );
+            })}
             {data.length === 0 && (
               <tr><td colSpan={5} className="p-8 text-center text-muted-foreground">Aucun élément</td></tr>
             )}
