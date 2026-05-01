@@ -169,12 +169,14 @@ const AdminCrudTable = ({ title, tableName, fields, data, onRefresh }: AdminCrud
                     {hasBoardField && (
                       <Button
                         size="sm"
-                        variant="ghost"
-                        onClick={() => toggleBoard(item)}
+                        variant={item.is_board ? "secondary" : "outline"}
+                        type="button"
+                        disabled={togglingId === item.id}
+                        onClick={(e) => toggleBoard(item, e)}
                         title={item.is_board ? "Retirer du Board" : "Envoyer au Board"}
-                        className={item.is_board ? "text-cyan" : ""}
+                        className={item.is_board ? "text-cyan border-cyan/40" : ""}
                       >
-                        {item.is_board ? <UserMinus size={14} /> : <Crown size={14} />}
+                        {togglingId === item.id ? <Loader2 size={14} className="animate-spin" /> : item.is_board ? <UserMinus size={14} /> : <Crown size={14} />}
                       </Button>
                     )}
                     <Button size="sm" variant="ghost" onClick={() => openEdit(item)}><Pencil size={14} /></Button>
