@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "@/hooks/use-toast";
-import { Pencil, Trash2, Plus, Upload, Loader2 } from "lucide-react";
+import { Pencil, Trash2, Plus, Upload, Loader2, Crown, UserMinus } from "lucide-react";
 
 interface FieldConfig {
   key: string;
