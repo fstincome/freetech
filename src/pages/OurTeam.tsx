@@ -39,50 +39,58 @@ const OurTeam = () => {
 
       <section className="section-padding">
         <div className="max-w-7xl mx-auto">
-          {/* Board Members */}
-          <SectionHeading label="Leadership" title="Board Members" description="Our executive board guiding FREETI's vision and strategy." />
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-5xl mx-auto">
-            {teamMembers.slice(0, 3).map((member, i) => (
-              <motion.div key={member.id} custom={i} variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }} className="glass-card overflow-hidden group text-center border-2 border-cyan/30">
-                <div className="h-72 overflow-hidden bg-section-alt">
-                  <img src={member.image_url} alt={member.name} loading="lazy" className="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500" />
+          {(() => {
+            const board = teamMembers.filter(m => m.is_board);
+            const team = teamMembers.filter(m => !m.is_board);
+            return (
+              <>
+                {/* Board Members */}
+                <SectionHeading label="Leadership" title="Board Members" description="Our executive board guiding FREETI's vision and strategy." />
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-5xl mx-auto">
+                  {board.map((member, i) => (
+                    <motion.div key={member.id} custom={i} variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }} className="glass-card overflow-hidden group text-center border-2 border-cyan/30">
+                      <div className="h-72 overflow-hidden bg-section-alt">
+                        <img src={member.image_url} alt={member.name} loading="lazy" className="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500" />
+                      </div>
+                      <div className="p-5">
+                        <h3 className="font-heading font-bold text-foreground text-base">{member.name}</h3>
+                        <p className="text-cyan text-xs mt-1 font-semibold">{member.role}</p>
+                      </div>
+                    </motion.div>
+                  ))}
                 </div>
-                <div className="p-5">
-                  <h3 className="font-heading font-bold text-foreground text-base">{member.name}</h3>
-                  <p className="text-cyan text-xs mt-1 font-semibold">{member.role}</p>
-                </div>
-              </motion.div>
-            ))}
-          </div>
 
-          {/* Visible Separator */}
-          {teamMembers.length > 3 && (
-            <div className="my-16 flex items-center gap-4" aria-hidden="true">
-              <div className="flex-1 h-px bg-gradient-to-r from-transparent via-cyan to-transparent" />
-              <span className="text-cyan font-heading font-semibold text-xs tracking-widest uppercase">Our Team</span>
-              <div className="flex-1 h-px bg-gradient-to-r from-transparent via-cyan to-transparent" />
-            </div>
-          )}
+                {/* Visible Separator */}
+                {team.length > 0 && (
+                  <div className="my-16 flex items-center gap-4" aria-hidden="true">
+                    <div className="flex-1 h-px bg-gradient-to-r from-transparent via-cyan to-transparent" />
+                    <span className="text-cyan font-heading font-semibold text-xs tracking-widest uppercase">Our Team</span>
+                    <div className="flex-1 h-px bg-gradient-to-r from-transparent via-cyan to-transparent" />
+                  </div>
+                )}
 
-          {/* Team Members */}
-          {teamMembers.length > 3 && (
-            <>
-              <SectionHeading label="The Team" title="Meet The Rest of The Team" description="Talented individuals dedicated to making a difference." />
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                {teamMembers.slice(3).map((member, i) => (
-                  <motion.div key={member.id} custom={i} variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }} className="glass-card overflow-hidden group text-center">
-                    <div className="h-64 overflow-hidden bg-section-alt">
-                      <img src={member.image_url} alt={member.name} loading="lazy" className="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500" />
+                {/* Team Members */}
+                {team.length > 0 && (
+                  <>
+                    <SectionHeading label="The Team" title="Meet The Rest of The Team" description="Talented individuals dedicated to making a difference." />
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                      {team.map((member, i) => (
+                        <motion.div key={member.id} custom={i} variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }} className="glass-card overflow-hidden group text-center">
+                          <div className="h-64 overflow-hidden bg-section-alt">
+                            <img src={member.image_url} alt={member.name} loading="lazy" className="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500" />
+                          </div>
+                          <div className="p-5">
+                            <h3 className="font-heading font-bold text-foreground text-sm">{member.name}</h3>
+                            <p className="text-muted-foreground text-xs mt-1">{member.role}</p>
+                          </div>
+                        </motion.div>
+                      ))}
                     </div>
-                    <div className="p-5">
-                      <h3 className="font-heading font-bold text-foreground text-sm">{member.name}</h3>
-                      <p className="text-muted-foreground text-xs mt-1">{member.role}</p>
-                    </div>
-                  </motion.div>
-                ))}
-              </div>
-            </>
-          )}
+                  </>
+                )}
+              </>
+            );
+          })()}
         </div>
       </section>
     </>

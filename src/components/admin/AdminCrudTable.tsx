@@ -5,12 +5,12 @@ import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "@/hooks/use-toast";
-import { Pencil, Trash2, Plus, Upload, Loader2 } from "lucide-react";
+import { Pencil, Trash2, Plus, Upload, Loader2, Crown, UserMinus } from "lucide-react";
 
 interface FieldConfig {
   key: string;
   label: string;
-  type: "text" | "textarea" | "url" | "number" | "array";
+  type: "text" | "textarea" | "url" | "number" | "array" | "boolean";
 }
 
 interface AdminCrudTableProps {
@@ -30,7 +30,12 @@ const AdminCrudTable = ({ title, tableName, fields, data, onRefresh }: AdminCrud
 
   const openNew = () => {
     const empty: Record<string, any> = {};
-    fields.forEach(f => { empty[f.key] = f.type === "number" ? (f.key === "year" ? new Date().getFullYear() : 0) : f.type === "array" ? "" : ""; });
+    fields.forEach(f => {
+      empty[f.key] = f.type === "number" ? (f.key === "year" ? new Date().getFullYear() : 0)
+        : f.type === "array" ? ""
+        : f.type === "boolean" ? false
+        : "";
+    });
     setFormData(empty);
     setIsNew(true);
     setEditItem({});
@@ -39,11 +44,20 @@ const AdminCrudTable = ({ title, tableName, fields, data, onRefresh }: AdminCrud
   const openEdit = (item: any) => {
     const d: Record<string, any> = {};
     fields.forEach(f => {
-      d[f.key] = f.type === "array" ? (item[f.key] || []).join(", ") : item[f.key] ?? "";
+      d[f.key] = f.type === "array" ? (item[f.key] || []).join(", ")
+        : f.type === "boolean" ? !!item[f.key]
+        : item[f.key] ?? "";
     });
     setFormData(d);
     setIsNew(false);
     setEditItem(item);
+  };
+
+  const toggleBoard = async (item: any) => {
+    const { error } = await supabase.from(tableName as any).update({ is_board: !item.is_board } as any).eq("id", item.id);
+    if (error) { toast({ title: "Erreur", description: error.message, variant: "destructive" }); return; }
+    toast({ title: !item.is_board ? "Envoyé au Board ✓" : "Retourné dans l'équipe ✓" });
+    onRefresh();
   };
 
   const handleUpload = async (fieldKey: string, file: File) => {
@@ -71,6 +85,8 @@ const AdminCrudTable = ({ title, tableName, fields, data, onRefresh }: AdminCrud
         payload[f.key] = formData[f.key].split(",").map((s: string) => s.trim()).filter(Boolean);
       } else if (f.type === "number") {
         payload[f.key] = Number(formData[f.key]) || 0;
+      } else if (f.type === "boolean") {
+        payload[f.key] = !!formData[f.key];
       } else {
         payload[f.key] = formData[f.key];
       }
@@ -117,23 +133,43 @@ const AdminCrudTable = ({ title, tableName, fields, data, onRefresh }: AdminCrud
             </tr>
           </thead>
           <tbody>
-            {data.map((item) => (
+            {data.map((item) => {
+              const hasBoardField = fields.some(f => f.key === "is_board");
+              return (
               <tr key={item.id} className="border-t border-border hover:bg-muted/50">
                 {fields.filter(f => f.type !== "array" && f.type !== "textarea").slice(0, 4).map(f => (
                   <td key={f.key} className="p-3 max-w-[200px] truncate">
                     {f.type === "url" && item[f.key] ? (
                       <img src={item[f.key]} alt="" className="h-10 w-16 object-cover rounded" />
+                    ) : f.type === "boolean" ? (
+                      item[f.key] ? (
+                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-cyan/20 text-cyan text-xs font-semibold"><Crown size={12} /> Board</span>
+                      ) : (
+                        <span className="text-muted-foreground text-xs">Équipe</span>
+                      )
                     ) : String(item[f.key] ?? "")}
                   </td>
                 ))}
                 <td className="p-3">
                   <div className="flex gap-1">
+                    {hasBoardField && (
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        onClick={() => toggleBoard(item)}
+                        title={item.is_board ? "Retirer du Board" : "Envoyer au Board"}
+                        className={item.is_board ? "text-cyan" : ""}
+                      >
+                        {item.is_board ? <UserMinus size={14} /> : <Crown size={14} />}
+                      </Button>
+                    )}
                     <Button size="sm" variant="ghost" onClick={() => openEdit(item)}><Pencil size={14} /></Button>
                     <Button size="sm" variant="ghost" onClick={() => handleDelete(item.id)} className="text-destructive"><Trash2 size={14} /></Button>
                   </div>
                 </td>
               </tr>
-            ))}
+              );
+            })}
             {data.length === 0 && (
               <tr><td colSpan={5} className="p-8 text-center text-muted-foreground">Aucun élément</td></tr>
             )}
@@ -189,6 +225,16 @@ const AdminCrudTable = ({ title, tableName, fields, data, onRefresh }: AdminCrud
                       </Button>
                     </div>
                   </div>
+                ) : f.type === "boolean" ? (
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={!!formData[f.key]}
+                      onChange={e => setFormData(p => ({ ...p, [f.key]: e.target.checked }))}
+                      className="h-4 w-4 accent-cyan"
+                    />
+                    <span className="text-sm text-muted-foreground">Membre du Board</span>
+                  </label>
                 ) : (
                   <Input
                     type={f.type === "number" ? "number" : "text"}

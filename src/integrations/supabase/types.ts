@@ -241,6 +241,7 @@ export type Database = {
           created_at: string
           id: string
           image_url: string
+          is_board: boolean
           name: string
           role: string
           sort_order: number
@@ -250,6 +251,7 @@ export type Database = {
           created_at?: string
           id?: string
           image_url: string
+          is_board?: boolean
           name: string
           role?: string
           sort_order?: number
@@ -259,6 +261,7 @@ export type Database = {
           created_at?: string
           id?: string
           image_url?: string
+          is_board?: boolean
           name?: string
           role?: string
           sort_order?: number
