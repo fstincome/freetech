@@ -52,7 +52,7 @@ const SocialButtons = ({ member, onStop }: { member: TeamMember; onStop: (e: Rea
       </a>
     ) : null}
     <Link
-      to={`/our-team/${member.id}`}
+      to={`/our-team/${member.slug || member.id}`}
       onClick={onStop}
       aria-label={`Lire la bio de ${member.name}`}
       className="h-8 inline-flex items-center gap-1.5 px-3 rounded-full bg-cyan/10 text-cyan hover:bg-cyan hover:text-navy transition-colors text-xs font-semibold"
@@ -106,7 +106,7 @@ const OurTeam = () => {
                 initial="hidden"
                 whileInView="visible"
                 viewport={{ once: true }}
-                onClick={() => navigate(`/our-team/${member.id}`)}
+                onClick={() => navigate(`/our-team/${member.slug || member.id}`)}
                 className="glass-card overflow-hidden group text-center border-2 border-cyan/30 cursor-pointer text-left focus:outline-none focus:ring-2 focus:ring-cyan"
               >
                 <div className="h-72 overflow-hidden bg-section-alt">
@@ -142,7 +142,7 @@ const OurTeam = () => {
                     initial="hidden"
                     whileInView="visible"
                     viewport={{ once: true }}
-                    onClick={() => navigate(`/our-team/${member.id}`)}
+                    onClick={() => navigate(`/our-team/${member.slug || member.id}`)}
                     className="glass-card overflow-hidden group text-center cursor-pointer text-left focus:outline-none focus:ring-2 focus:ring-cyan"
                   >
                     <div className="h-64 overflow-hidden bg-section-alt">
