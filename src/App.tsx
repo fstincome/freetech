@@ -12,6 +12,7 @@ import PWAInstallButton from "@/components/PWAInstallButton";
 import Index from "./pages/Index.tsx";
 import GitegaStudySpace from "./pages/GitegaStudySpace.tsx";
 import OurTeam from "./pages/OurTeam.tsx";
+import TeamMemberBio from "./pages/TeamMemberBio.tsx";
 import AdminLogin from "./pages/AdminLogin.tsx";
 import AdminDashboard from "./pages/AdminDashboard.tsx";
 import NotFound from "./pages/NotFound.tsx";
@@ -27,6 +28,7 @@ const AppContent = () => {
       <Route path="/" element={<><Navbar /><main><Index /></main><Footer /></>} />
       <Route path="/gitega-study-space" element={<><Navbar /><main><GitegaStudySpace /></main><Footer /></>} />
       <Route path="/our-team" element={<><Navbar /><main><OurTeam /></main><Footer /></>} />
+      <Route path="/our-team/:id" element={<><Navbar /><main><TeamMemberBio /></main><Footer /></>} />
       <Route path="*" element={<><Navbar /><main><NotFound /></main><Footer /></>} />
     </Routes>
   );
