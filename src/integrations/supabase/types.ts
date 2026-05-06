@@ -246,6 +246,7 @@ export type Database = {
           linkedin_url: string
           name: string
           role: string
+          slug: string | null
           sort_order: number
           twitter_url: string
           updated_at: string
@@ -259,6 +260,7 @@ export type Database = {
           linkedin_url?: string
           name: string
           role?: string
+          slug?: string | null
           sort_order?: number
           twitter_url?: string
           updated_at?: string
@@ -272,6 +274,7 @@ export type Database = {
           linkedin_url?: string
           name?: string
           role?: string
+          slug?: string | null
           sort_order?: number
           twitter_url?: string
           updated_at?: string
@@ -401,6 +404,7 @@ export type Database = {
         }
         Returns: boolean
       }
+      slugify: { Args: { value: string }; Returns: string }
     }
     Enums: {
       app_role: "admin"
