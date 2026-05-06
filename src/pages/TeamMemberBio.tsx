@@ -15,17 +15,22 @@ interface TeamMember {
 }
 
 const TeamMemberBio = () => {
-  const { id } = useParams<{ id: string }>();
+  const { slug } = useParams<{ slug: string }>();
   const [member, setMember] = useState<TeamMember | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!id) return;
-    supabase.from("site_team_members").select("*").eq("id", id).maybeSingle().then(({ data }) => {
+    if (!slug) return;
+    const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(slug);
+    const query = supabase.from("site_team_members").select("*");
+    const promise = isUuid
+      ? query.or(`slug.eq.${slug},id.eq.${slug}`).maybeSingle()
+      : query.eq("slug", slug).maybeSingle();
+    promise.then(({ data }) => {
       setMember(data as TeamMember | null);
       setLoading(false);
     });
-  }, [id]);
+  }, [slug]);
 
   useEffect(() => {
     if (member) document.title = `${member.name} – ${member.role} | FREETI`;
