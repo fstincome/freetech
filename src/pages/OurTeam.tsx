@@ -22,6 +22,7 @@ interface TeamMember {
   bio?: string;
   linkedin_url?: string;
   twitter_url?: string;
+  slug?: string;
 }
 
 const SocialButtons = ({ member, onStop }: { member: TeamMember; onStop: (e: React.MouseEvent) => void }) => (
