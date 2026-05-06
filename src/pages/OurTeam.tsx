@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Linkedin, Twitter } from "lucide-react";
+import { Linkedin, Twitter, BookOpen } from "lucide-react";
 import SectionHeading from "@/components/SectionHeading";
 import { supabase } from "@/integrations/supabase/client";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
@@ -24,8 +24,16 @@ interface TeamMember {
   twitter_url?: string;
 }
 
-const SocialButtons = ({ member, onStop }: { member: TeamMember; onStop: (e: React.MouseEvent) => void }) => (
-  <div className="flex items-center justify-center gap-2 mt-3">
+const SocialButtons = ({
+  member,
+  onStop,
+  onReadBio,
+}: {
+  member: TeamMember;
+  onStop: (e: React.MouseEvent) => void;
+  onReadBio: (e: React.MouseEvent) => void;
+}) => (
+  <div className="flex items-center justify-center gap-2 mt-3 flex-wrap">
     {member.linkedin_url ? (
       <a
         href={member.linkedin_url}
@@ -50,6 +58,14 @@ const SocialButtons = ({ member, onStop }: { member: TeamMember; onStop: (e: Rea
         <Twitter size={14} />
       </a>
     ) : null}
+    <button
+      type="button"
+      onClick={onReadBio}
+      aria-label={`Lire la bio de ${member.name}`}
+      className="h-8 inline-flex items-center gap-1.5 px-3 rounded-full bg-cyan/10 text-cyan hover:bg-cyan hover:text-navy transition-colors text-xs font-semibold"
+    >
+      <BookOpen size={12} /> Read bio
+    </button>
   </div>
 );
 
