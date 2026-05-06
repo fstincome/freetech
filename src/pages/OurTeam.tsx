@@ -123,7 +123,7 @@ const OurTeam = () => {
                 <div className="p-5 text-center">
                   <h3 className="font-heading font-bold text-foreground text-base">{member.name}</h3>
                   <p className="text-cyan text-xs mt-1 font-semibold">{member.role}</p>
-                  <SocialButtons member={member} onStop={stop} />
+                  <SocialButtons member={member} onStop={stop} onReadBio={(e) => { e.stopPropagation(); setSelected(member); }} />
                 </div>
               </motion.button>
             ))}
@@ -159,7 +159,7 @@ const OurTeam = () => {
                     <div className="p-5 text-center">
                       <h3 className="font-heading font-bold text-foreground text-sm">{member.name}</h3>
                       <p className="text-muted-foreground text-xs mt-1">{member.role}</p>
-                      <SocialButtons member={member} onStop={stop} />
+                      <SocialButtons member={member} onStop={stop} onReadBio={(e) => { e.stopPropagation(); setSelected(member); }} />
                     </div>
                   </motion.button>
                 ))}
