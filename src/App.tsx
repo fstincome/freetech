@@ -30,6 +30,7 @@ const AppContent = () => {
       <Route path="/gitega-study-space" element={<><Navbar /><main><GitegaStudySpace /></main><Footer /></>} />
       <Route path="/our-team" element={<><Navbar /><main><OurTeam /></main><Footer /></>} />
       <Route path="/our-team/:slug" element={<><Navbar /><main><TeamMemberBio /></main><Footer /></>} />
+      <Route path="/buja-hackathon" element={<BujaHackathon />} />
       <Route path="*" element={<><Navbar /><main><NotFound /></main><Footer /></>} />
     </Routes>
   );
