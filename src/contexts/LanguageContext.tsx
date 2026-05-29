@@ -20,6 +20,7 @@ const translations: Record<string, Record<Lang, string>> = {
   "nav.hub": { en: "Our Digital Hub", fr: "Notre Hub Digital", sw: "Kituo Chetu cha Dijitali" },
   "nav.team": { en: "Team", fr: "Équipe", sw: "Timu" },
   "nav.blog": { en: "Read our blog", fr: "Lire notre blog", sw: "Soma blogu yetu" },
+  "nav.bujahackathon": { en: "Buja Hackathon", fr: "Hackathon Buja", sw: "Hackathon Buja" },
 
   // Hero
   "hero.cta1": { en: "Read more", fr: "En savoir plus", sw: "Soma zaidi" },

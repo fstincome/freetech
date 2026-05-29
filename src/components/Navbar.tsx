@@ -42,6 +42,7 @@ const navMenus: NavMenu[] = [
       { labelKey: "nav.events", hash: "#events" },
       { labelKey: "nav.impact", hash: "#impact" },
       { labelKey: "nav.testimonials", hash: "#testimonials" },
+      { labelKey: "nav.bujahackathon", path: "/buja-hackathon" },
     ],
   },
   { labelKey: "nav.hub", path: "/gitega-study-space", highlight: true },
