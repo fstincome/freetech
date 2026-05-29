@@ -60,7 +60,6 @@ const AdminDashboard = () => {
       hackathon_trainers: (hackTrainers as any).data || [],
     });
   };
-  };
 
   const fetchStats = async () => {
     const daysAgo = new Date();
