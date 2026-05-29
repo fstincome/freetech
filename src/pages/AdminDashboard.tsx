@@ -355,6 +355,26 @@ const AdminDashboard = () => {
             />
           )}
 
+          {activeTab === "hackathon_trainers" && (
+            <AdminCrudTable
+              title="Formateurs Hackathon Buja"
+              tableName="hackathon_trainers"
+              fields={[
+                { key: "name", label: "Nom", type: "text" },
+                { key: "role", label: "Rôle", type: "text" },
+                { key: "image_url", label: "Photo URL", type: "url" },
+                { key: "bio", label: "Bio", type: "textarea" },
+                { key: "twitter_url", label: "Twitter / X URL", type: "text" },
+                { key: "linkedin_url", label: "LinkedIn URL", type: "text" },
+                { key: "sort_order", label: "Ordre", type: "number" },
+              ]}
+              data={data.hackathon_trainers || []}
+              onRefresh={fetchAll}
+            />
+          )}
+
+          {activeTab === "hackathon_regs" && <HackathonRegistrationsAdmin />}
+
           {activeTab === "settings" && (
             <AdminCrudTable
               title="Paramètres du Site"
