@@ -1,6 +1,13 @@
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { ArrowLeft, Bitcoin, Calendar, MapPin, Users, Zap, Trophy, CheckCircle2 } from "lucide-react";
+import { ArrowLeft, Bitcoin, Calendar, MapPin, Users, Zap, Trophy, CheckCircle2, Loader2 } from "lucide-react";
+import { z } from "zod";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "@/hooks/use-toast";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 
 const stats = [
   { value: "30", label: "Participants" },
@@ -21,29 +28,6 @@ const schedule = [
   { date: "06 JUNE 2026", title: "Hackathon #2", desc: "Lightning Network apps & pitch session" },
 ];
 
-const trainers = [
-  {
-    name: "Advaxe Ndayisenga",
-    role: "Lead Trainer",
-    bio: "Passionné par l'éducation Bitcoin et le développement communautaire en Afrique.",
-    img: "https://lerdurdmbownqeaaiwmn.supabase.co/storage/v1/object/public/speakers/ddfa813d-08d7-43dc-864e-a839a344aa5a-1779953771912.JPG",
-    x: "https://x.com/AdvaxeIr",
-  },
-  {
-    name: "Belyi Nobel Kubwayo",
-    role: "Trainer",
-    bio: "Expert en développement logiciel et applications décentralisées.",
-    img: "https://bujahackaton.lovable.app/speakers/belyi.png",
-    x: "https://x.com/belyi_nobel",
-  },
-  {
-    name: "Wilfried Cubahiro",
-    role: "Trainer",
-    bio: "Spécialiste en sécurité et infrastructure réseau.",
-    img: "https://bujahackaton.lovable.app/speakers/wilfried.png",
-  },
-];
-
 const outcomes = [
   "2 working P2P Bitcoin prototypes",
   "30 trained & certified participants",
@@ -52,10 +36,73 @@ const outcomes = [
   "2 projects selected for post-hackathon mentorship",
 ];
 
+const languagesList = [
+  "JavaScript", "TypeScript", "Python", "Rust", "Go", "Java", "C", "C++", "C#",
+  "PHP", "Ruby", "Kotlin", "Swift", "Dart", "Solidity", "HTML/CSS",
+];
+
+const regSchema = z.object({
+  full_name: z.string().trim().min(1, "Required").max(120),
+  email: z.string().trim().email("Invalid email").max(255),
+  phone: z.string().trim().max(40).optional().default(""),
+  profession: z.string().trim().max(200).optional().default(""),
+  bitcoin_level: z.enum(["Beginner", "Intermediate", "Advanced"]),
+  target_hackathon: z.enum(["both", "day1", "day2"]),
+  specialty: z.enum(["Backend", "Frontend", "Full Stack"]),
+  languages: z.array(z.string()).max(20),
+  motivation: z.string().trim().max(2000).optional().default(""),
+});
+
 const BujaHackathon = () => {
+  const [trainers, setTrainers] = useState<any[]>([]);
+  const [submitting, setSubmitting] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
+  const [form, setForm] = useState({
+    full_name: "",
+    email: "",
+    phone: "",
+    profession: "",
+    bitcoin_level: "Beginner" as "Beginner" | "Intermediate" | "Advanced",
+    target_hackathon: "both" as "both" | "day1" | "day2",
+    specialty: "Full Stack" as "Backend" | "Frontend" | "Full Stack",
+    languages: [] as string[],
+    motivation: "",
+  });
+
+  useEffect(() => {
+    supabase.from("hackathon_trainers" as any).select("*").order("sort_order").then(({ data }) => {
+      if (data) setTrainers(data as any[]);
+    });
+  }, []);
+
+  const toggleLang = (l: string) => {
+    setForm((p) => ({
+      ...p,
+      languages: p.languages.includes(l) ? p.languages.filter((x) => x !== l) : [...p.languages, l],
+    }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const parsed = regSchema.safeParse(form);
+    if (!parsed.success) {
+      const first = Object.values(parsed.error.flatten().fieldErrors)[0]?.[0] || "Please check your inputs";
+      toast({ title: "Form error", description: first, variant: "destructive" });
+      return;
+    }
+    setSubmitting(true);
+    const { error } = await supabase.from("hackathon_registrations" as any).insert(parsed.data as any);
+    setSubmitting(false);
+    if (error) {
+      toast({ title: "Submission failed", description: error.message, variant: "destructive" });
+      return;
+    }
+    toast({ title: "Application sent ✓", description: "We will contact you soon." });
+    setSubmitted(true);
+  };
+
   return (
     <div className="min-h-screen bg-background text-foreground">
-      {/* Minimal top bar - just back to site link */}
       <div className="absolute top-4 left-4 z-50">
         <Link
           to="/"
@@ -107,9 +154,7 @@ const BujaHackathon = () => {
             className="mt-8 flex flex-wrap items-center justify-center gap-3"
           >
             <a
-              href="https://bujahackaton.lovable.app/register"
-              target="_blank"
-              rel="noopener noreferrer"
+              href="#register"
               className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-orange-500 text-white font-semibold text-sm hover:bg-orange-600 transition-colors shadow-lg shadow-orange-500/30"
             >
               <Zap size={16} /> Apply now
@@ -122,7 +167,6 @@ const BujaHackathon = () => {
             </a>
           </motion.div>
 
-          {/* Stats */}
           <div className="mt-16 grid grid-cols-2 md:grid-cols-4 gap-4">
             {stats.map((s, i) => (
               <motion.div
@@ -196,30 +240,34 @@ const BujaHackathon = () => {
           <div className="mt-10 grid grid-cols-1 md:grid-cols-3 gap-6">
             {trainers.map((t) => (
               <div
-                key={t.name}
+                key={t.id}
                 className="rounded-2xl border border-border bg-card overflow-hidden group hover:border-orange-500/50 transition-colors"
               >
                 <div className="aspect-[4/5] overflow-hidden bg-muted">
-                  <img
-                    src={t.img}
-                    alt={t.name}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                  />
+                  {t.image_url && (
+                    <img
+                      src={t.image_url}
+                      alt={t.name}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    />
+                  )}
                 </div>
                 <div className="p-5">
                   <h3 className="font-heading font-bold text-lg">{t.name}</h3>
                   <div className="text-orange-500 text-xs font-mono tracking-wider mt-0.5">{t.role}</div>
                   <p className="mt-3 text-sm text-muted-foreground leading-relaxed">{t.bio}</p>
-                  {t.x && (
-                    <a
-                      href={t.x}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="mt-4 inline-flex items-center gap-1 text-sm font-medium hover:text-orange-500 transition-colors"
-                    >
-                      @x →
-                    </a>
-                  )}
+                  <div className="mt-4 flex gap-3 text-sm">
+                    {t.twitter_url && (
+                      <a href={t.twitter_url} target="_blank" rel="noopener noreferrer" className="hover:text-orange-500 transition-colors font-medium">
+                        @x →
+                      </a>
+                    )}
+                    {t.linkedin_url && (
+                      <a href={t.linkedin_url} target="_blank" rel="noopener noreferrer" className="hover:text-orange-500 transition-colors font-medium">
+                        LinkedIn →
+                      </a>
+                    )}
+                  </div>
                 </div>
               </div>
             ))}
@@ -253,29 +301,136 @@ const BujaHackathon = () => {
             <p className="mt-2 text-muted-foreground">
               30 spots available. Secure yours and help build the future of peer-to-peer Bitcoin in Burundi.
             </p>
-            <div className="mt-6 flex flex-wrap gap-3">
-              <a
-                href="https://bujahackaton.lovable.app/register"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 px-5 py-3 rounded-full bg-orange-500 text-white font-semibold text-sm hover:bg-orange-600 transition-colors"
-              >
-                <Users size={16} /> Submit my application
-              </a>
-              <a
-                href="https://bujahackaton.lovable.app/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="px-5 py-3 rounded-full border border-border text-sm font-semibold hover:bg-accent transition-colors"
-              >
-                Visit official site
-              </a>
-            </div>
+            <a
+              href="#register"
+              className="mt-6 inline-flex w-fit items-center gap-2 px-5 py-3 rounded-full bg-orange-500 text-white font-semibold text-sm hover:bg-orange-600 transition-colors"
+            >
+              <Users size={16} /> Submit my application
+            </a>
           </div>
         </div>
       </section>
 
-      {/* Footer mini */}
+      {/* REGISTRATION FORM */}
+      <section id="register" className="py-20 px-4 md:px-8 bg-section-alt">
+        <div className="max-w-3xl mx-auto">
+          <span className="text-orange-500 text-xs font-mono tracking-widest">// APPLICATION</span>
+          <h2 className="mt-2 text-3xl md:text-5xl font-heading font-bold">HACKATON BUJUMBURA registration</h2>
+          <p className="mt-3 text-muted-foreground">
+            30 spots. Workshops + 2 hackathons at Hôtel Emeraude, Bujumbura, June 5–6, 2026.
+          </p>
+
+          {submitted ? (
+            <div className="mt-10 rounded-2xl border border-orange-500/40 bg-orange-500/10 p-8 text-center">
+              <CheckCircle2 className="mx-auto text-orange-500" size={48} />
+              <h3 className="mt-4 text-2xl font-heading font-bold">Application received!</h3>
+              <p className="mt-2 text-muted-foreground">Thanks for applying. Our team will get back to you shortly.</p>
+            </div>
+          ) : (
+            <form onSubmit={handleSubmit} className="mt-10 space-y-5 rounded-2xl border border-border bg-card p-6 md:p-8">
+              <div className="grid md:grid-cols-2 gap-4">
+                <div>
+                  <label className="text-sm font-medium mb-1.5 block">Full name *</label>
+                  <Input required maxLength={120} value={form.full_name} onChange={(e) => setForm({ ...form, full_name: e.target.value })} />
+                </div>
+                <div>
+                  <label className="text-sm font-medium mb-1.5 block">Email *</label>
+                  <Input type="email" required maxLength={255} value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} />
+                </div>
+                <div>
+                  <label className="text-sm font-medium mb-1.5 block">Phone</label>
+                  <Input maxLength={40} value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} />
+                </div>
+                <div>
+                  <label className="text-sm font-medium mb-1.5 block">Profession / Student in</label>
+                  <Input maxLength={200} value={form.profession} onChange={(e) => setForm({ ...form, profession: e.target.value })} />
+                </div>
+                <div>
+                  <label className="text-sm font-medium mb-1.5 block">Bitcoin/Dev level *</label>
+                  <select
+                    required
+                    value={form.bitcoin_level}
+                    onChange={(e) => setForm({ ...form, bitcoin_level: e.target.value as any })}
+                    className="w-full h-10 rounded-md border border-input bg-background px-3 text-sm"
+                  >
+                    <option value="Beginner">Beginner</option>
+                    <option value="Intermediate">Intermediate</option>
+                    <option value="Advanced">Advanced</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="text-sm font-medium mb-1.5 block">Target hackathon *</label>
+                  <select
+                    required
+                    value={form.target_hackathon}
+                    onChange={(e) => setForm({ ...form, target_hackathon: e.target.value as any })}
+                    className="w-full h-10 rounded-md border border-input bg-background px-3 text-sm"
+                  >
+                    <option value="both">Both (June 5 & 6)</option>
+                    <option value="day1">Hackathon #1 — June 5</option>
+                    <option value="day2">Hackathon #2 — June 6</option>
+                  </select>
+                </div>
+                <div className="md:col-span-2">
+                  <label className="text-sm font-medium mb-1.5 block">Developer specialty *</label>
+                  <div className="flex flex-wrap gap-2">
+                    {(["Backend", "Frontend", "Full Stack"] as const).map((s) => (
+                      <button
+                        type="button"
+                        key={s}
+                        onClick={() => setForm({ ...form, specialty: s })}
+                        className={`px-4 py-2 rounded-full text-sm border transition-colors ${
+                          form.specialty === s
+                            ? "bg-orange-500 text-white border-orange-500"
+                            : "border-border hover:border-orange-500/50"
+                        }`}
+                      >
+                        {s}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                <label className="text-sm font-medium mb-1.5 block">Languages you use</label>
+                <p className="text-xs text-muted-foreground mb-2">Select all that apply</p>
+                <div className="flex flex-wrap gap-2">
+                  {languagesList.map((l) => (
+                    <button
+                      type="button"
+                      key={l}
+                      onClick={() => toggleLang(l)}
+                      className={`px-3 py-1.5 rounded-full text-xs border transition-colors ${
+                        form.languages.includes(l)
+                          ? "bg-orange-500 text-white border-orange-500"
+                          : "border-border hover:border-orange-500/50"
+                      }`}
+                    >
+                      {l}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div>
+                <label className="text-sm font-medium mb-1.5 block">Motivation</label>
+                <Textarea rows={4} maxLength={2000} value={form.motivation} onChange={(e) => setForm({ ...form, motivation: e.target.value })} />
+              </div>
+
+              <Button
+                type="submit"
+                disabled={submitting}
+                className="w-full bg-orange-500 text-white hover:bg-orange-600 font-semibold"
+              >
+                {submitting ? <Loader2 size={16} className="mr-2 animate-spin" /> : <Zap size={16} className="mr-2" />}
+                Send my application
+              </Button>
+            </form>
+          )}
+        </div>
+      </section>
+
       <footer className="py-10 px-4 md:px-8 border-t border-border text-center text-sm text-muted-foreground">
         <div className="flex flex-wrap items-center justify-center gap-2">
           <Bitcoin size={16} className="text-orange-500" />

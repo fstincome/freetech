@@ -3,13 +3,14 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useAdmin } from "@/hooks/useAdmin";
 import AdminCrudTable from "@/components/admin/AdminCrudTable";
+import HackathonRegistrationsAdmin from "@/components/admin/HackathonRegistrationsAdmin";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { LogOut, BarChart3, Globe, Eye, Calendar } from "lucide-react";
 import logo from "@/assets/logo.png";
 
-type Tab = "stats" | "hero" | "programs" | "workshops" | "events" | "partners" | "testimonials" | "impact" | "reports" | "team" | "settings";
+type Tab = "stats" | "hero" | "programs" | "workshops" | "events" | "partners" | "testimonials" | "impact" | "reports" | "team" | "settings" | "hackathon_regs" | "hackathon_trainers";
 
 const tabs: { key: Tab; label: string }[] = [
   { key: "stats", label: "📊 Statistiques" },
@@ -22,6 +23,8 @@ const tabs: { key: Tab; label: string }[] = [
   { key: "impact", label: "📈 Impact" },
   { key: "reports", label: "📄 Rapports" },
   { key: "team", label: "👥 Équipe" },
+  { key: "hackathon_trainers", label: "₿ Formateurs Hackathon" },
+  { key: "hackathon_regs", label: "📝 Inscriptions Hackathon" },
   { key: "settings", label: "⚙️ Paramètres" },
 ];
 
@@ -36,9 +39,8 @@ const AdminDashboard = () => {
   useEffect(() => {
     if (!loading && (!user || !isAdmin)) navigate("/admin/login");
   }, [user, isAdmin, loading, navigate]);
-
   const fetchAll = async () => {
-    const [hero, programs, workshops, events, partners, testimonials, impact, reports, team, settings] = await Promise.all([
+    const [hero, programs, workshops, events, partners, testimonials, impact, reports, team, settings, hackTrainers] = await Promise.all([
       supabase.from("site_hero_slides").select("*").order("sort_order"),
       supabase.from("site_programs").select("*").order("sort_order"),
       supabase.from("site_workshops").select("*").order("sort_order"),
@@ -49,11 +51,13 @@ const AdminDashboard = () => {
       supabase.from("site_reports").select("*").order("sort_order"),
       supabase.from("site_team_members" as any).select("*").order("sort_order"),
       supabase.from("site_settings").select("*"),
+      supabase.from("hackathon_trainers" as any).select("*").order("sort_order"),
     ]);
     setData({
       hero: hero.data || [], programs: programs.data || [], workshops: workshops.data || [],
       events: events.data || [], partners: partners.data || [], testimonials: testimonials.data || [],
       impact: impact.data || [], reports: reports.data || [], team: team.data || [], settings: settings.data || [],
+      hackathon_trainers: (hackTrainers as any).data || [],
     });
   };
 
@@ -349,6 +353,26 @@ const AdminDashboard = () => {
               onRefresh={fetchAll}
             />
           )}
+
+          {activeTab === "hackathon_trainers" && (
+            <AdminCrudTable
+              title="Formateurs Hackathon Buja"
+              tableName="hackathon_trainers"
+              fields={[
+                { key: "name", label: "Nom", type: "text" },
+                { key: "role", label: "Rôle", type: "text" },
+                { key: "image_url", label: "Photo URL", type: "url" },
+                { key: "bio", label: "Bio", type: "textarea" },
+                { key: "twitter_url", label: "Twitter / X URL", type: "text" },
+                { key: "linkedin_url", label: "LinkedIn URL", type: "text" },
+                { key: "sort_order", label: "Ordre", type: "number" },
+              ]}
+              data={data.hackathon_trainers || []}
+              onRefresh={fetchAll}
+            />
+          )}
+
+          {activeTab === "hackathon_regs" && <HackathonRegistrationsAdmin />}
 
           {activeTab === "settings" && (
             <AdminCrudTable

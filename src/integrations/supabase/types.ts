@@ -14,6 +14,87 @@ export type Database = {
   }
   public: {
     Tables: {
+      hackathon_registrations: {
+        Row: {
+          bitcoin_level: string
+          created_at: string
+          email: string
+          full_name: string
+          id: string
+          languages: string[]
+          motivation: string | null
+          phone: string | null
+          profession: string | null
+          specialty: string
+          target_hackathon: string
+        }
+        Insert: {
+          bitcoin_level?: string
+          created_at?: string
+          email: string
+          full_name: string
+          id?: string
+          languages?: string[]
+          motivation?: string | null
+          phone?: string | null
+          profession?: string | null
+          specialty?: string
+          target_hackathon?: string
+        }
+        Update: {
+          bitcoin_level?: string
+          created_at?: string
+          email?: string
+          full_name?: string
+          id?: string
+          languages?: string[]
+          motivation?: string | null
+          phone?: string | null
+          profession?: string | null
+          specialty?: string
+          target_hackathon?: string
+        }
+        Relationships: []
+      }
+      hackathon_trainers: {
+        Row: {
+          bio: string
+          created_at: string
+          id: string
+          image_url: string
+          linkedin_url: string
+          name: string
+          role: string
+          sort_order: number
+          twitter_url: string
+          updated_at: string
+        }
+        Insert: {
+          bio?: string
+          created_at?: string
+          id?: string
+          image_url?: string
+          linkedin_url?: string
+          name: string
+          role?: string
+          sort_order?: number
+          twitter_url?: string
+          updated_at?: string
+        }
+        Update: {
+          bio?: string
+          created_at?: string
+          id?: string
+          image_url?: string
+          linkedin_url?: string
+          name?: string
+          role?: string
+          sort_order?: number
+          twitter_url?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       site_events: {
         Row: {
           created_at: string
