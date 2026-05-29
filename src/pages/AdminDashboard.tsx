@@ -3,13 +3,14 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useAdmin } from "@/hooks/useAdmin";
 import AdminCrudTable from "@/components/admin/AdminCrudTable";
+import HackathonRegistrationsAdmin from "@/components/admin/HackathonRegistrationsAdmin";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { LogOut, BarChart3, Globe, Eye, Calendar } from "lucide-react";
 import logo from "@/assets/logo.png";
 
-type Tab = "stats" | "hero" | "programs" | "workshops" | "events" | "partners" | "testimonials" | "impact" | "reports" | "team" | "settings";
+type Tab = "stats" | "hero" | "programs" | "workshops" | "events" | "partners" | "testimonials" | "impact" | "reports" | "team" | "settings" | "hackathon_regs" | "hackathon_trainers";
 
 const tabs: { key: Tab; label: string }[] = [
   { key: "stats", label: "📊 Statistiques" },
