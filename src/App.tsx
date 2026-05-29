@@ -12,6 +12,7 @@ import PWAInstallButton from "@/components/PWAInstallButton";
 import Index from "./pages/Index.tsx";
 import GitegaStudySpace from "./pages/GitegaStudySpace.tsx";
 import OurTeam from "./pages/OurTeam.tsx";
+import BujaHackathon from "./pages/BujaHackathon.tsx";
 import TeamMemberBio from "./pages/TeamMemberBio.tsx";
 import AdminLogin from "./pages/AdminLogin.tsx";
 import AdminDashboard from "./pages/AdminDashboard.tsx";
