@@ -23,6 +23,8 @@ const tabs: { key: Tab; label: string }[] = [
   { key: "impact", label: "📈 Impact" },
   { key: "reports", label: "📄 Rapports" },
   { key: "team", label: "👥 Équipe" },
+  { key: "hackathon_trainers", label: "₿ Formateurs Hackathon" },
+  { key: "hackathon_regs", label: "📝 Inscriptions Hackathon" },
   { key: "settings", label: "⚙️ Paramètres" },
 ];
 
