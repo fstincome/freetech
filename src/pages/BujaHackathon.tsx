@@ -53,8 +53,11 @@ const regSchema = z.object({
   motivation: z.string().trim().max(2000).optional().default(""),
 });
 
+const MAX_SPOTS = 30;
+
 const BujaHackathon = () => {
   const [trainers, setTrainers] = useState<any[]>([]);
+  const [accepted, setAccepted] = useState<any[]>([]);
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [form, setForm] = useState({
@@ -73,7 +76,15 @@ const BujaHackathon = () => {
     supabase.from("hackathon_trainers" as any).select("*").order("sort_order").then(({ data }) => {
       if (data) setTrainers(data as any[]);
     });
+    supabase
+      .from("hackathon_registrations" as any)
+      .select("id, full_name, profession, specialty, bitcoin_level, target_hackathon")
+      .eq("status", "accepted")
+      .order("created_at", { ascending: true })
+      .then(({ data }) => setAccepted((data as any[]) || []));
   }, []);
+
+  const isFull = accepted.length >= MAX_SPOTS;
 
   const toggleLang = (l: string) => {
     setForm((p) => ({
@@ -313,14 +324,71 @@ const BujaHackathon = () => {
 
       {/* REGISTRATION FORM */}
       <section id="register" className="py-20 px-4 md:px-8 bg-section-alt">
-        <div className="max-w-3xl mx-auto">
+        <div className="max-w-5xl mx-auto">
           <span className="text-orange-500 text-xs font-mono tracking-widest">// APPLICATION</span>
           <h2 className="mt-2 text-3xl md:text-5xl font-heading font-bold">HACKATON BUJUMBURA registration</h2>
           <p className="mt-3 text-muted-foreground">
             30 spots. Workshops + 2 hackathons at Hôtel Emeraude, Bujumbura, June 5–6, 2026.
           </p>
 
-          {submitted ? (
+          {/* Selected participants */}
+          {accepted.length > 0 && (
+            <div className="mt-10">
+              <div className="flex items-center justify-between mb-4 flex-wrap gap-2">
+                <h3 className="text-xl font-heading font-bold flex items-center gap-2">
+                  <CheckCircle2 size={20} className="text-orange-500" />
+                  Selected participants
+                </h3>
+                <span className="text-sm font-mono text-muted-foreground">
+                  {accepted.length} / {MAX_SPOTS} spots filled
+                </span>
+              </div>
+              <div className="w-full h-2 bg-muted rounded-full overflow-hidden mb-6">
+                <div
+                  className="h-full bg-orange-500 transition-all"
+                  style={{ width: `${Math.min(100, (accepted.length / MAX_SPOTS) * 100)}%` }}
+                />
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                {accepted.map((p) => (
+                  <div
+                    key={p.id}
+                    className="rounded-xl border border-orange-500/30 bg-card p-4 hover:border-orange-500/60 transition-colors"
+                  >
+                    <div className="flex items-start gap-3">
+                      <div className="h-10 w-10 rounded-full bg-orange-500/15 text-orange-500 font-heading font-bold flex items-center justify-center flex-shrink-0">
+                        {p.full_name?.[0]?.toUpperCase() || "?"}
+                      </div>
+                      <div className="min-w-0">
+                        <div className="font-semibold truncate">{p.full_name}</div>
+                        {p.profession && (
+                          <div className="text-xs text-muted-foreground truncate">{p.profession}</div>
+                        )}
+                        <div className="mt-1 flex flex-wrap gap-1">
+                          <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-orange-500/10 text-orange-600 dark:text-orange-400">
+                            {p.specialty}
+                          </span>
+                          <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-muted">
+                            {p.bitcoin_level}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {isFull ? (
+            <div className="mt-10 rounded-2xl border border-orange-500/40 bg-orange-500/10 p-8 text-center">
+              <Trophy className="mx-auto text-orange-500" size={48} />
+              <h3 className="mt-4 text-2xl font-heading font-bold">Cohort complete!</h3>
+              <p className="mt-2 text-muted-foreground">
+                All {MAX_SPOTS} spots have been filled. Applications are now closed — stay tuned for the next edition.
+              </p>
+            </div>
+          ) : submitted ? (
             <div className="mt-10 rounded-2xl border border-orange-500/40 bg-orange-500/10 p-8 text-center">
               <CheckCircle2 className="mx-auto text-orange-500" size={48} />
               <h3 className="mt-4 text-2xl font-heading font-bold">Application received!</h3>

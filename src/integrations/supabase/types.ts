@@ -26,6 +26,7 @@ export type Database = {
           phone: string | null
           profession: string | null
           specialty: string
+          status: string
           target_hackathon: string
         }
         Insert: {
@@ -39,6 +40,7 @@ export type Database = {
           phone?: string | null
           profession?: string | null
           specialty?: string
+          status?: string
           target_hackathon?: string
         }
         Update: {
@@ -52,6 +54,7 @@ export type Database = {
           phone?: string | null
           profession?: string | null
           specialty?: string
+          status?: string
           target_hackathon?: string
         }
         Relationships: []
