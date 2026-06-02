@@ -53,8 +53,11 @@ const regSchema = z.object({
   motivation: z.string().trim().max(2000).optional().default(""),
 });
 
+const MAX_SPOTS = 30;
+
 const BujaHackathon = () => {
   const [trainers, setTrainers] = useState<any[]>([]);
+  const [accepted, setAccepted] = useState<any[]>([]);
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [form, setForm] = useState({
@@ -73,7 +76,15 @@ const BujaHackathon = () => {
     supabase.from("hackathon_trainers" as any).select("*").order("sort_order").then(({ data }) => {
       if (data) setTrainers(data as any[]);
     });
+    supabase
+      .from("hackathon_registrations" as any)
+      .select("id, full_name, profession, specialty, bitcoin_level, target_hackathon")
+      .eq("status", "accepted")
+      .order("created_at", { ascending: true })
+      .then(({ data }) => setAccepted((data as any[]) || []));
   }, []);
+
+  const isFull = accepted.length >= MAX_SPOTS;
 
   const toggleLang = (l: string) => {
     setForm((p) => ({
