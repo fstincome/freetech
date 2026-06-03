@@ -104,23 +104,50 @@ const HackathonRegistrationsAdmin = () => {
     sortKey !== k ? <ChevronDown size={12} className="opacity-30" /> :
     sortDir === "asc" ? <ChevronUp size={12} /> : <ChevronDown size={12} />;
 
+  const exportHeaders = ["full_name", "email", "phone", "profession", "bitcoin_level", "target_hackathon", "specialty", "languages", "motivation", "status", "created_at"];
+  const today = () => new Date().toISOString().split("T")[0];
+
   const exportCSV = () => {
     if (regs.length === 0) return;
-    const headers = ["full_name", "email", "phone", "profession", "bitcoin_level", "target_hackathon", "specialty", "languages", "motivation", "status", "created_at"];
     const rows = regs.map(r =>
-      headers.map(h => {
+      exportHeaders.map(h => {
         const v = h === "languages" ? (r[h] || []).join("|") : (r[h] ?? "");
         return `"${String(v).replace(/"/g, '""')}"`;
       }).join(",")
     );
-    const csv = [headers.join(","), ...rows].join("\n");
+    const csv = [exportHeaders.join(","), ...rows].join("\n");
     const blob = new Blob([csv], { type: "text/csv" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = `hackathon-registrations-${new Date().toISOString().split("T")[0]}.csv`;
+    a.download = `hackathon-registrations-${today()}.csv`;
     a.click();
     URL.revokeObjectURL(url);
+  };
+
+  const exportXLSX = () => {
+    if (regs.length === 0) return;
+    const rows = regs.map(r => exportHeaders.map(h => h === "languages" ? (r[h] || []).join(", ") : (h === "created_at" ? new Date(r[h]).toLocaleString() : (r[h] ?? ""))));
+    const ws = XLSX.utils.aoa_to_sheet([exportHeaders, ...rows]);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Registrations");
+    XLSX.writeFile(wb, `hackathon-registrations-${today()}.xlsx`);
+  };
+
+  const exportPDF = () => {
+    if (regs.length === 0) return;
+    const doc = new jsPDF({ orientation: "landscape" });
+    doc.setFontSize(14);
+    doc.text("Hackathon Buja — Registrations", 14, 14);
+    doc.setFontSize(9);
+    doc.text(`Generated: ${new Date().toLocaleString()} — Total: ${regs.length}`, 14, 20);
+    const cols = ["Name", "Email", "Phone", "Level", "Target", "Specialty", "Status", "Date"];
+    const body = regs.map(r => [
+      r.full_name, r.email, r.phone || "", r.bitcoin_level, r.target_hackathon,
+      r.specialty, r.status || "pending", new Date(r.created_at).toLocaleDateString(),
+    ]);
+    autoTable(doc, { head: [cols], body, startY: 25, styles: { fontSize: 8 }, headStyles: { fillColor: [251, 146, 60] } });
+    doc.save(`hackathon-registrations-${today()}.pdf`);
   };
 
   const totals = {
