@@ -380,122 +380,21 @@ const BujaHackathon = () => {
             </div>
           )}
 
-          {isFull ? (
-            <div className="mt-10 rounded-2xl border border-orange-500/40 bg-orange-500/10 p-8 text-center">
-              <Trophy className="mx-auto text-orange-500" size={48} />
-              <h3 className="mt-4 text-2xl font-heading font-bold">Cohort complete!</h3>
-              <p className="mt-2 text-muted-foreground">
-                All {MAX_SPOTS} spots have been filled. Applications are now closed — stay tuned for the next edition.
-              </p>
-            </div>
-          ) : submitted ? (
-            <div className="mt-10 rounded-2xl border border-orange-500/40 bg-orange-500/10 p-8 text-center">
-              <CheckCircle2 className="mx-auto text-orange-500" size={48} />
-              <h3 className="mt-4 text-2xl font-heading font-bold">Application received!</h3>
-              <p className="mt-2 text-muted-foreground">Thanks for applying. Our team will get back to you shortly.</p>
-            </div>
-          ) : (
-            <form onSubmit={handleSubmit} className="mt-10 space-y-5 rounded-2xl border border-border bg-card p-6 md:p-8">
-              <div className="grid md:grid-cols-2 gap-4">
-                <div>
-                  <label className="text-sm font-medium mb-1.5 block">Full name *</label>
-                  <Input required maxLength={120} value={form.full_name} onChange={(e) => setForm({ ...form, full_name: e.target.value })} />
-                </div>
-                <div>
-                  <label className="text-sm font-medium mb-1.5 block">Email *</label>
-                  <Input type="email" required maxLength={255} value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} />
-                </div>
-                <div>
-                  <label className="text-sm font-medium mb-1.5 block">Phone</label>
-                  <Input maxLength={40} value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} />
-                </div>
-                <div>
-                  <label className="text-sm font-medium mb-1.5 block">Profession / Student in</label>
-                  <Input maxLength={200} value={form.profession} onChange={(e) => setForm({ ...form, profession: e.target.value })} />
-                </div>
-                <div>
-                  <label className="text-sm font-medium mb-1.5 block">Bitcoin/Dev level *</label>
-                  <select
-                    required
-                    value={form.bitcoin_level}
-                    onChange={(e) => setForm({ ...form, bitcoin_level: e.target.value as any })}
-                    className="w-full h-10 rounded-md border border-input bg-background px-3 text-sm"
-                  >
-                    <option value="Beginner">Beginner</option>
-                    <option value="Intermediate">Intermediate</option>
-                    <option value="Advanced">Advanced</option>
-                  </select>
-                </div>
-                <div>
-                  <label className="text-sm font-medium mb-1.5 block">Target hackathon *</label>
-                  <select
-                    required
-                    value={form.target_hackathon}
-                    onChange={(e) => setForm({ ...form, target_hackathon: e.target.value as any })}
-                    className="w-full h-10 rounded-md border border-input bg-background px-3 text-sm"
-                  >
-                    <option value="both">Both (June 5 & 6)</option>
-                    <option value="day1">Hackathon #1 — June 5</option>
-                    <option value="day2">Hackathon #2 — June 6</option>
-                  </select>
-                </div>
-                <div className="md:col-span-2">
-                  <label className="text-sm font-medium mb-1.5 block">Developer specialty *</label>
-                  <div className="flex flex-wrap gap-2">
-                    {(["Backend", "Frontend", "Full Stack"] as const).map((s) => (
-                      <button
-                        type="button"
-                        key={s}
-                        onClick={() => setForm({ ...form, specialty: s })}
-                        className={`px-4 py-2 rounded-full text-sm border transition-colors ${
-                          form.specialty === s
-                            ? "bg-orange-500 text-white border-orange-500"
-                            : "border-border hover:border-orange-500/50"
-                        }`}
-                      >
-                        {s}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              </div>
-
-              <div>
-                <label className="text-sm font-medium mb-1.5 block">Languages you use</label>
-                <p className="text-xs text-muted-foreground mb-2">Select all that apply</p>
-                <div className="flex flex-wrap gap-2">
-                  {languagesList.map((l) => (
-                    <button
-                      type="button"
-                      key={l}
-                      onClick={() => toggleLang(l)}
-                      className={`px-3 py-1.5 rounded-full text-xs border transition-colors ${
-                        form.languages.includes(l)
-                          ? "bg-orange-500 text-white border-orange-500"
-                          : "border-border hover:border-orange-500/50"
-                      }`}
-                    >
-                      {l}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              <div>
-                <label className="text-sm font-medium mb-1.5 block">Motivation</label>
-                <Textarea rows={4} maxLength={2000} value={form.motivation} onChange={(e) => setForm({ ...form, motivation: e.target.value })} />
-              </div>
-
-              <Button
-                type="submit"
-                disabled={submitting}
-                className="w-full bg-orange-500 text-white hover:bg-orange-600 font-semibold"
-              >
-                {submitting ? <Loader2 size={16} className="mr-2 animate-spin" /> : <Zap size={16} className="mr-2" />}
-                Send my application
-              </Button>
-            </form>
-          )}
+          <div className="mt-10 rounded-2xl border border-orange-500/40 bg-orange-500/10 p-8 text-center">
+            <Trophy className="mx-auto text-orange-500" size={48} />
+            <h3 className="mt-4 text-2xl font-heading font-bold">Registrations closed</h3>
+            <p className="mt-2 text-muted-foreground">
+              The application deadline has passed. Thank you to everyone who applied —
+              check the selected participants above. Stay tuned for the next edition!
+            </p>
+            <Button
+              disabled
+              onClick={() => toast({ title: "Closed", description: "Registrations are closed due to the deadline.", variant: "destructive" })}
+              className="mt-6 bg-orange-500/60 text-white font-semibold cursor-not-allowed"
+            >
+              <Zap size={16} className="mr-2" /> Registration closed
+            </Button>
+          </div>
         </div>
       </section>
 
