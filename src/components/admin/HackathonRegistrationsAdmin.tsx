@@ -176,6 +176,8 @@ const HackathonRegistrationsAdmin = () => {
             <FileText size={14} className="mr-1" /> PDF
           </Button>
         </div>
+      </div>
+
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         <Card>
