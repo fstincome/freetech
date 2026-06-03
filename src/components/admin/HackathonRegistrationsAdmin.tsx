@@ -165,10 +165,17 @@ const HackathonRegistrationsAdmin = () => {
         <h2 className="text-2xl font-heading font-bold flex items-center gap-2">
           <Bitcoin size={22} className="text-orange-500" /> Inscriptions Hackathon
         </h2>
-        <Button onClick={exportCSV} disabled={regs.length === 0} className="bg-cyan text-navy hover:bg-cyan/90">
-          <Download size={16} className="mr-1" /> Exporter CSV
-        </Button>
-      </div>
+        <div className="flex gap-2 flex-wrap">
+          <Button onClick={exportCSV} disabled={regs.length === 0} variant="outline" size="sm">
+            <Download size={14} className="mr-1" /> CSV
+          </Button>
+          <Button onClick={exportXLSX} disabled={regs.length === 0} variant="outline" size="sm" className="text-green-600 border-green-600/40 hover:bg-green-500/10">
+            <FileSpreadsheet size={14} className="mr-1" /> Excel
+          </Button>
+          <Button onClick={exportPDF} disabled={regs.length === 0} variant="outline" size="sm" className="text-red-600 border-red-600/40 hover:bg-red-500/10">
+            <FileText size={14} className="mr-1" /> PDF
+          </Button>
+        </div>
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         <Card>
