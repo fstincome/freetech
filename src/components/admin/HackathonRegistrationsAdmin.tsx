@@ -274,6 +274,18 @@ const HackathonRegistrationsAdmin = () => {
                           </td>
                           <td className="p-3 hidden lg:table-cell">{r.specialty}</td>
                           <td className="p-3">
+                            {(() => {
+                              const t = r.target_hackathon || "both";
+                              const label = t === "both" ? "Day 1 + 2" : t === "day1" ? "Day 1" : t === "day2" ? "Day 2" : t;
+                              const cls = t === "both"
+                                ? "bg-purple-500/15 text-purple-600 dark:text-purple-400"
+                                : t === "day1"
+                                ? "bg-blue-500/15 text-blue-600 dark:text-blue-400"
+                                : "bg-amber-500/15 text-amber-600 dark:text-amber-400";
+                              return <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${cls}`}>{label}</span>;
+                            })()}
+                          </td>
+                          <td className="p-3">
                             <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${STATUS_BADGE[status]}`}>
                               {status}
                             </span>
