@@ -1,11 +1,14 @@
 import { useEffect, useMemo, useState } from "react";
+import * as XLSX from "xlsx";
+import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from "@/hooks/use-toast";
 import {
-  Download, Mail, Phone, Trash2, Users, Bitcoin, Calendar, CheckCircle2,
+  Download, FileSpreadsheet, FileText, Mail, Phone, Trash2, Users, Bitcoin, Calendar, CheckCircle2,
   XCircle, Search, ChevronUp, ChevronDown, ChevronLeft, ChevronRight, Loader2,
 } from "lucide-react";
 
