@@ -78,7 +78,7 @@ const BujaHackathon = () => {
     });
     supabase
       .from("hackathon_registrations" as any)
-      .select("id, full_name, profession, specialty, bitcoin_level, target_hackathon")
+      .select("id, full_name, email, phone, profession, specialty, bitcoin_level, target_hackathon, languages, motivation, created_at")
       .eq("status", "accepted")
       .order("created_at", { ascending: true })
       .then(({ data }) => setAccepted((data as any[]) || []));
@@ -349,31 +349,72 @@ const BujaHackathon = () => {
                   style={{ width: `${Math.min(100, (accepted.length / MAX_SPOTS) * 100)}%` }}
                 />
               </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {accepted.map((p) => (
                   <div
                     key={p.id}
-                    className="rounded-xl border border-orange-500/30 bg-card p-4 hover:border-orange-500/60 transition-colors"
+                    className="rounded-xl border border-orange-500/30 bg-card p-5 hover:border-orange-500/60 transition-colors"
                   >
                     <div className="flex items-start gap-3">
-                      <div className="h-10 w-10 rounded-full bg-orange-500/15 text-orange-500 font-heading font-bold flex items-center justify-center flex-shrink-0">
+                      <div className="h-12 w-12 rounded-full bg-orange-500/15 text-orange-500 font-heading font-bold flex items-center justify-center flex-shrink-0 text-lg">
                         {p.full_name?.[0]?.toUpperCase() || "?"}
                       </div>
-                      <div className="min-w-0">
-                        <div className="font-semibold truncate">{p.full_name}</div>
+                      <div className="min-w-0 flex-1">
+                        <div className="font-semibold text-base">{p.full_name}</div>
                         {p.profession && (
-                          <div className="text-xs text-muted-foreground truncate">{p.profession}</div>
+                          <div className="text-xs text-muted-foreground">{p.profession}</div>
                         )}
-                        <div className="mt-1 flex flex-wrap gap-1">
+                        <div className="mt-2 flex flex-wrap gap-1">
                           <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-orange-500/10 text-orange-600 dark:text-orange-400">
                             {p.specialty}
                           </span>
                           <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-muted">
-                            {p.bitcoin_level}
+                            ₿ {p.bitcoin_level}
+                          </span>
+                          <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-muted">
+                            {p.target_hackathon === "both" ? "Day 1 + 2" : p.target_hackathon === "day1" ? "Day 1" : "Day 2"}
                           </span>
                         </div>
                       </div>
                     </div>
+
+                    <dl className="mt-4 space-y-1.5 text-xs">
+                      {p.email && (
+                        <div className="flex gap-2">
+                          <dt className="text-muted-foreground w-20 flex-shrink-0">Email</dt>
+                          <dd className="font-mono truncate">{p.email}</dd>
+                        </div>
+                      )}
+                      {p.phone && (
+                        <div className="flex gap-2">
+                          <dt className="text-muted-foreground w-20 flex-shrink-0">Phone</dt>
+                          <dd className="font-mono">{p.phone}</dd>
+                        </div>
+                      )}
+                      {p.languages?.length > 0 && (
+                        <div className="flex gap-2">
+                          <dt className="text-muted-foreground w-20 flex-shrink-0">Stack</dt>
+                          <dd className="flex flex-wrap gap-1">
+                            {p.languages.map((l: string) => (
+                              <span key={l} className="px-1.5 py-0.5 rounded bg-muted text-[10px]">{l}</span>
+                            ))}
+                          </dd>
+                        </div>
+                      )}
+                      {p.created_at && (
+                        <div className="flex gap-2">
+                          <dt className="text-muted-foreground w-20 flex-shrink-0">Applied</dt>
+                          <dd>{new Date(p.created_at).toLocaleDateString()}</dd>
+                        </div>
+                      )}
+                    </dl>
+
+                    {p.motivation && (
+                      <div className="mt-3 pt-3 border-t border-border">
+                        <div className="text-[10px] uppercase tracking-wider text-muted-foreground mb-1">Motivation</div>
+                        <p className="text-xs text-muted-foreground leading-relaxed whitespace-pre-wrap">{p.motivation}</p>
+                      </div>
+                    )}
                   </div>
                 ))}
               </div>
