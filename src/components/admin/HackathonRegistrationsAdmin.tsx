@@ -248,6 +248,9 @@ const HackathonRegistrationsAdmin = () => {
                       <th className="p-3 font-medium hidden lg:table-cell cursor-pointer select-none" onClick={() => toggleSort("specialty")}>
                         <span className="inline-flex items-center gap-1">Spécialité <SortIcon k="specialty" /></span>
                       </th>
+                      <th className="p-3 font-medium cursor-pointer select-none" onClick={() => toggleSort("target_hackathon")}>
+                        <span className="inline-flex items-center gap-1">Présence <SortIcon k="target_hackathon" /></span>
+                      </th>
                       <th className="p-3 font-medium cursor-pointer select-none" onClick={() => toggleSort("status")}>
                         <span className="inline-flex items-center gap-1">Statut <SortIcon k="status" /></span>
                       </th>
