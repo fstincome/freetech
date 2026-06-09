@@ -20,9 +20,51 @@
     <meta name="twitter:title" content="Free Tech Institute">
     <meta name="twitter:description" content="Empowering Burundi's youth through digital inclusion">
     <meta name="twitter:image" content="https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/505b95f4-0783-4f28-9ffc-990028a30d5b/id-preview-50d5d6d2--5667d791-82f1-4870-b999-c6233be0fd27.lovable.app-1775025281040.png">
+
+    <style>
+      #preload {
+        position: fixed;
+        inset: 0;
+        z-index: 9999;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 1.5rem;
+        background: #0b1220;
+        transition: opacity 600ms ease, visibility 600ms ease;
+      }
+      #preload.fade-out {
+        opacity: 0;
+        visibility: hidden;
+      }
+      #preload img {
+        height: 80px;
+        width: auto;
+        animation: preloadPulse 2s ease-in-out infinite;
+      }
+      #preload p {
+        font-family: 'Montserrat', sans-serif;
+        font-size: 1.125rem;
+        font-weight: 500;
+        color: #ffffff;
+        text-align: center;
+        max-width: 320px;
+        line-height: 1.5;
+        opacity: 0.9;
+      }
+      @keyframes preloadPulse {
+        0%, 100% { transform: scale(1); opacity: 1; }
+        50% { transform: scale(1.05); opacity: 0.85; }
+      }
+    </style>
   </head>
 
   <body>
+    <div id="preload">
+      <img src="/logo.png" alt="Free Tech Institute" />
+      <p>Secure data for a free and prosperous society</p>
+    </div>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
