@@ -228,6 +228,25 @@ const AdminDashboard = () => {
             />
           )}
 
+          {activeTab === "about" && (
+            <AdminCrudTable
+              title="Section « Qui sommes-nous » (multilingue)"
+              tableName="site_about"
+              fields={[
+                { key: "section_key", label: "Clé (ne pas modifier)", type: "text" },
+                { key: "label", label: "Libellé", type: "text" },
+                { key: "fr", label: "Français", type: "textarea" },
+                { key: "en", label: "English", type: "textarea" },
+                { key: "sw", label: "Kiswahili", type: "textarea" },
+                { key: "sort_order", label: "Ordre", type: "number" },
+              ]}
+              data={data.about || []}
+              onRefresh={fetchAll}
+            />
+          )}
+
+
+
           {activeTab === "programs" && (
             <AdminCrudTable
               title="Programmes"
