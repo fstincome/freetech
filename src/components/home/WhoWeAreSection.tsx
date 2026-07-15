@@ -1,7 +1,9 @@
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import SectionHeading from "@/components/SectionHeading";
 import { Shield, Eye, Zap, Key } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { supabase } from "@/integrations/supabase/client";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 30 },
@@ -10,6 +12,18 @@ const fadeUp = {
 
 const WhoWeAreSection = () => {
   const { t } = useLanguage();
+  const [overrides, setOverrides] = useState<Record<string, string>>({});
+
+  useEffect(() => {
+    supabase.from("site_settings").select("key,value").like("key", "about.%").then(({ data }) => {
+      if (!data) return;
+      const map: Record<string, string> = {};
+      data.forEach((r: any) => { if (r.value && String(r.value).trim() !== "") map[r.key] = r.value; });
+      setOverrides(map);
+    });
+  }, []);
+
+  const tr = (key: string) => overrides[key] ?? t(key);
 
   const coreValues = [
     { icon: Eye, titleKey: "about.accessibility", descKey: "about.accessibility.desc" },
