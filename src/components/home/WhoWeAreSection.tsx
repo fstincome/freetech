@@ -12,19 +12,22 @@ const fadeUp = {
 
 const WhoWeAreSection = () => {
   const { t, lang } = useLanguage();
-  const [overrides, setOverrides] = useState<Record<string, string>>({});
+  const [rows, setRows] = useState<Record<string, { fr: string; en: string; sw: string }>>({});
 
   useEffect(() => {
-    supabase.from("site_settings").select("key,value").like("key", "about.%").then(({ data }) => {
+    supabase.from("site_about" as any).select("section_key,fr,en,sw").then(({ data }) => {
       if (!data) return;
-      const map: Record<string, string> = {};
-      data.forEach((r: any) => { if (r.value && String(r.value).trim() !== "") map[r.key] = r.value; });
-      setOverrides(map);
+      const map: Record<string, any> = {};
+      (data as any[]).forEach((r) => { map[r.section_key] = { fr: r.fr, en: r.en, sw: r.sw }; });
+      setRows(map);
     });
   }, []);
 
-  const tr = (key: string) => overrides[`${key}.${lang}`] ?? overrides[key] ?? t(key);
-
+  const tr = (key: string) => {
+    const r = rows[key];
+    const v = r?.[lang as "fr" | "en" | "sw"];
+    return v && v.trim() !== "" ? v : t(key);
+  };
 
   const coreValues = [
     { icon: Eye, titleKey: "about.accessibility", descKey: "about.accessibility.desc" },
