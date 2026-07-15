@@ -10,11 +10,12 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { LogOut, BarChart3, Globe, Eye, Calendar } from "lucide-react";
 import logo from "@/assets/logo.png";
 
-type Tab = "stats" | "hero" | "programs" | "workshops" | "events" | "partners" | "testimonials" | "impact" | "reports" | "team" | "settings" | "hackathon_regs" | "hackathon_trainers";
+type Tab = "stats" | "hero" | "about" | "programs" | "workshops" | "events" | "partners" | "testimonials" | "impact" | "reports" | "team" | "settings" | "hackathon_regs" | "hackathon_trainers";
 
 const tabs: { key: Tab; label: string }[] = [
   { key: "stats", label: "📊 Statistiques" },
   { key: "hero", label: "🎠 Hero Slides" },
+  { key: "about", label: "🧭 Qui sommes-nous" },
   { key: "programs", label: "📚 Programmes" },
   { key: "workshops", label: "🔧 Workshops" },
   { key: "events", label: "📅 Événements" },
@@ -40,7 +41,7 @@ const AdminDashboard = () => {
     if (!loading && (!user || !isAdmin)) navigate("/admin/login");
   }, [user, isAdmin, loading, navigate]);
   const fetchAll = async () => {
-    const [hero, programs, workshops, events, partners, testimonials, impact, reports, team, settings, hackTrainers] = await Promise.all([
+    const [hero, programs, workshops, events, partners, testimonials, impact, reports, team, settings, hackTrainers, about] = await Promise.all([
       supabase.from("site_hero_slides").select("*").order("sort_order"),
       supabase.from("site_programs").select("*").order("sort_order"),
       supabase.from("site_workshops").select("*").order("sort_order"),
@@ -52,12 +53,14 @@ const AdminDashboard = () => {
       supabase.from("site_team_members" as any).select("*").order("sort_order"),
       supabase.from("site_settings").select("*"),
       supabase.from("hackathon_trainers" as any).select("*").order("sort_order"),
+      supabase.from("site_about" as any).select("*").order("sort_order"),
     ]);
     setData({
       hero: hero.data || [], programs: programs.data || [], workshops: workshops.data || [],
       events: events.data || [], partners: partners.data || [], testimonials: testimonials.data || [],
       impact: impact.data || [], reports: reports.data || [], team: team.data || [], settings: settings.data || [],
       hackathon_trainers: (hackTrainers as any).data || [],
+      about: (about as any).data || [],
     });
   };
 
@@ -224,6 +227,25 @@ const AdminDashboard = () => {
               onRefresh={fetchAll}
             />
           )}
+
+          {activeTab === "about" && (
+            <AdminCrudTable
+              title="Section « Qui sommes-nous » (multilingue)"
+              tableName="site_about"
+              fields={[
+                { key: "section_key", label: "Clé (ne pas modifier)", type: "text" },
+                { key: "label", label: "Libellé", type: "text" },
+                { key: "fr", label: "Français", type: "textarea" },
+                { key: "en", label: "English", type: "textarea" },
+                { key: "sw", label: "Kiswahili", type: "textarea" },
+                { key: "sort_order", label: "Ordre", type: "number" },
+              ]}
+              data={data.about || []}
+              onRefresh={fetchAll}
+            />
+          )}
+
+
 
           {activeTab === "programs" && (
             <AdminCrudTable
