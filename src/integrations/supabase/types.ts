@@ -98,6 +98,42 @@ export type Database = {
         }
         Relationships: []
       }
+      site_about: {
+        Row: {
+          created_at: string
+          en: string | null
+          fr: string | null
+          id: string
+          label: string
+          section_key: string
+          sort_order: number
+          sw: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          en?: string | null
+          fr?: string | null
+          id?: string
+          label: string
+          section_key: string
+          sort_order?: number
+          sw?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          en?: string | null
+          fr?: string | null
+          id?: string
+          label?: string
+          section_key?: string
+          sort_order?: number
+          sw?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       site_events: {
         Row: {
           created_at: string
