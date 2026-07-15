@@ -10,11 +10,12 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { LogOut, BarChart3, Globe, Eye, Calendar } from "lucide-react";
 import logo from "@/assets/logo.png";
 
-type Tab = "stats" | "hero" | "programs" | "workshops" | "events" | "partners" | "testimonials" | "impact" | "reports" | "team" | "settings" | "hackathon_regs" | "hackathon_trainers";
+type Tab = "stats" | "hero" | "about" | "programs" | "workshops" | "events" | "partners" | "testimonials" | "impact" | "reports" | "team" | "settings" | "hackathon_regs" | "hackathon_trainers";
 
 const tabs: { key: Tab; label: string }[] = [
   { key: "stats", label: "📊 Statistiques" },
   { key: "hero", label: "🎠 Hero Slides" },
+  { key: "about", label: "🧭 Qui sommes-nous" },
   { key: "programs", label: "📚 Programmes" },
   { key: "workshops", label: "🔧 Workshops" },
   { key: "events", label: "📅 Événements" },
