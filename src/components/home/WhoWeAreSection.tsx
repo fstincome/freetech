@@ -11,7 +11,7 @@ const fadeUp = {
 };
 
 const WhoWeAreSection = () => {
-  const { t } = useLanguage();
+  const { t, lang } = useLanguage();
   const [overrides, setOverrides] = useState<Record<string, string>>({});
 
   useEffect(() => {
@@ -23,7 +23,8 @@ const WhoWeAreSection = () => {
     });
   }, []);
 
-  const tr = (key: string) => overrides[key] ?? t(key);
+  const tr = (key: string) => overrides[`${key}.${lang}`] ?? overrides[key] ?? t(key);
+
 
   const coreValues = [
     { icon: Eye, titleKey: "about.accessibility", descKey: "about.accessibility.desc" },
