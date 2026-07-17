@@ -332,9 +332,13 @@ const AdminDashboard = () => {
               tableName="site_impact_stats"
               fields={[
                 { key: "value", label: "Valeur", type: "text" },
-                { key: "label", label: "Label", type: "text" },
+                { key: "label", label: "Label (défaut)", type: "text" },
+                { key: "label_fr", label: "Label FR", type: "text" },
+                { key: "label_en", label: "Label EN", type: "text" },
+                { key: "label_sw", label: "Label SW", type: "text" },
                 { key: "sort_order", label: "Ordre", type: "number" },
               ]}
+
               data={data.impact || []}
               onRefresh={fetchAll}
             />
