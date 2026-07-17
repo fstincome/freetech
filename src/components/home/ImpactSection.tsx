@@ -42,21 +42,47 @@ const parseStatValue = (value: string) => {
 };
 
 const ImpactSection = () => {
-  const { t } = useLanguage();
+  const { t, lang } = useLanguage();
   const [stats, setStats] = useState<any[]>([]);
+  const [about, setAbout] = useState<Record<string, { fr: string; en: string; sw: string }>>({});
 
   useEffect(() => {
     supabase.from("site_impact_stats").select("*").order("sort_order").then(({ data }) => {
       if (data) setStats(data);
     });
+    supabase.from("site_about" as any).select("section_key,fr,en,sw").like("section_key", "impact.%").then(({ data }) => {
+      if (!data) return;
+      const map: Record<string, any> = {};
+      (data as any[]).forEach((r) => { map[r.section_key] = { fr: r.fr, en: r.en, sw: r.sw }; });
+      setAbout(map);
+    });
   }, []);
 
+  const tr = (key: string, fallback: string) => {
+    const r = about[key];
+    const v = r?.[lang as "fr" | "en" | "sw"];
+    return v && v.trim() !== "" ? v : fallback;
+  };
+
+  const labelFor = (s: any) => {
+    const key = `label_${lang}` as const;
+    const v = s[key];
+    return v && String(v).trim() !== "" ? v : s.label;
+  };
+
   if (stats.length === 0) return null;
+
+  const description = tr("impact.description", "");
 
   return (
     <section id="impact" className="section-padding bg-navy w-full">
       <div className="max-w-7xl mx-auto">
-        <SectionHeading label={t("impact.label")} title={t("impact.title")} light />
+        <SectionHeading
+          label={tr("impact.label", t("impact.label"))}
+          title={tr("impact.title", t("impact.title"))}
+          description={description || undefined}
+          light
+        />
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
           {stats.map((s, i) => {
             const { num, suffix } = parseStatValue(s.value);
@@ -65,7 +91,7 @@ const ImpactSection = () => {
                 <span className="text-5xl md:text-6xl font-heading font-bold text-cyan">
                   <CountUp target={num} suffix={suffix} />
                 </span>
-                <p className="text-white/60 text-sm mt-2">{s.label}</p>
+                <p className="text-white/60 text-sm mt-2">{labelFor(s)}</p>
               </motion.div>
             );
           })}
@@ -74,5 +100,6 @@ const ImpactSection = () => {
     </section>
   );
 };
+
 
 export default ImpactSection;
