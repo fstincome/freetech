@@ -5,7 +5,7 @@ import SectionHeading from "@/components/SectionHeading";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
 
-const PER_PAGE = 2;
+const PER_PAGE = 3;
 
 const EventsSection = () => {
   const { t } = useLanguage();
@@ -46,11 +46,11 @@ const EventsSection = () => {
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -40 }}
               transition={{ duration: 0.5 }}
-              className="grid grid-cols-1 md:grid-cols-2 gap-6"
+              className="grid grid-cols-1 md:grid-cols-3 gap-6"
             >
               {visible.map((event) => (
-                <article key={event.id} className="glass-card overflow-hidden flex flex-col sm:flex-row group">
-                  <div className="sm:w-2/5 h-44 sm:h-auto shrink-0 overflow-hidden">
+                <article key={event.id} className="glass-card overflow-hidden flex flex-col group">
+                  <div className="h-44 shrink-0 overflow-hidden">
                     <img
                       src={event.image_url}
                       alt={event.title}
