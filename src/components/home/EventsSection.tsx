@@ -50,7 +50,7 @@ const EventsSection = () => {
             >
               {visible.map((event) => (
                 <article key={event.id} className="glass-card overflow-hidden flex flex-col group">
-                  <div className="h-44 shrink-0 overflow-hidden">
+                  <div className="aspect-square shrink-0 overflow-hidden bg-muted/40">
                     <img
                       src={event.image_url}
                       alt={event.title}
