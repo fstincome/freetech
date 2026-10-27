@@ -8,6 +8,13 @@
       "when": 1793096952864,
       "tag": "0000_add_translations_jsonb",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1793097213081,
+      "tag": "0001_create_site_menu_items",
+      "breakpoints": true
     }
   ]
 }
