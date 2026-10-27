@@ -92,11 +92,11 @@ const ProgramsSection = () => {
           {selected !== null && (
             <>
               <DialogHeader>
-                <DialogTitle className="text-xl font-heading">{programs[selected].name}</DialogTitle>
+                <DialogTitle className="text-xl font-heading">{tr(programs[selected], "name", lang)}</DialogTitle>
                 <DialogDescription>Program Details</DialogDescription>
               </DialogHeader>
-              <img src={programs[selected].image_url} alt={programs[selected].name} className="w-full h-48 object-cover rounded-lg" />
-              <p className="text-muted-foreground text-sm leading-relaxed">{programs[selected].description}</p>
+              <img src={programs[selected].image_url} alt={tr(programs[selected], "name", lang)} className="w-full h-48 object-cover rounded-lg" />
+              <p className="text-muted-foreground text-sm leading-relaxed">{tr(programs[selected], "description", lang)}</p>
             </>
           )}
         </DialogContent>

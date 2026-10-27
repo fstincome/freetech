@@ -16,6 +16,7 @@ const fadeUp = {
 };
 
 interface TeamMember {
+  translations?: any;
   id: string;
   name: string;
   role: string;

@@ -6,6 +6,7 @@ import { tr } from "@/lib/i18n";
 import { supabase } from "@/integrations/supabase/client";
 
 interface TeamMember {
+  translations?: any;
   id: string;
   name: string;
   role: string;
