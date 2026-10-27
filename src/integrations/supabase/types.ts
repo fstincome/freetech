@@ -254,6 +254,56 @@ export type Database = {
         }
         Relationships: []
       }
+      site_menu_items: {
+        Row: {
+          created_at: string
+          highlight: boolean
+          id: string
+          label_en: string
+          label_fr: string
+          label_sw: string
+          link: string
+          parent_id: string | null
+          sort_order: number
+          updated_at: string
+          visible: boolean
+        }
+        Insert: {
+          created_at?: string
+          highlight?: boolean
+          id?: string
+          label_en?: string
+          label_fr?: string
+          label_sw?: string
+          link?: string
+          parent_id?: string | null
+          sort_order?: number
+          updated_at?: string
+          visible?: boolean
+        }
+        Update: {
+          created_at?: string
+          highlight?: boolean
+          id?: string
+          label_en?: string
+          label_fr?: string
+          label_sw?: string
+          link?: string
+          parent_id?: string | null
+          sort_order?: number
+          updated_at?: string
+          visible?: boolean
+        }
+        Relationships: [
+          {
+            foreignKeyName: "site_menu_items_parent_id_fkey"
+            columns: ["parent_id"]
+            isOneToOne: false
+            referencedRelation: "site_menu_items"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       site_partners: {
         Row: {
           created_at: string
