@@ -8,29 +8,52 @@ export const useAdmin = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
-      const u = session?.user ?? null;
-      setUser(u);
-      if (u) {
-        const { data } = await supabase.from("user_roles").select("role").eq("user_id", u.id);
-        setIsAdmin(!!data?.some(r => r.role === "admin"));
-      } else {
+    let active = true;
+    let checkId = 0;
+
+    const checkRole = async (u: User | null) => {
+      const id = ++checkId;
+      if (!u) {
+        if (!active) return;
+        setUser(null);
         setIsAdmin(false);
+        setLoading(false);
+        return;
       }
-      setLoading(false);
-    });
-
-    supabase.auth.getSession().then(async ({ data: { session } }) => {
-      const u = session?.user ?? null;
-      setUser(u);
-      if (u) {
-        const { data } = await supabase.from("user_roles").select("role").eq("user_id", u.id);
+      try {
+        const { data, error } = await supabase.from("user_roles").select("role").eq("user_id", u.id);
+        if (!active || id !== checkId) return;
+        if (error) throw error;
+        setUser(u);
         setIsAdmin(!!data?.some(r => r.role === "admin"));
+      } catch {
+        if (!active || id !== checkId) return;
+        setUser(null);
+        setIsAdmin(false);
+      } finally {
+        if (active && id === checkId) setLoading(false);
       }
-      setLoading(false);
+    };
+
+    // Never await Supabase calls inside onAuthStateChange (causes auth deadlock / freezes)
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setTimeout(() => checkRole(session?.user ?? null), 0);
     });
 
-    return () => subscription.unsubscribe();
+    supabase.auth.getSession()
+      .then(({ data: { session } }) => checkRole(session?.user ?? null))
+      .catch(() => checkRole(null));
+
+    // Safety net: if nothing resolves, send to login instead of hanging
+    const timeout = setTimeout(() => {
+      if (active) setLoading(l => { if (l) { setUser(null); setIsAdmin(false); } return false; });
+    }, 8000);
+
+    return () => {
+      active = false;
+      clearTimeout(timeout);
+      subscription.unsubscribe();
+    };
   }, []);
 
   return { user, isAdmin, loading };
