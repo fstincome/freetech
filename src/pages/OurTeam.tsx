@@ -1,8 +1,10 @@
 import { useState, useEffect } from "react";
+import { useLanguage } from "@/contexts/LanguageContext";
 import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Linkedin, Twitter, BookOpen } from "lucide-react";
 import SectionHeading from "@/components/SectionHeading";
+import { tr } from "@/lib/i18n";
 import { supabase } from "@/integrations/supabase/client";
 
 const fadeUp = {
@@ -65,6 +67,7 @@ const SocialButtons = ({ member, onStop }: { member: TeamMember; onStop: (e: Rea
 const OurTeam = () => {
   const [teamMembers, setTeamMembers] = useState<TeamMember[]>([]);
   const navigate = useNavigate();
+  const { lang } = useLanguage();
 
   useEffect(() => {
     supabase.from("site_team_members").select("*").order("sort_order").then(({ data }) => {
@@ -114,7 +117,7 @@ const OurTeam = () => {
                 </div>
                 <div className="p-5 text-center">
                   <h3 className="font-heading font-bold text-foreground text-base">{member.name}</h3>
-                  <p className="text-cyan text-xs mt-1 font-semibold">{member.role}</p>
+                  <p className="text-cyan text-xs mt-1 font-semibold">{tr(member, "role", lang)}</p>
                   <SocialButtons member={member} onStop={stop} />
                 </div>
               </motion.button>
@@ -150,7 +153,7 @@ const OurTeam = () => {
                     </div>
                     <div className="p-5 text-center">
                       <h3 className="font-heading font-bold text-foreground text-sm">{member.name}</h3>
-                      <p className="text-muted-foreground text-xs mt-1">{member.role}</p>
+                      <p className="text-muted-foreground text-xs mt-1">{tr(member, "role", lang)}</p>
                       <SocialButtons member={member} onStop={stop} />
                     </div>
                   </motion.button>

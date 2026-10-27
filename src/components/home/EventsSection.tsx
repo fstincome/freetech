@@ -3,12 +3,13 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ChevronLeft, ChevronRight, MapPin, CalendarDays } from "lucide-react";
 import SectionHeading from "@/components/SectionHeading";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { tr } from "@/lib/i18n";
 import { supabase } from "@/integrations/supabase/client";
 
 const PER_PAGE = 3;
 
 const EventsSection = () => {
-  const { t } = useLanguage();
+  const { t, lang } = useLanguage();
   const [events, setEvents] = useState<any[]>([]);
   const [current, setCurrent] = useState(0);
 
@@ -53,17 +54,17 @@ const EventsSection = () => {
                   <div className="aspect-square shrink-0 overflow-hidden bg-muted/40">
                     <img
                       src={event.image_url}
-                      alt={event.title}
+                      alt={tr(event, "title", lang)}
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                     />
                   </div>
                   <div className="flex-1 p-5 flex flex-col">
                     <div className="flex flex-wrap items-center gap-3 text-xs text-cyan font-heading font-medium mb-2">
-                      <span className="flex items-center gap-1.5"><MapPin size={13} /> {event.location}</span>
-                      <span className="flex items-center gap-1.5"><CalendarDays size={13} /> {event.event_date}</span>
+                      <span className="flex items-center gap-1.5"><MapPin size={13} /> {tr(event, "location", lang)}</span>
+                      <span className="flex items-center gap-1.5"><CalendarDays size={13} /> {tr(event, "event_date", lang)}</span>
                     </div>
-                    <h3 className="text-lg font-heading font-bold text-foreground mb-2">{event.title}</h3>
-                    <p className="text-muted-foreground text-sm leading-relaxed mb-4 line-clamp-3 flex-1">{event.description}</p>
+                    <h3 className="text-lg font-heading font-bold text-foreground mb-2">{tr(event, "title", lang)}</h3>
+                    <p className="text-muted-foreground text-sm leading-relaxed mb-4 line-clamp-3 flex-1">{tr(event, "description", lang)}</p>
                     {event.link && (
                       <a href={event.link} target="_blank" rel="noopener noreferrer" className="self-start px-5 py-2 rounded-full bg-cyan text-navy font-heading font-semibold text-sm hover:bg-cyan/90 transition-all">
                         {t("events.readmore")}

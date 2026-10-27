@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { tr } from "@/lib/i18n";
 import { supabase } from "@/integrations/supabase/client";
 
 // Translation keys for slides loaded from DB (index-based fallback)
@@ -35,11 +36,12 @@ const HeroCarousel = () => {
 
   const slide = slides[current];
   const keys = slideTranslationKeys[current];
-  const useTranslation = lang !== "en" && keys;
-  const slideLabel = useTranslation ? t(keys.label) : slide.label;
-  const slideTitle = useTranslation ? t(keys.title) : slide.title;
-  const slideSubtitle = useTranslation ? t(keys.subtitle) : slide.subtitle;
-  const slideDesc = useTranslation ? t(keys.desc) : slide.description;
+  const hasDb = !!slide.translations?.[lang] && Object.values(slide.translations[lang]).some((v: any) => v && String(v).trim());
+  const useTranslation = !hasDb && lang !== "en" && keys;
+  const slideLabel = useTranslation ? t(keys.label) : tr(slide, "label", lang);
+  const slideTitle = useTranslation ? t(keys.title) : tr(slide, "title", lang);
+  const slideSubtitle = useTranslation ? t(keys.subtitle) : tr(slide, "subtitle", lang);
+  const slideDesc = useTranslation ? t(keys.desc) : tr(slide, "description", lang);
 
   return (
     <section className="relative h-screen w-full overflow-hidden">

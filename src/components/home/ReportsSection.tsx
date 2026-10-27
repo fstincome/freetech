@@ -1,4 +1,5 @@
 import { useEffect, useState, useRef, useCallback } from "react";
+import { tr } from "@/lib/i18n";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/contexts/LanguageContext";
 import SectionHeading from "@/components/SectionHeading";
@@ -63,7 +64,7 @@ const playPageFlipSound = () => {
 };
 
 const ReportsSection = () => {
-  const { t } = useLanguage();
+  const { t, lang } = useLanguage();
   const [reports, setReports] = useState<Report[]>([]);
   const [readingReport, setReadingReport] = useState<Report | null>(null);
 
@@ -105,7 +106,7 @@ const ReportsSection = () => {
                 <div className="relative h-56 overflow-hidden">
                   <img
                     src={report.cover_image_url}
-                    alt={report.title}
+                    alt={tr(report, "title", lang)}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                   />
                   <div className="absolute top-3 right-3 bg-cyan text-navy text-xs font-bold px-3 py-1 rounded-full">
@@ -131,11 +132,11 @@ const ReportsSection = () => {
               {/* Content */}
               <div className="p-6">
                 <h3 className="font-heading font-bold text-lg text-foreground mb-2">
-                  {report.title}
+                  {tr(report, "title", lang)}
                 </h3>
                 {report.description && (
                   <p className="text-sm text-muted-foreground line-clamp-3 mb-4">
-                    {report.description}
+                    {tr(report, "description", lang)}
                   </p>
                 )}
                 <span className="inline-flex items-center gap-2 text-cyan text-sm font-heading font-semibold">
@@ -153,16 +154,16 @@ const ReportsSection = () => {
         <DialogContent className="max-w-5xl w-[96vw] h-[90vh] p-0 overflow-hidden rounded-xl border-2 border-border shadow-2xl">
           {readingReport && (
             <div className="flex flex-col h-full bg-[#f5f0e8] dark:bg-card">
-              <DialogTitle className="sr-only">{readingReport.title}</DialogTitle>
+              <DialogTitle className="sr-only">{tr(readingReport, "title", lang)}</DialogTitle>
               <DialogDescription className="sr-only">
-                Lecture du rapport {readingReport.title}
+                Lecture du rapport {tr(readingReport, "title", lang)}
               </DialogDescription>
               {/* Book header */}
               <div className="flex items-center justify-between px-6 py-3 bg-gradient-to-r from-navy to-navy/90 text-white">
                 <div className="flex items-center gap-3">
                   <BookOpen size={20} className="text-cyan" />
                   <div>
-                    <h3 className="font-heading font-bold text-sm">{readingReport.title}</h3>
+                    <h3 className="font-heading font-bold text-sm">{tr(readingReport, "title", lang)}</h3>
                     <p className="text-xs text-white/60">{readingReport.year}</p>
                   </div>
                 </div>
@@ -173,7 +174,7 @@ const ReportsSection = () => {
                   src={getGoogleDrivePreviewUrl(readingReport.drive_link)}
                   className="w-full h-full border-none"
                   allow="autoplay"
-                  title={readingReport.title}
+                  title={tr(readingReport, "title", lang)}
                 />
                 {/* Hide the Google Drive "open in new window" button */}
                 <div className="absolute top-0 right-0 w-12 h-12 bg-[#2d2d2d]" />

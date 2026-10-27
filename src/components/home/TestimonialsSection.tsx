@@ -3,12 +3,13 @@ import { motion, AnimatePresence } from "framer-motion";
 import SectionHeading from "@/components/SectionHeading";
 import { ChevronLeft, ChevronRight, Quote } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { tr } from "@/lib/i18n";
 import { supabase } from "@/integrations/supabase/client";
 
 const TestimonialsSection = () => {
   const [current, setCurrent] = useState(0);
   const [testimonials, setTestimonials] = useState<any[]>([]);
-  const { t } = useLanguage();
+  const { t, lang } = useLanguage();
 
   useEffect(() => {
     supabase.from("site_testimonials").select("*").order("sort_order").then(({ data }) => {
@@ -37,13 +38,13 @@ const TestimonialsSection = () => {
             <motion.div key={current} initial={{ opacity: 0, x: 60 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -60 }} transition={{ duration: 0.5 }} className="glass-card p-8 md:p-12">
               <Quote className="w-10 h-10 text-cyan/30 mb-6" />
               <p className="text-muted-foreground text-base md:text-lg leading-relaxed mb-8 italic">
-                "{testimonials[current].text}"
+                "{tr(testimonials[current], "text", lang)}"
               </p>
               <div className="flex items-center gap-4">
                 <img src={testimonials[current].author_image_url} alt={testimonials[current].author_name} className="w-14 h-14 rounded-full object-cover border-2 border-cyan/30" />
                 <div>
                   <p className="font-heading font-bold text-foreground">{testimonials[current].author_name}</p>
-                  <p className="text-sm text-muted-foreground">{testimonials[current].author_role}</p>
+                  <p className="text-sm text-muted-foreground">{tr(testimonials[current], "author_role", lang)}</p>
                 </div>
               </div>
             </motion.div>

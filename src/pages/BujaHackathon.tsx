@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
+import { useLanguage } from "@/contexts/LanguageContext";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { ArrowLeft, Bitcoin, Calendar, MapPin, Users, Zap, Trophy, CheckCircle2, Loader2 } from "lucide-react";
 import { z } from "zod";
+import { tr } from "@/lib/i18n";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
@@ -57,6 +59,7 @@ const MAX_SPOTS = 30;
 
 const BujaHackathon = () => {
   const [trainers, setTrainers] = useState<any[]>([]);
+  const { lang: siteLang } = useLanguage();
   const [accepted, setAccepted] = useState<any[]>([]);
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
@@ -265,8 +268,8 @@ const BujaHackathon = () => {
                 </div>
                 <div className="p-5">
                   <h3 className="font-heading font-bold text-lg">{t.name}</h3>
-                  <div className="text-orange-500 text-xs font-mono tracking-wider mt-0.5">{t.role}</div>
-                  <p className="mt-3 text-sm text-muted-foreground leading-relaxed">{t.bio}</p>
+                  <div className="text-orange-500 text-xs font-mono tracking-wider mt-0.5">{tr(t, "role", siteLang)}</div>
+                  <p className="mt-3 text-sm text-muted-foreground leading-relaxed">{tr(t, "bio", siteLang)}</p>
                   <div className="mt-4 flex gap-3 text-sm">
                     {t.twitter_url && (
                       <a href={t.twitter_url} target="_blank" rel="noopener noreferrer" className="hover:text-orange-500 transition-colors font-medium">

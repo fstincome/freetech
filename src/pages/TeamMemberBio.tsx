@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
+import { useLanguage } from "@/contexts/LanguageContext";
 import { Link, useParams } from "react-router-dom";
 import { ArrowLeft, Linkedin, Twitter } from "lucide-react";
+import { tr } from "@/lib/i18n";
 import { supabase } from "@/integrations/supabase/client";
 
 interface TeamMember {
@@ -18,6 +20,7 @@ const TeamMemberBio = () => {
   const { slug } = useParams<{ slug: string }>();
   const [member, setMember] = useState<TeamMember | null>(null);
   const [loading, setLoading] = useState(true);
+  const { lang } = useLanguage();
 
   useEffect(() => {
     if (!slug) return;
@@ -33,7 +36,7 @@ const TeamMemberBio = () => {
   }, [slug]);
 
   useEffect(() => {
-    if (member) document.title = `${member.name} – ${member.role} | FREETI`;
+    if (member) document.title = `${member.name} – ${tr(member, "role", lang)} | FREETI`;
   }, [member]);
 
   return (
@@ -72,9 +75,9 @@ const TeamMemberBio = () => {
               </div>
               <div>
                 <h1 className="text-3xl md:text-4xl font-heading font-bold text-foreground">{member.name}</h1>
-                <p className="text-cyan font-semibold mt-2 uppercase tracking-wide text-sm">{member.role}</p>
+                <p className="text-cyan font-semibold mt-2 uppercase tracking-wide text-sm">{tr(member, "role", lang)}</p>
                 <div className="mt-6 text-base text-muted-foreground leading-relaxed whitespace-pre-line">
-                  {member.bio?.trim() ? member.bio : "Aucune biographie disponible pour le moment."}
+                  {tr(member, "bio", lang).trim() ? tr(member, "bio", lang) : "Aucune biographie disponible pour le moment."}
                 </div>
               </div>
             </article>
