@@ -38,7 +38,7 @@ const AdminDashboard = () => {
   const [statsPeriod, setStatsPeriod] = useState("30");
 
   useEffect(() => {
-    if (!loading && (!user || !isAdmin)) navigate("/admin/login");
+    if (!loading && (!user || !isAdmin)) navigate("/admin/login", { replace: true });
   }, [user, isAdmin, loading, navigate]);
   const fetchAll = async () => {
     const [hero, programs, workshops, events, partners, testimonials, impact, reports, team, settings, hackTrainers, about] = await Promise.all([
