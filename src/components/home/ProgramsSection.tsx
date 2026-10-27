@@ -4,6 +4,7 @@ import SectionHeading from "@/components/SectionHeading";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { tr } from "@/lib/i18n";
 import { supabase } from "@/integrations/supabase/client";
 
 const fadeUp = {
@@ -14,7 +15,7 @@ const fadeUp = {
 const ProgramsSection = () => {
   const [selected, setSelected] = useState<number | null>(null);
   const [programs, setPrograms] = useState<any[]>([]);
-  const { t } = useLanguage();
+  const { t, lang } = useLanguage();
   const scrollRef = useRef<HTMLDivElement>(null);
   const [autoScroll, setAutoScroll] = useState(true);
 
@@ -75,10 +76,10 @@ const ProgramsSection = () => {
               onClick={() => { setSelected(i % programs.length); setAutoScroll(false); }}
               className="group relative rounded-2xl overflow-hidden h-72 min-w-[280px] w-[280px] flex-shrink-0 cursor-pointer"
             >
-              <img src={p.image_url} alt={p.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
+              <img src={p.image_url} alt={tr(p, "name", lang)} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
               <div className="absolute inset-0 bg-gradient-to-t from-navy via-navy/30 to-transparent" />
               <div className="absolute bottom-0 left-0 right-0 p-6">
-                <h3 className="text-white font-heading font-bold text-lg">{p.name}</h3>
+                <h3 className="text-white font-heading font-bold text-lg">{tr(p, "name", lang)}</h3>
                 <span className="text-cyan text-xs font-medium mt-1 inline-block">{t("programs.learnmore")}</span>
               </div>
             </motion.div>
@@ -91,11 +92,11 @@ const ProgramsSection = () => {
           {selected !== null && (
             <>
               <DialogHeader>
-                <DialogTitle className="text-xl font-heading">{programs[selected].name}</DialogTitle>
+                <DialogTitle className="text-xl font-heading">{tr(programs[selected], "name", lang)}</DialogTitle>
                 <DialogDescription>Program Details</DialogDescription>
               </DialogHeader>
-              <img src={programs[selected].image_url} alt={programs[selected].name} className="w-full h-48 object-cover rounded-lg" />
-              <p className="text-muted-foreground text-sm leading-relaxed">{programs[selected].description}</p>
+              <img src={programs[selected].image_url} alt={tr(programs[selected], "name", lang)} className="w-full h-48 object-cover rounded-lg" />
+              <p className="text-muted-foreground text-sm leading-relaxed">{tr(programs[selected], "description", lang)}</p>
             </>
           )}
         </DialogContent>

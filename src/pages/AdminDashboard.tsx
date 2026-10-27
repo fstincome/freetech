@@ -215,6 +215,7 @@ const AdminDashboard = () => {
             <AdminCrudTable
               title="Hero Slides"
               tableName="site_hero_slides"
+              translatable={["label","title","subtitle","description"]}
               fields={[
                 { key: "label", label: "Label", type: "text" },
                 { key: "title", label: "Titre", type: "text" },
@@ -251,6 +252,7 @@ const AdminDashboard = () => {
             <AdminCrudTable
               title="Programmes"
               tableName="site_programs"
+              translatable={["name","description"]}
               fields={[
                 { key: "name", label: "Nom", type: "text" },
                 { key: "description", label: "Description", type: "textarea" },
@@ -266,6 +268,7 @@ const AdminDashboard = () => {
             <AdminCrudTable
               title="Workshops"
               tableName="site_workshops"
+              translatable={["title"]}
               fields={[
                 { key: "title", label: "Titre", type: "text" },
                 { key: "image_url", label: "Image URL", type: "url" },
@@ -281,6 +284,7 @@ const AdminDashboard = () => {
             <AdminCrudTable
               title="Événements"
               tableName="site_events"
+              translatable={["title","location","event_date","description"]}
               fields={[
                 { key: "title", label: "Titre", type: "text" },
                 { key: "location", label: "Lieu", type: "text" },
@@ -314,6 +318,7 @@ const AdminDashboard = () => {
             <AdminCrudTable
               title="Témoignages"
               tableName="site_testimonials"
+              translatable={["text","author_role"]}
               fields={[
                 { key: "author_name", label: "Nom", type: "text" },
                 { key: "author_role", label: "Rôle", type: "text" },
@@ -348,6 +353,7 @@ const AdminDashboard = () => {
             <AdminCrudTable
               title="Rapports Annuels"
               tableName="site_reports"
+              translatable={["title","description"]}
               fields={[
                 { key: "title", label: "Titre", type: "text" },
                 { key: "year", label: "Année", type: "number" },
@@ -365,6 +371,7 @@ const AdminDashboard = () => {
             <AdminCrudTable
               title="Équipe"
               tableName="site_team_members"
+              translatable={["role","bio"]}
               fields={[
                 { key: "name", label: "Nom", type: "text" },
                 { key: "role", label: "Rôle", type: "text" },
@@ -384,6 +391,7 @@ const AdminDashboard = () => {
             <AdminCrudTable
               title="Formateurs Hackathon Buja"
               tableName="hackathon_trainers"
+              translatable={["role","bio"]}
               fields={[
                 { key: "name", label: "Nom", type: "text" },
                 { key: "role", label: "Rôle", type: "text" },

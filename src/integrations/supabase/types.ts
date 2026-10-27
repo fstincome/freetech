@@ -69,6 +69,7 @@ export type Database = {
           name: string
           role: string
           sort_order: number
+          translations: Json
           twitter_url: string
           updated_at: string
         }
@@ -81,6 +82,7 @@ export type Database = {
           name: string
           role?: string
           sort_order?: number
+          translations?: Json
           twitter_url?: string
           updated_at?: string
         }
@@ -93,6 +95,7 @@ export type Database = {
           name?: string
           role?: string
           sort_order?: number
+          translations?: Json
           twitter_url?: string
           updated_at?: string
         }
@@ -145,6 +148,7 @@ export type Database = {
           location: string
           sort_order: number
           title: string
+          translations: Json
           updated_at: string
         }
         Insert: {
@@ -157,6 +161,7 @@ export type Database = {
           location?: string
           sort_order?: number
           title: string
+          translations?: Json
           updated_at?: string
         }
         Update: {
@@ -169,6 +174,7 @@ export type Database = {
           location?: string
           sort_order?: number
           title?: string
+          translations?: Json
           updated_at?: string
         }
         Relationships: []
@@ -183,6 +189,7 @@ export type Database = {
           sort_order: number
           subtitle: string
           title: string
+          translations: Json
           updated_at: string
         }
         Insert: {
@@ -194,6 +201,7 @@ export type Database = {
           sort_order?: number
           subtitle?: string
           title: string
+          translations?: Json
           updated_at?: string
         }
         Update: {
@@ -205,6 +213,7 @@ export type Database = {
           sort_order?: number
           subtitle?: string
           title?: string
+          translations?: Json
           updated_at?: string
         }
         Relationships: []
@@ -283,6 +292,7 @@ export type Database = {
           image_url: string
           name: string
           sort_order: number
+          translations: Json
           updated_at: string
         }
         Insert: {
@@ -292,6 +302,7 @@ export type Database = {
           image_url: string
           name: string
           sort_order?: number
+          translations?: Json
           updated_at?: string
         }
         Update: {
@@ -301,6 +312,7 @@ export type Database = {
           image_url?: string
           name?: string
           sort_order?: number
+          translations?: Json
           updated_at?: string
         }
         Relationships: []
@@ -314,6 +326,7 @@ export type Database = {
           id: string
           sort_order: number
           title: string
+          translations: Json
           updated_at: string
           year: number
         }
@@ -325,6 +338,7 @@ export type Database = {
           id?: string
           sort_order?: number
           title: string
+          translations?: Json
           updated_at?: string
           year?: number
         }
@@ -336,6 +350,7 @@ export type Database = {
           id?: string
           sort_order?: number
           title?: string
+          translations?: Json
           updated_at?: string
           year?: number
         }
@@ -377,6 +392,7 @@ export type Database = {
           role: string
           slug: string | null
           sort_order: number
+          translations: Json
           twitter_url: string
           updated_at: string
         }
@@ -391,6 +407,7 @@ export type Database = {
           role?: string
           slug?: string | null
           sort_order?: number
+          translations?: Json
           twitter_url?: string
           updated_at?: string
         }
@@ -405,6 +422,7 @@ export type Database = {
           role?: string
           slug?: string | null
           sort_order?: number
+          translations?: Json
           twitter_url?: string
           updated_at?: string
         }
@@ -419,6 +437,7 @@ export type Database = {
           id: string
           sort_order: number
           text: string
+          translations: Json
           updated_at: string
         }
         Insert: {
@@ -429,6 +448,7 @@ export type Database = {
           id?: string
           sort_order?: number
           text: string
+          translations?: Json
           updated_at?: string
         }
         Update: {
@@ -439,6 +459,7 @@ export type Database = {
           id?: string
           sort_order?: number
           text?: string
+          translations?: Json
           updated_at?: string
         }
         Relationships: []
@@ -451,6 +472,7 @@ export type Database = {
           image_url: string
           sort_order: number
           title: string
+          translations: Json
           updated_at: string
         }
         Insert: {
@@ -460,6 +482,7 @@ export type Database = {
           image_url: string
           sort_order?: number
           title: string
+          translations?: Json
           updated_at?: string
         }
         Update: {
@@ -469,6 +492,7 @@ export type Database = {
           image_url?: string
           sort_order?: number
           title?: string
+          translations?: Json
           updated_at?: string
         }
         Relationships: []

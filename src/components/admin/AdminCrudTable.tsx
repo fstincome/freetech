@@ -19,13 +19,24 @@ interface AdminCrudTableProps {
   fields: FieldConfig[];
   data: any[];
   onRefresh: () => void;
+  translatable?: string[];
 }
 
-const AdminCrudTable = ({ title, tableName, fields, data, onRefresh }: AdminCrudTableProps) => {
+type L = "fr" | "en" | "sw";
+const LANGS: { key: L; label: string }[] = [
+  { key: "fr", label: "Français" },
+  { key: "en", label: "English" },
+  { key: "sw", label: "Kiswahili" },
+];
+
+const AdminCrudTable = ({ title, tableName, fields, data, onRefresh, translatable = [] }: AdminCrudTableProps) => {
   const [editItem, setEditItem] = useState<any | null>(null);
   const [isNew, setIsNew] = useState(false);
   const [formData, setFormData] = useState<Record<string, any>>({});
   const [uploading, setUploading] = useState<string | null>(null);
+  const [trans, setTrans] = useState<Record<L, Record<string, string>>>({ fr: {}, en: {}, sw: {} });
+  const [editLang, setEditLang] = useState<L>("fr");
+  const isTr = (k: string) => translatable.includes(k);
   const fileRefs = useRef<Record<string, HTMLInputElement | null>>({});
 
   const openNew = () => {
@@ -37,6 +48,8 @@ const AdminCrudTable = ({ title, tableName, fields, data, onRefresh }: AdminCrud
         : "";
     });
     setFormData(empty);
+    setTrans({ fr: {}, en: {}, sw: {} });
+    setEditLang("fr");
     setIsNew(true);
     setEditItem({});
   };
@@ -49,6 +62,11 @@ const AdminCrudTable = ({ title, tableName, fields, data, onRefresh }: AdminCrud
         : item[f.key] ?? "";
     });
     setFormData(d);
+    const t = item.translations || {};
+    const next: Record<L, Record<string, string>> = { fr: { ...(t.fr || {}) }, en: { ...(t.en || {}) }, sw: { ...(t.sw || {}) } };
+    translatable.forEach(k => { if (!next.en[k]) next.en[k] = item[k] ?? ""; });
+    setTrans(next);
+    setEditLang("fr");
     setIsNew(false);
     setEditItem(item);
   };
@@ -105,6 +123,12 @@ const AdminCrudTable = ({ title, tableName, fields, data, onRefresh }: AdminCrud
         payload[f.key] = formData[f.key];
       }
     });
+    if (translatable.length) {
+      translatable.forEach(k => {
+        payload[k] = trans.en[k] || trans.fr[k] || trans.sw[k] || formData[k] || "";
+      });
+      payload.translations = trans;
+    }
 
     if (isNew) {
       const { error } = await supabase.from(tableName as any).insert(payload as any);
@@ -202,10 +226,33 @@ const AdminCrudTable = ({ title, tableName, fields, data, onRefresh }: AdminCrud
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-4">
+            {translatable.length > 0 && (
+              <div className="sticky top-0 z-10 bg-background pb-2">
+                <p className="text-xs text-muted-foreground mb-2">Langue des textes :</p>
+                <div className="grid grid-cols-3 gap-1 rounded-lg bg-muted p-1">
+                  {LANGS.map(l => (
+                    <button key={l.key} type="button" onClick={() => setEditLang(l.key)}
+                      className={`rounded-md py-1.5 text-sm font-medium transition-colors ${editLang === l.key ? "bg-background text-foreground shadow-sm" : "text-muted-foreground"}`}>
+                      {l.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
             {fields.map(f => (
               <div key={f.key}>
-                <label className="text-sm font-medium text-foreground mb-1 block">{f.label}</label>
-                {f.type === "textarea" ? (
+                <label className="text-sm font-medium text-foreground mb-1 block">
+                  {f.label}{isTr(f.key) && <span className="ml-2 text-xs text-cyan uppercase">{editLang}</span>}
+                </label>
+                {isTr(f.key) ? (
+                  f.type === "textarea" ? (
+                    <Textarea rows={4} value={trans[editLang][f.key] ?? ""}
+                      onChange={e => setTrans(p => ({ ...p, [editLang]: { ...p[editLang], [f.key]: e.target.value } }))} />
+                  ) : (
+                    <Input value={trans[editLang][f.key] ?? ""}
+                      onChange={e => setTrans(p => ({ ...p, [editLang]: { ...p[editLang], [f.key]: e.target.value } }))} />
+                  )
+                ) : f.type === "textarea" ? (
                   <Textarea value={formData[f.key] || ""} onChange={e => setFormData(p => ({ ...p, [f.key]: e.target.value }))} rows={3} />
                 ) : f.type === "url" ? (
                   <div className="space-y-2">
