@@ -1,77 +1,117 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useMemo } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Menu, X, Globe, ChevronDown } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { supabase } from "@/integrations/supabase/client";
 import { useLanguage, Lang } from "@/contexts/LanguageContext";
 import ThemeToggle from "@/components/ThemeToggle";
 import logo from "@/assets/logo.png";
 
 const langLabels: Record<Lang, string> = { en: "EN", fr: "FR", sw: "SW" };
 
-interface DropdownItem {
-  labelKey: string;
-  hash?: string;
-  path?: string;
-}
-
-interface NavMenu {
-  labelKey: string;
-  items?: DropdownItem[];
-  hash?: string;
-  path?: string;
+interface MenuNode {
+  key: string;
+  labels: { fr: string; en: string; sw: string };
+  link?: string;
   highlight?: boolean;
+  children?: MenuNode[];
 }
 
-const navMenus: NavMenu[] = [
-  { labelKey: "nav.home", hash: "#hero" },
+// Fallback menu shown when the editable menu in the admin is empty or unreachable.
+const fallbackMenus: MenuNode[] = [
+  { key: "home", labels: { fr: "Accueil", en: "Home", sw: "Nyumbani" }, link: "#hero" },
   {
-    labelKey: "nav.aboutus",
-    items: [
-      { labelKey: "nav.approach", hash: "#approach" },
-      { labelKey: "nav.about", hash: "#about" },
-      { labelKey: "nav.team", path: "/our-team" },
-      { labelKey: "nav.partners", hash: "#partners" },
-      { labelKey: "nav.latestreports", hash: "#reports" },
+    key: "aboutus",
+    labels: { fr: "À Propos", en: "About Us", sw: "Kuhusu Sisi" },
+    children: [
+      { key: "approach", labels: { fr: "Notre Approche", en: "Our Approach", sw: "Mbinu Yetu" }, link: "#approach" },
+      { key: "about", labels: { fr: "Qui Sommes-Nous", en: "Who We Are", sw: "Sisi Ni Nani" }, link: "#about" },
+      { key: "team", labels: { fr: "Équipe", en: "Team", sw: "Timu" }, link: "/our-team" },
+      { key: "partners", labels: { fr: "Partenaires", en: "Partners", sw: "Washirika" }, link: "#partners" },
+      { key: "reports", labels: { fr: "Nos Derniers Rapports", en: "Our Latest Reports", sw: "Ripoti Zetu za Hivi Karibuni" }, link: "#reports" },
     ],
   },
   {
-    labelKey: "nav.programs",
-    items: [
-      { labelKey: "nav.ourprograms", hash: "#programs" },
-      { labelKey: "nav.workshops", hash: "#workshops" },
-      { labelKey: "nav.events", hash: "#events" },
-      { labelKey: "nav.impact", hash: "#impact" },
-      { labelKey: "nav.testimonials", hash: "#testimonials" },
-      { labelKey: "nav.bujahackathon", path: "/buja-hackathon" },
+    key: "programs",
+    labels: { fr: "Programmes", en: "Programs", sw: "Programu" },
+    children: [
+      { key: "ourprograms", labels: { fr: "Nos Programmes", en: "Our Programs", sw: "Programu Zetu" }, link: "#programs" },
+      { key: "workshops", labels: { fr: "Ateliers", en: "Workshops", sw: "Warsha" }, link: "#workshops" },
+      { key: "events", labels: { fr: "Événements", en: "Events", sw: "Matukio" }, link: "#events" },
+      { key: "impact", labels: { fr: "Impact", en: "Impact", sw: "Athari" }, link: "#impact" },
+      { key: "testimonials", labels: { fr: "Témoignages", en: "Testimonials", sw: "Ushuhuda" }, link: "#testimonials" },
+      { key: "bujahackathon", labels: { fr: "Hackathon Buja", en: "Buja Hackathon", sw: "Hackathon Buja" }, link: "/buja-hackathon" },
     ],
   },
-  { labelKey: "nav.hub", path: "/gitega-study-space", highlight: true },
+  { key: "hub", labels: { fr: "Notre Hub Digital", en: "Our Digital Hub", sw: "Kituo Chetu cha Dijitali" }, link: "/gitega-study-space", highlight: true },
 ];
+
+interface DbRow {
+  id: string;
+  parent_id: string | null;
+  label_fr: string;
+  label_en: string;
+  label_sw: string;
+  link: string;
+  highlight: boolean;
+  visible: boolean;
+  sort_order: number;
+}
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [langOpen, setLangOpen] = useState(false);
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
   const [mobileExpanded, setMobileExpanded] = useState<string | null>(null);
+  const [dbMenus, setDbMenus] = useState<MenuNode[] | null>(null);
   const dropdownTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
   const location = useLocation();
-  const { t, lang, setLang } = useLanguage();
+  const { lang, setLang } = useLanguage();
   const isHome = location.pathname === "/";
 
-  const handleNavigate = (item: DropdownItem | NavMenu) => {
+  useEffect(() => {
+    let active = true;
+    supabase.from("site_menu_items").select("*").order("sort_order").then(({ data }) => {
+      if (!active) return;
+      const rows = (data || []) as DbRow[];
+      if (!rows.length) { setDbMenus(null); return; }
+      const visible = rows.filter(r => r.visible);
+      const toNode = (r: DbRow): MenuNode => ({
+        key: r.id,
+        labels: { fr: r.label_fr, en: r.label_en, sw: r.label_sw },
+        link: r.link || undefined,
+        highlight: r.highlight,
+      });
+      const tops = visible.filter(r => !r.parent_id).sort((a, b) => a.sort_order - b.sort_order);
+      setDbMenus(tops.map(top => {
+        const children = visible.filter(r => r.parent_id === top.id).sort((a, b) => a.sort_order - b.sort_order).map(toNode);
+        return { ...toNode(top), children: children.length ? children : undefined };
+      }));
+    });
+    return () => { active = false; };
+  }, []);
+
+  const menus = useMemo(() => dbMenus ?? fallbackMenus, [dbMenus]);
+  const label = (n: MenuNode) => n.labels[lang] || n.labels.en;
+
+  const handleNavigate = (item: MenuNode) => {
     setIsOpen(false);
     setOpenDropdown(null);
     setMobileExpanded(null);
-    if (item.path) return; // Link handles it
-    if (item.hash) {
-      if (item.hash === "#hero") {
-        if (isHome) window.scrollTo({ top: 0, behavior: "smooth" });
-        else window.location.href = "/";
-      } else if (isHome) {
-        document.querySelector(item.hash)?.scrollIntoView({ behavior: "smooth" });
-      } else {
-        window.location.href = "/" + item.hash;
-      }
+    const link = item.link;
+    if (link?.startsWith("http")) {
+      window.open(link, "_blank", "noopener,noreferrer");
+      return;
+    }
+    if (!link) return;
+    if (link === "#hero") {
+      if (isHome) window.scrollTo({ top: 0, behavior: "smooth" });
+      else window.location.href = "/";
+      return;
+    }
+    if (link.startsWith("#")) {
+      if (isHome) document.querySelector(link)?.scrollIntoView({ behavior: "smooth" });
+      else window.location.href = "/" + link;
     }
   };
 
@@ -88,21 +128,58 @@ const Navbar = () => {
     return () => { if (dropdownTimeout.current) clearTimeout(dropdownTimeout.current); };
   }, []);
 
-  const renderDesktopItem = (menu: NavMenu) => {
-    if (menu.items) {
+  const renderDesktopChild = (item: MenuNode) => {
+    if (item.link?.startsWith("http")) {
+      return (
+        <a
+          key={item.key}
+          href={item.link}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="block px-4 py-2.5 text-sm hover:bg-accent transition-colors text-foreground/70 hover:text-foreground"
+        >
+          {label(item)}
+        </a>
+      );
+    }
+    if (item.link?.startsWith("/")) {
+      return (
+        <Link
+          key={item.key}
+          to={item.link}
+          onClick={() => setOpenDropdown(null)}
+          className={`block px-4 py-2.5 text-sm hover:bg-accent transition-colors ${location.pathname === item.link ? "text-cyan" : "text-foreground/70 hover:text-foreground"}`}
+        >
+          {label(item)}
+        </Link>
+      );
+    }
+    return (
+      <button
+        key={item.key}
+        onClick={() => handleNavigate(item)}
+        className="block w-full text-left px-4 py-2.5 text-sm text-foreground/70 hover:text-foreground hover:bg-accent transition-colors"
+      >
+        {label(item)}
+      </button>
+    );
+  };
+
+  const renderDesktopItem = (menu: MenuNode) => {
+    if (menu.children) {
       return (
         <div
-          key={menu.labelKey}
+          key={menu.key}
           className="relative"
-          onMouseEnter={() => handleDropdownEnter(menu.labelKey)}
+          onMouseEnter={() => handleDropdownEnter(menu.key)}
           onMouseLeave={handleDropdownLeave}
         >
           <button className="flex items-center gap-1 text-sm font-medium transition-colors hover:text-cyan text-foreground/80">
-            {t(menu.labelKey)}
-            <ChevronDown size={14} className={`transition-transform ${openDropdown === menu.labelKey ? "rotate-180" : ""}`} />
+            {label(menu)}
+            <ChevronDown size={14} className={`transition-transform ${openDropdown === menu.key ? "rotate-180" : ""}`} />
           </button>
           <AnimatePresence>
-            {openDropdown === menu.labelKey && (
+            {openDropdown === menu.key && (
               <motion.div
                 initial={{ opacity: 0, y: 8 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -110,26 +187,7 @@ const Navbar = () => {
                 transition={{ duration: 0.15 }}
                 className="absolute top-full left-0 mt-2 min-w-[200px] bg-popover border border-border rounded-xl overflow-hidden shadow-2xl"
               >
-                {menu.items.map((item) =>
-                  item.path ? (
-                    <Link
-                      key={item.labelKey}
-                      to={item.path}
-                      onClick={() => setOpenDropdown(null)}
-                      className={`block px-4 py-2.5 text-sm hover:bg-accent transition-colors ${location.pathname === item.path ? "text-cyan" : "text-foreground/70 hover:text-foreground"}`}
-                    >
-                      {t(item.labelKey)}
-                    </Link>
-                  ) : (
-                    <button
-                      key={item.labelKey}
-                      onClick={() => handleNavigate(item)}
-                      className="block w-full text-left px-4 py-2.5 text-sm text-foreground/70 hover:text-foreground hover:bg-accent transition-colors"
-                    >
-                      {t(item.labelKey)}
-                    </button>
-                  )
-                )}
+                {menu.children.map(renderDesktopChild)}
               </motion.div>
             )}
           </AnimatePresence>
@@ -137,25 +195,77 @@ const Navbar = () => {
       );
     }
 
-    if (menu.path) {
+    if (menu.link?.startsWith("http")) {
+      return (
+        <a
+          key={menu.key}
+          href={menu.link}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="px-5 py-2 rounded-full bg-cyan text-primary-foreground text-xs font-semibold hover:bg-cyan/90 transition-colors"
+        >
+          {label(menu)}
+        </a>
+      );
+    }
+
+    if (menu.link?.startsWith("/")) {
       return (
         <Link
-          key={menu.labelKey}
-          to={menu.path}
-          className={`text-sm font-semibold transition-colors hover:text-cyan ${menu.highlight ? "text-cyan" : location.pathname === menu.path ? "text-cyan" : "text-foreground/80"}`}
+          key={menu.key}
+          to={menu.link}
+          className={`text-sm font-semibold transition-colors hover:text-cyan ${menu.highlight ? "text-cyan" : location.pathname === menu.link ? "text-cyan" : "text-foreground/80"}`}
         >
-          {t(menu.labelKey)}
+          {label(menu)}
         </Link>
       );
     }
 
     return (
       <button
-        key={menu.labelKey}
+        key={menu.key}
         onClick={() => handleNavigate(menu)}
         className="text-sm font-medium transition-colors hover:text-cyan text-foreground/80"
       >
-        {t(menu.labelKey)}
+        {label(menu)}
+      </button>
+    );
+  };
+
+  const renderMobileChild = (item: MenuNode) => {
+    if (item.link?.startsWith("http")) {
+      return (
+        <a
+          key={item.key}
+          href={item.link}
+          target="_blank"
+          rel="noopener noreferrer"
+          onClick={() => setIsOpen(false)}
+          className="block py-2 text-sm text-foreground/60 hover:text-cyan"
+        >
+          {label(item)}
+        </a>
+      );
+    }
+    if (item.link?.startsWith("/")) {
+      return (
+        <Link
+          key={item.key}
+          to={item.link}
+          onClick={() => setIsOpen(false)}
+          className={`block py-2 text-sm ${location.pathname === item.link ? "text-cyan" : "text-foreground/60 hover:text-cyan"}`}
+        >
+          {label(item)}
+        </Link>
+      );
+    }
+    return (
+      <button
+        key={item.key}
+        onClick={() => handleNavigate(item)}
+        className="block w-full text-left py-2 text-sm text-foreground/60 hover:text-cyan"
+      >
+        {label(item)}
       </button>
     );
   };
@@ -169,7 +279,7 @@ const Navbar = () => {
 
         {/* Desktop */}
         <div className="hidden lg:flex items-center gap-6">
-          {navMenus.map(renderDesktopItem)}
+          {menus.map(renderDesktopItem)}
 
           {/* Language Switcher */}
           <div className="relative">
@@ -193,15 +303,6 @@ const Navbar = () => {
           </div>
 
           <ThemeToggle className="text-foreground/80" />
-
-          <a
-            href="https://freeti.org"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="px-5 py-2 rounded-full bg-cyan text-primary-foreground text-xs font-semibold hover:bg-cyan/90 transition-colors"
-          >
-            {t("nav.blog")}
-          </a>
         </div>
 
         {/* Mobile toggle */}
@@ -220,16 +321,16 @@ const Navbar = () => {
             className="lg:hidden bg-background/95 backdrop-blur-xl border-t border-border max-h-[70vh] overflow-y-auto"
           >
             <div className="flex flex-col px-4 py-4 gap-1">
-              {navMenus.map((menu) => {
-                if (menu.items) {
-                  const isExpanded = mobileExpanded === menu.labelKey;
+              {menus.map((menu) => {
+                if (menu.children) {
+                  const isExpanded = mobileExpanded === menu.key;
                   return (
-                    <div key={menu.labelKey}>
+                    <div key={menu.key}>
                       <button
-                        onClick={() => setMobileExpanded(isExpanded ? null : menu.labelKey)}
+                        onClick={() => setMobileExpanded(isExpanded ? null : menu.key)}
                         className="w-full flex items-center justify-between py-2.5 text-sm font-medium text-foreground/70 hover:text-cyan"
                       >
-                        {t(menu.labelKey)}
+                        {label(menu)}
                         <ChevronDown size={16} className={`transition-transform ${isExpanded ? "rotate-180" : ""}`} />
                       </button>
                       <AnimatePresence>
@@ -240,26 +341,7 @@ const Navbar = () => {
                             exit={{ opacity: 0, height: 0 }}
                             className="pl-4 border-l border-border ml-2"
                           >
-                            {menu.items.map((item) =>
-                              item.path ? (
-                                <Link
-                                  key={item.labelKey}
-                                  to={item.path}
-                                  onClick={() => setIsOpen(false)}
-                                  className={`block py-2 text-sm ${location.pathname === item.path ? "text-cyan" : "text-foreground/60 hover:text-cyan"}`}
-                                >
-                                  {t(item.labelKey)}
-                                </Link>
-                              ) : (
-                                <button
-                                  key={item.labelKey}
-                                  onClick={() => handleNavigate(item)}
-                                  className="block w-full text-left py-2 text-sm text-foreground/60 hover:text-cyan"
-                                >
-                                  {t(item.labelKey)}
-                                </button>
-                              )
-                            )}
+                            {menu.children.map(renderMobileChild)}
                           </motion.div>
                         )}
                       </AnimatePresence>
@@ -267,26 +349,41 @@ const Navbar = () => {
                   );
                 }
 
-                if (menu.path) {
+                if (menu.link?.startsWith("http")) {
+                  return (
+                    <a
+                      key={menu.key}
+                      href={menu.link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={() => setIsOpen(false)}
+                      className="py-2.5 text-sm font-semibold text-cyan"
+                    >
+                      {label(menu)}
+                    </a>
+                  );
+                }
+
+                if (menu.link?.startsWith("/")) {
                   return (
                     <Link
-                      key={menu.labelKey}
-                      to={menu.path}
+                      key={menu.key}
+                      to={menu.link}
                       onClick={() => setIsOpen(false)}
-                      className={`py-2.5 text-sm font-semibold ${menu.highlight ? "text-cyan" : location.pathname === menu.path ? "text-cyan" : "text-foreground/70 hover:text-cyan"}`}
+                      className={`py-2.5 text-sm font-semibold ${menu.highlight ? "text-cyan" : location.pathname === menu.link ? "text-cyan" : "text-foreground/70 hover:text-cyan"}`}
                     >
-                      {t(menu.labelKey)}
+                      {label(menu)}
                     </Link>
                   );
                 }
 
                 return (
                   <button
-                    key={menu.labelKey}
+                    key={menu.key}
                     onClick={() => handleNavigate(menu)}
                     className="py-2.5 text-sm font-medium text-foreground/70 hover:text-cyan text-left"
                   >
-                    {t(menu.labelKey)}
+                    {label(menu)}
                   </button>
                 );
               })}

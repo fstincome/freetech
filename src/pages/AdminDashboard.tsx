@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useAdmin } from "@/hooks/useAdmin";
+import MenuAdmin from "@/components/admin/MenuAdmin";
 import AdminCrudTable from "@/components/admin/AdminCrudTable";
 import HackathonRegistrationsAdmin from "@/components/admin/HackathonRegistrationsAdmin";
 import { Button } from "@/components/ui/button";
@@ -10,7 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { LogOut, BarChart3, Globe, Eye, Calendar } from "lucide-react";
 import logo from "@/assets/logo.png";
 
-type Tab = "stats" | "hero" | "about" | "programs" | "workshops" | "events" | "partners" | "testimonials" | "impact" | "reports" | "team" | "settings" | "hackathon_regs" | "hackathon_trainers";
+type Tab = "stats" | "hero" | "about" | "programs" | "workshops" | "events" | "partners" | "testimonials" | "impact" | "reports" | "team" | "menu" | "settings" | "hackathon_regs" | "hackathon_trainers";
 
 const tabs: { key: Tab; label: string }[] = [
   { key: "stats", label: "📊 Statistiques" },
@@ -24,6 +25,7 @@ const tabs: { key: Tab; label: string }[] = [
   { key: "impact", label: "📈 Impact" },
   { key: "reports", label: "📄 Rapports" },
   { key: "team", label: "👥 Équipe" },
+  { key: "menu", label: "☰ Menu du site" },
   { key: "hackathon_trainers", label: "₿ Formateurs Hackathon" },
   { key: "hackathon_regs", label: "📝 Inscriptions Hackathon" },
   { key: "settings", label: "⚙️ Paramètres" },
@@ -407,6 +409,8 @@ const AdminDashboard = () => {
           )}
 
           {activeTab === "hackathon_regs" && <HackathonRegistrationsAdmin />}
+
+          {activeTab === "menu" && <MenuAdmin />}
 
           {activeTab === "settings" && (
             <AdminCrudTable
