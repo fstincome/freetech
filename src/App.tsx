@@ -17,6 +17,7 @@ import TeamMemberBio from "./pages/TeamMemberBio.tsx";
 import AdminLogin from "./pages/AdminLogin.tsx";
 import AdminDashboard from "./pages/AdminDashboard.tsx";
 import NotFound from "./pages/NotFound.tsx";
+import TheoryOfChange from "./pages/TheoryOfChange.tsx";
 
 const queryClient = new QueryClient();
 
@@ -31,6 +32,7 @@ const AppContent = () => {
       <Route path="/our-team" element={<><Navbar /><main><OurTeam /></main><Footer /></>} />
       <Route path="/our-team/:slug" element={<><Navbar /><main><TeamMemberBio /></main><Footer /></>} />
       <Route path="/buja-hackathon" element={<BujaHackathon />} />
+      <Route path="/theorie-du-changement" element={<><Navbar /><main><TheoryOfChange /></main><Footer /></>} />
       <Route path="*" element={<><Navbar /><main><NotFound /></main><Footer /></>} />
     </Routes>
   );
