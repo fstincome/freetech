@@ -254,6 +254,54 @@ export type Database = {
         }
         Relationships: []
       }
+      site_job_opportunities: {
+        Row: {
+          application_url: string
+          contract: string
+          deadline: string | null
+          expectations: string
+          id: string
+          image_url: string
+          introduction: string
+          location: string
+          responsibilities: string
+          role: string
+          sort_order: number
+          title: string
+          translations: Json
+        }
+        Insert: {
+          application_url?: string
+          contract?: string
+          deadline?: string | null
+          expectations?: string
+          id?: string
+          image_url?: string
+          introduction?: string
+          location?: string
+          responsibilities?: string
+          role?: string
+          sort_order?: number
+          title?: string
+          translations?: Json
+        }
+        Update: {
+          application_url?: string
+          contract?: string
+          deadline?: string | null
+          expectations?: string
+          id?: string
+          image_url?: string
+          introduction?: string
+          location?: string
+          responsibilities?: string
+          role?: string
+          sort_order?: number
+          title?: string
+          translations?: Json
+        }
+        Relationships: []
+      }
       site_menu_items: {
         Row: {
           created_at: string
@@ -511,6 +559,42 @@ export type Database = {
           text?: string
           translations?: Json
           updated_at?: string
+        }
+        Relationships: []
+      }
+      site_theory_sections: {
+        Row: {
+          description: string
+          id: string
+          image_url: string
+          image_url_2: string
+          section_key: string
+          sort_order: number
+          tag: string
+          title: string
+          translations: Json
+        }
+        Insert: {
+          description?: string
+          id?: string
+          image_url?: string
+          image_url_2?: string
+          section_key: string
+          sort_order?: number
+          tag?: string
+          title?: string
+          translations?: Json
+        }
+        Update: {
+          description?: string
+          id?: string
+          image_url?: string
+          image_url_2?: string
+          section_key?: string
+          sort_order?: number
+          tag?: string
+          title?: string
+          translations?: Json
         }
         Relationships: []
       }
