@@ -1,0 +1,14 @@
+CREATE TABLE public.site_theory_sections (id uuid PRIMARY KEY DEFAULT gen_random_uuid(), section_key text NOT NULL UNIQUE, title text NOT NULL DEFAULT '', description text NOT NULL DEFAULT '', tag text NOT NULL DEFAULT '', image_url text NOT NULL DEFAULT '', image_url_2 text NOT NULL DEFAULT '', sort_order integer NOT NULL DEFAULT 0, translations jsonb NOT NULL DEFAULT '{}'::jsonb);
+GRANT SELECT ON public.site_theory_sections TO anon;
+GRANT SELECT, INSERT, UPDATE, DELETE ON public.site_theory_sections TO authenticated;
+GRANT ALL ON public.site_theory_sections TO service_role;
+ALTER TABLE public.site_theory_sections ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Public read theory" ON public.site_theory_sections FOR SELECT TO anon, authenticated USING (true);
+CREATE POLICY "Admins manage theory" ON public.site_theory_sections FOR ALL TO authenticated USING (public.has_role(auth.uid(), 'admin')) WITH CHECK (public.has_role(auth.uid(), 'admin'));
+CREATE TABLE public.site_job_opportunities (id uuid PRIMARY KEY DEFAULT gen_random_uuid(), title text NOT NULL DEFAULT '', introduction text NOT NULL DEFAULT '', role text NOT NULL DEFAULT '', responsibilities text NOT NULL DEFAULT '', expectations text NOT NULL DEFAULT '', location text NOT NULL DEFAULT '', contract text NOT NULL DEFAULT '', application_url text NOT NULL DEFAULT '', deadline date, image_url text NOT NULL DEFAULT '', sort_order integer NOT NULL DEFAULT 0, translations jsonb NOT NULL DEFAULT '{}'::jsonb);
+GRANT SELECT ON public.site_job_opportunities TO anon;
+GRANT SELECT, INSERT, UPDATE, DELETE ON public.site_job_opportunities TO authenticated;
+GRANT ALL ON public.site_job_opportunities TO service_role;
+ALTER TABLE public.site_job_opportunities ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Public read jobs" ON public.site_job_opportunities FOR SELECT TO anon, authenticated USING (true);
+CREATE POLICY "Admins manage jobs" ON public.site_job_opportunities FOR ALL TO authenticated USING (public.has_role(auth.uid(), 'admin')) WITH CHECK (public.has_role(auth.uid(), 'admin'));
