@@ -724,6 +724,16 @@ export type Database = {
         }
         Returns: boolean
       }
+      read_published_cms_page: {
+        Args: { page_slug: string }
+        Returns: {
+          id: string
+          published_blocks: Json
+          published_titles: Json
+          slug: string
+          updated_at: string
+        }[]
+      }
       slugify: { Args: { value: string }; Returns: string }
     }
     Enums: {

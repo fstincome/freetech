@@ -29,6 +29,13 @@
       "when": 1793685327961,
       "tag": "0003_visual_page_cms",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1793685649253,
+      "tag": "0004_protect_cms_drafts_for_signed_in_visitors",
+      "breakpoints": true
     }
   ]
 }
