@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import SectionHeading from "@/components/SectionHeading";
-import { Shield, Eye, Zap, Key } from "lucide-react";
+import { Shield, Eye, Zap, Wrench, Users } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -30,10 +30,11 @@ const WhoWeAreSection = () => {
   };
 
   const coreValues = [
-    { icon: Eye, titleKey: "about.accessibility", descKey: "about.accessibility.desc" },
-    { icon: Shield, titleKey: "about.integrity", descKey: "about.integrity.desc" },
     { icon: Zap, titleKey: "about.empowerment", descKey: "about.empowerment.desc" },
-    { icon: Key, titleKey: "about.autonomy", descKey: "about.autonomy.desc" },
+    { icon: Eye, titleKey: "about.accessibility", descKey: "about.accessibility.desc" },
+    { icon: Wrench, titleKey: "about.learning", descKey: "about.learning.desc" },
+    { icon: Shield, titleKey: "about.integrity", descKey: "about.integrity.desc" },
+    { icon: Users, titleKey: "about.collaboration", descKey: "about.collaboration.desc" },
   ];
 
   return (
@@ -74,7 +75,7 @@ const WhoWeAreSection = () => {
             <h3 className="text-2xl md:text-3xl font-heading font-bold text-white">{tr("about.values")}</h3>
             <p className="text-white/50 text-sm mt-2 max-w-2xl mx-auto">{tr("about.values.desc")}</p>
           </motion.div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {coreValues.map((v, i) => (
               <motion.div key={v.titleKey} custom={i} variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }} className="text-center p-6 rounded-2xl bg-white/5 border border-white/10 hover:border-cyan/30 transition-colors backdrop-blur-sm">
                 <div className="w-14 h-14 rounded-xl bg-cyan/15 flex items-center justify-center mx-auto mb-4">
