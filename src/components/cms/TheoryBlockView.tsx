@@ -47,6 +47,7 @@ export default function TheoryBlockView({ block, sectionKey, lang }: { block: Cm
             return <li key={index} className={`theory-stage relative rounded-lg border border-border bg-card p-5 md:p-6 ${index === stages.length - 1 ? "theory-result" : ""}`}>
               <div className="flex items-center justify-between mb-6"><span className={`theory-stage-icon ${second ? "theory-tone-positive" : "theory-tone-primary"}`}><StageIcon className="h-5 w-5" strokeWidth={1.7} /></span><span className="text-sm font-semibold tabular-nums text-muted-foreground">0{index + 1}</span></div>
               <h3 className="text-lg font-heading font-semibold leading-snug mb-4">{stage.title}</h3>
+               {block.stageImages?.[index] && <img src={block.stageImages[index]} alt={stage.title} loading="lazy" className="w-full aspect-[4/3] object-contain rounded-md bg-muted mb-4" />}
               <div className="cms-rich-text text-sm text-muted-foreground leading-relaxed" dangerouslySetInnerHTML={html(stage.body)} />
               {index < stages.length - 1 && <><ArrowRight aria-hidden="true" className="hidden xl:block absolute top-10 -right-5 z-10 h-4 w-4 text-muted-foreground"/><ArrowDown aria-hidden="true" className="md:hidden absolute -bottom-5 left-1/2 -translate-x-1/2 h-4 w-4 text-muted-foreground"/></>}
             </li>;
