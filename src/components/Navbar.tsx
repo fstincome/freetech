@@ -40,9 +40,9 @@ const fallbackMenus: MenuNode[] = [
       { key: "events", labels: { fr: "Événements", en: "Events", sw: "Matukio" }, link: "#events" },
       { key: "impact", labels: { fr: "Impact", en: "Impact", sw: "Athari" }, link: "#impact" },
       { key: "testimonials", labels: { fr: "Témoignages", en: "Testimonials", sw: "Ushuhuda" }, link: "#testimonials" },
-      { key: "bujahackathon", labels: { fr: "Hackathon Buja", en: "Buja Hackathon", sw: "Hackathon Buja" }, link: "/buja-hackathon" },
     ],
   },
+  { key: "opportunities", labels: { fr: "Opportunités d’emploi", en: "Job Opportunities", sw: "Fursa za Ajira" }, link: "/job-opportunities" },
   { key: "hub", labels: { fr: "Notre Hub Digital", en: "Our Digital Hub", sw: "Kituo Chetu cha Dijitali" }, link: "/gitega-study-space", highlight: true },
 ];
 
