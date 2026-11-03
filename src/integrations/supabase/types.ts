@@ -14,6 +14,39 @@ export type Database = {
   }
   public: {
     Tables: {
+      cms_pages: {
+        Row: {
+          draft_blocks: Json
+          id: string
+          name: string
+          published_blocks: Json | null
+          published_titles: Json
+          slug: string
+          titles: Json
+          updated_at: string
+        }
+        Insert: {
+          draft_blocks?: Json
+          id?: string
+          name?: string
+          published_blocks?: Json | null
+          published_titles?: Json
+          slug: string
+          titles?: Json
+          updated_at?: string
+        }
+        Update: {
+          draft_blocks?: Json
+          id?: string
+          name?: string
+          published_blocks?: Json | null
+          published_titles?: Json
+          slug?: string
+          titles?: Json
+          updated_at?: string
+        }
+        Relationships: []
+      }
       hackathon_registrations: {
         Row: {
           bitcoin_level: string
@@ -690,6 +723,16 @@ export type Database = {
           _user_id: string
         }
         Returns: boolean
+      }
+      read_published_cms_page: {
+        Args: { page_slug: string }
+        Returns: {
+          id: string
+          published_blocks: Json
+          published_titles: Json
+          slug: string
+          updated_at: string
+        }[]
       }
       slugify: { Args: { value: string }; Returns: string }
     }

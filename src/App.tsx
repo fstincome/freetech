@@ -18,6 +18,7 @@ import AdminLogin from "./pages/AdminLogin.tsx";
 import AdminDashboard from "./pages/AdminDashboard.tsx";
 import NotFound from "./pages/NotFound.tsx";
 import TheoryOfChange from "./pages/TheoryOfChange.tsx";
+import CmsPage from "@/components/cms/CmsPage";
 
 const queryClient = new QueryClient();
 
@@ -27,14 +28,14 @@ const AppContent = () => {
     <Routes>
       <Route path="/admin/login" element={<AdminLogin />} />
       <Route path="/admin" element={<AdminDashboard />} />
-      <Route path="/" element={<><Navbar /><main><Index /></main><Footer /></>} />
-      <Route path="/gitega-study-space" element={<><Navbar /><main><GitegaStudySpace /></main><Footer /></>} />
-      <Route path="/our-team" element={<><Navbar /><main><OurTeam /></main><Footer /></>} />
-      <Route path="/our-team/:slug" element={<><Navbar /><main><TeamMemberBio /></main><Footer /></>} />
+      <Route path="/" element={<><Navbar /><main><CmsPage slug="" fallback={<Index />} /></main><Footer /></>} />
+      <Route path="/gitega-study-space" element={<><Navbar /><main><CmsPage fallback={<GitegaStudySpace />} /></main><Footer /></>} />
+      <Route path="/our-team" element={<><Navbar /><main><CmsPage fallback={<OurTeam />} /></main><Footer /></>} />
+      <Route path="/our-team/:slug" element={<><Navbar /><main><CmsPage slug="our-team/:slug" fallback={<TeamMemberBio />} /></main><Footer /></>} />
       <Route path="/buja-hackathon" element={<Navigate to="/job-opportunities" replace />} />
-      <Route path="/job-opportunities" element={<><Navbar /><main><JobOpportunities /></main><Footer /></>} />
-      <Route path="/theorie-du-changement" element={<><Navbar /><main><TheoryOfChange /></main><Footer /></>} />
-      <Route path="*" element={<><Navbar /><main><NotFound /></main><Footer /></>} />
+      <Route path="/job-opportunities" element={<><Navbar /><main><CmsPage fallback={<JobOpportunities />} /></main><Footer /></>} />
+      <Route path="/theorie-du-changement" element={<><Navbar /><main><CmsPage fallback={<TheoryOfChange />} /></main><Footer /></>} />
+      <Route path="*" element={<><Navbar /><main><CmsPage fallback={<NotFound />} /></main><Footer /></>} />
     </Routes>
   );
 };
