@@ -11,8 +11,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { LogOut, BarChart3, Globe, Eye, Calendar } from "lucide-react";
 import logo from "@/assets/logo.png";
 import { isPublicTheorySection } from "@/lib/theorySections";
+import PagesAdmin from "@/components/admin/PagesAdmin";
 
-type Tab = "theory" | "jobs" | "stats" | "hero" | "about" | "programs" | "workshops" | "events" | "partners" | "testimonials" | "impact" | "reports" | "team" | "menu" | "settings" | "hackathon_regs" | "hackathon_trainers";
+type Tab = "pages" | "theory" | "jobs" | "stats" | "hero" | "about" | "programs" | "workshops" | "events" | "partners" | "testimonials" | "impact" | "reports" | "team" | "menu" | "settings" | "hackathon_regs" | "hackathon_trainers";
 
 const tabs: { key: Tab; label: string }[] = [
   { key: "stats", label: "📊 Statistiques" },
@@ -37,7 +38,7 @@ const tabs: { key: Tab; label: string }[] = [
 const AdminDashboard = () => {
   const { user, isAdmin, loading } = useAdmin();
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState<Tab>("stats");
+  const [activeTab, setActiveTab] = useState<Tab>("pages");
   const [data, setData] = useState<Record<string, any[]>>({});
   const [visitorStats, setVisitorStats] = useState<{ byCountry: any[]; byDate: any[]; total: number }>({ byCountry: [], byDate: [], total: 0 });
   const [statsPeriod, setStatsPeriod] = useState("30");
@@ -103,49 +104,58 @@ const AdminDashboard = () => {
   };
 
   if (loading) return <div className="min-h-screen flex items-center justify-center bg-background"><p>Chargement...</p></div>;
+  if (!user || !isAdmin) return null;
+  const cmsTabs: {key:Tab;label:string}[] = [{key:"pages",label:"Pages"},{key:"menu",label:"Navigation"},{key:"hackathon_regs",label:"Inscriptions"},{key:"stats",label:"Statistiques"},{key:"settings",label:"Réglages"}];
+  const openCollection = (source:string) => {
+    const key=source==="approach"?"about":source==="video"?"settings":source==="biography"?"team":source;
+    if(tabs.some(t=>t.key===key))setActiveTab(key as Tab);
+  };
 
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
-      <header className="bg-navy text-white px-4 md:px-8 py-4 flex items-center justify-between sticky top-0 z-50">
+      <header className="bg-card text-foreground border-b border-border px-4 md:px-8 py-4 flex items-center justify-between sticky top-0 z-50">
         <div className="flex items-center gap-3">
           <img src={logo} alt="FREETI" className="h-10" />
-          <span className="font-heading font-bold text-lg hidden md:block">Admin Dashboard</span>
+          <span className="font-heading font-bold text-lg hidden md:block">Free Tech · CMS</span>
         </div>
-        <Button onClick={handleLogout} variant="ghost" className="text-white hover:text-cyan">
+        <Button onClick={handleLogout} variant="ghost">
           <LogOut size={18} className="mr-2" /> Déconnexion
         </Button>
       </header>
 
-      <div className="flex">
+      <div className="flex flex-col md:flex-row">
         {/* Sidebar */}
         <aside className="w-56 min-h-[calc(100vh-64px)] bg-card border-r border-border p-4 hidden md:block">
-          {tabs.map(t => (
-            <button
+          <p className="text-xs uppercase text-muted-foreground mb-4 px-4">Administration</p>
+          {cmsTabs.map(t => (
+            <Button variant="ghost"
               key={t.key}
               onClick={() => setActiveTab(t.key)}
               className={`w-full text-left px-4 py-2.5 rounded-lg text-sm font-medium mb-1 transition-colors ${activeTab === t.key ? "bg-cyan/15 text-cyan" : "text-muted-foreground hover:bg-muted"}`}
             >
               {t.label}
-            </button>
+            </Button>
           ))}
         </aside>
 
         {/* Mobile tabs */}
         <div className="md:hidden w-full overflow-x-auto border-b border-border bg-card px-2 py-2 flex gap-1">
-          {tabs.map(t => (
-            <button
+          {cmsTabs.map(t => (
+            <Button variant="ghost"
               key={t.key}
               onClick={() => setActiveTab(t.key)}
               className={`whitespace-nowrap px-3 py-1.5 rounded-full text-xs font-medium ${activeTab === t.key ? "bg-cyan/15 text-cyan" : "text-muted-foreground"}`}
             >
               {t.label}
-            </button>
+            </Button>
           ))}
         </div>
 
         {/* Content */}
         <main className="flex-1 p-4 md:p-8 max-w-full overflow-x-hidden">
+          <div className={activeTab === "pages" ? "" : "hidden"}><PagesAdmin onCollection={openCollection} /></div>
+          {!cmsTabs.some(t=>t.key===activeTab) && <div className="mb-6"><Button variant="outline" onClick={()=>setActiveTab("pages")}>← Retour à la page</Button></div>}
           {activeTab === "stats" && (
             <div className="space-y-6">
               <div className="flex items-center justify-between flex-wrap gap-4">
