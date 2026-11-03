@@ -14,6 +14,39 @@ export type Database = {
   }
   public: {
     Tables: {
+      cms_pages: {
+        Row: {
+          draft_blocks: Json
+          id: string
+          name: string
+          published_blocks: Json | null
+          published_titles: Json
+          slug: string
+          titles: Json
+          updated_at: string
+        }
+        Insert: {
+          draft_blocks?: Json
+          id?: string
+          name?: string
+          published_blocks?: Json | null
+          published_titles?: Json
+          slug: string
+          titles?: Json
+          updated_at?: string
+        }
+        Update: {
+          draft_blocks?: Json
+          id?: string
+          name?: string
+          published_blocks?: Json | null
+          published_titles?: Json
+          slug?: string
+          titles?: Json
+          updated_at?: string
+        }
+        Relationships: []
+      }
       hackathon_registrations: {
         Row: {
           bitcoin_level: string
