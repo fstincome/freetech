@@ -10,6 +10,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { LogOut, BarChart3, Globe, Eye, Calendar } from "lucide-react";
 import logo from "@/assets/logo.png";
+import { isPublicTheorySection } from "@/lib/theorySections";
 
 type Tab = "theory" | "jobs" | "stats" | "hero" | "about" | "programs" | "workshops" | "events" | "partners" | "testimonials" | "impact" | "reports" | "team" | "menu" | "settings" | "hackathon_regs" | "hackathon_trainers";
 
@@ -228,7 +229,7 @@ const AdminDashboard = () => {
               { key: "image_url", label: "Photo 1", type: "url" },
               { key: "image_url_2", label: "Photo 2", type: "url" },
               { key: "sort_order", label: "Ordre", type: "number" },
-            ]} data={data.theory || []} onRefresh={fetchAll} />}
+            ]} data={(data.theory || []).filter((row: { section_key: string }) => isPublicTheorySection(row.section_key))} onRefresh={fetchAll} />}
           {activeTab === "jobs" && <AdminCrudTable title="Opportunités d’emploi" tableName="site_job_opportunities"
             translatable={["title", "introduction", "role", "responsibilities", "expectations", "location", "contract"]}
             fields={[
