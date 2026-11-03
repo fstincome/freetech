@@ -40,6 +40,7 @@
     --cyan: 191 85% 50%;
     --navy: 220 25% 8%;
     --navy-light: 220 20% 15%;
+    --theory-positive: 158 52% 32%;
 
     --sidebar-background: 0 0% 98%;
     --sidebar-foreground: 240 5.3% 26.1%;
@@ -72,6 +73,7 @@
     --input: 220 15% 18%;
     --ring: 191 85% 50%;
     --sidebar-background: 240 5.9% 10%;
+    --theory-positive: 158 48% 64%;
     --sidebar-foreground: 240 4.8% 95.9%;
     --sidebar-primary: 224.3 76.3% 48%;
     --sidebar-primary-foreground: 0 0% 100%;
@@ -97,6 +99,15 @@
 }
 
 @layer utilities {
+  .theory-component-icon { display: flex; align-items: center; justify-content: center; width: 3.5rem; height: 3.5rem; flex-shrink: 0; border-radius: 8px; }
+  .theory-stage-icon { display: flex; align-items: center; justify-content: center; width: 2.5rem; height: 2.5rem; border-radius: 6px; }
+  .theory-tone-primary { color: hsl(var(--foreground)); background: hsl(var(--primary) / .15); }
+  .theory-tone-positive { color: hsl(var(--theory-positive)); background: hsl(var(--theory-positive) / .12); }
+  .theory-result { border-top: 3px solid hsl(var(--theory-positive)); }
+  .theory-intro p, .theory-stage p:last-child, .theory-principles p:last-child { margin-bottom: 0; }
+  .theory-principles ol { list-style: decimal-leading-zero; padding-left: 2rem; }
+  .theory-principles li { padding-left: .5rem; margin-bottom: 1rem; }
+  .theory-principles li::marker { color: hsl(var(--theory-positive)); font-weight: 600; }
   .cms-rich-text p { margin-bottom: 1em; }
   .cms-rich-text ul { list-style: disc; padding-left: 1.5em; }
   .cms-rich-text ol { list-style: decimal; padding-left: 1.5em; }
