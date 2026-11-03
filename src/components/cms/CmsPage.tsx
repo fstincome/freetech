@@ -12,7 +12,7 @@ export default function CmsPage({slug,fallback}:{slug?:string;fallback:ReactNode
  const location=useLocation(); const path=slug ?? location.pathname.replace(/^\/|\/$/g,"");
  const {lang}=useLanguage();
  const {data,isPending,error,refetch}=useQuery({queryKey:["cms-page",path],queryFn:async()=>{
-   const {data,error}=await supabase.from("cms_pages").select("id,slug,published_titles,published_blocks,updated_at").eq("slug",path).not("published_blocks","is",null).maybeSingle();
+   const {data,error}=await supabase.rpc("read_published_cms_page",{page_slug:path}).maybeSingle();
    if(error) throw error; return data;
  }});
  useEffect(()=>{if(data)document.title=`${localized(data.published_titles as LocalizedText,lang)} | Free Tech Institute`;},[data,lang]);

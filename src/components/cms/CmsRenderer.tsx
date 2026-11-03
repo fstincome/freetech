@@ -25,6 +25,7 @@ export function CmsBlockView({block,lang}: {block:CmsBlock;lang:Lang}) {
   const {data:theory}=useQuery({queryKey:["cms-theory-record",block.theoryId],enabled:Boolean(block.theoryId),queryFn:async()=>{
     const {data,error}=await supabase.from("site_theory_sections").select("*").eq("id",block.theoryId || "").maybeSingle();if(error)throw error;return data;
   }});
+  if(block.theoryId && !Object.keys(block.content).length && !theory)return <div className="py-8" role="status">…</div>;
   if(theory && !Object.keys(block.content).length)block={...block,content:{[lang]:block.type==="heading"?tr(theory,"title",lang):tr(theory,"description",lang)},title:block.type==="heading"?undefined:{[lang]:tr(theory,"title",lang)},images:[theory.image_url,theory.image_url_2].filter(Boolean)};
   const text=localized(block.content,lang);
   const images=(block.images || []).filter(url=> /^https?:\/\//.test(url) || url.startsWith("/"));

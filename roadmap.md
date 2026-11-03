@@ -1,7 +1,7 @@
 # Website content update
-- [ ] Create a clean page-oriented CMS with visual text/image/gallery editing in three languages.
-- [ ] Connect all public pages, import existing page layouts, and retain authoritative collections and registrations.
-- [ ] Verify authenticated editing, publishing and public read-back.
+- [x] Create a clean page-oriented CMS with visual text/image/gallery editing in three languages.
+- [x] Connect all public pages, import existing page layouts, and retain authoritative collections and registrations.
+- [x] Verify authenticated editing, publishing and public read-back.
 - [x] Simplify Theory of Change to public text-and-photo sections matching the Digital Hub, retaining admin uploads and removing internal strategy from display.
 - [x] Make Theory of Change fully editable in three languages, including component photos.
 - [x] Replace public Buja Hackathon with four editable job opportunities from the document.
