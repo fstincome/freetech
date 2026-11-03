@@ -34,7 +34,8 @@ const AppContent = () => {
       <Route path="/our-team/:slug" element={<><Navbar /><main><CmsPage slug="our-team/:slug" fallback={<TeamMemberBio />} /></main><Footer /></>} />
       <Route path="/buja-hackathon" element={<Navigate to="/job-opportunities" replace />} />
       <Route path="/job-opportunities" element={<><Navbar /><main><CmsPage fallback={<JobOpportunities />} /></main><Footer /></>} />
-      <Route path="/theorie-du-changement" element={<><Navbar /><main><CmsPage fallback={<TheoryOfChange />} /></main><Footer /></>} />
+      <Route path="/what-we-do" element={<><Navbar /><main><CmsPage fallback={<TheoryOfChange />} /></main><Footer /></>} />
+      <Route path="/theorie-du-changement" element={<Navigate to="/what-we-do" replace />} />
       <Route path="*" element={<><Navbar /><main><CmsPage fallback={<NotFound />} /></main><Footer /></>} />
     </Routes>
   );
