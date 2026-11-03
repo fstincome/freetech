@@ -11,12 +11,14 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { LogOut, BarChart3, Globe, Eye, Calendar } from "lucide-react";
 import logo from "@/assets/logo.png";
 
-type Tab = "stats" | "hero" | "about" | "programs" | "workshops" | "events" | "partners" | "testimonials" | "impact" | "reports" | "team" | "menu" | "settings" | "hackathon_regs" | "hackathon_trainers";
+type Tab = "theory" | "jobs" | "stats" | "hero" | "about" | "programs" | "workshops" | "events" | "partners" | "testimonials" | "impact" | "reports" | "team" | "menu" | "settings" | "hackathon_regs" | "hackathon_trainers";
 
 const tabs: { key: Tab; label: string }[] = [
   { key: "stats", label: "📊 Statistiques" },
   { key: "hero", label: "🎠 Hero Slides" },
   { key: "about", label: "🧭 Qui sommes-nous" },
+  { key: "theory", label: "Théorie du Changement" },
+  { key: "jobs", label: "Opportunités d’emploi" },
   { key: "programs", label: "📚 Programmes" },
   { key: "workshops", label: "🔧 Workshops" },
   { key: "events", label: "📅 Événements" },
@@ -43,7 +45,7 @@ const AdminDashboard = () => {
     if (!loading && (!user || !isAdmin)) navigate("/admin/login", { replace: true });
   }, [user, isAdmin, loading, navigate]);
   const fetchAll = async () => {
-    const [hero, programs, workshops, events, partners, testimonials, impact, reports, team, settings, hackTrainers, about] = await Promise.all([
+    const [hero, programs, workshops, events, partners, testimonials, impact, reports, team, settings, hackTrainers, about, theory, jobs] = await Promise.all([
       supabase.from("site_hero_slides").select("*").order("sort_order"),
       supabase.from("site_programs").select("*").order("sort_order"),
       supabase.from("site_workshops").select("*").order("sort_order"),
@@ -56,6 +58,8 @@ const AdminDashboard = () => {
       supabase.from("site_settings").select("*"),
       supabase.from("hackathon_trainers" as any).select("*").order("sort_order"),
       supabase.from("site_about" as any).select("*").order("sort_order"),
+      supabase.from("site_theory_sections").select("*").order("sort_order"),
+      supabase.from("site_job_opportunities").select("*").order("sort_order"),
     ]);
     setData({
       hero: hero.data || [], programs: programs.data || [], workshops: workshops.data || [],
@@ -63,6 +67,7 @@ const AdminDashboard = () => {
       impact: impact.data || [], reports: reports.data || [], team: team.data || [], settings: settings.data || [],
       hackathon_trainers: (hackTrainers as any).data || [],
       about: (about as any).data || [],
+      theory: theory.data || [], jobs: jobs.data || [],
     });
   };
 
@@ -212,6 +217,33 @@ const AdminDashboard = () => {
               </Card>
             </div>
           )}
+
+          {activeTab === "theory" && <AdminCrudTable title="Théorie du Changement" tableName="site_theory_sections"
+            translatable={["title", "description", "tag"]}
+            fields={[
+              { key: "section_key", label: "Section", type: "text" },
+              { key: "title", label: "Titre", type: "text" },
+              { key: "description", label: "Texte", type: "textarea" },
+              { key: "tag", label: "Catégorie", type: "text" },
+              { key: "image_url", label: "Photo 1", type: "url" },
+              { key: "image_url_2", label: "Photo 2", type: "url" },
+              { key: "sort_order", label: "Ordre", type: "number" },
+            ]} data={data.theory || []} onRefresh={fetchAll} />}
+          {activeTab === "jobs" && <AdminCrudTable title="Opportunités d’emploi" tableName="site_job_opportunities"
+            translatable={["title", "introduction", "role", "responsibilities", "expectations", "location", "contract"]}
+            fields={[
+              { key: "title", label: "Poste", type: "text" },
+              { key: "introduction", label: "Présentation", type: "textarea" },
+              { key: "role", label: "Rôle", type: "textarea" },
+              { key: "responsibilities", label: "Responsabilités", type: "textarea" },
+              { key: "expectations", label: "Attentes", type: "textarea" },
+              { key: "location", label: "Lieu", type: "text" },
+              { key: "contract", label: "Contrat", type: "textarea" },
+              { key: "application_url", label: "Lien de candidature", type: "text" },
+              { key: "deadline", label: "Date limite", type: "date" },
+              { key: "image_url", label: "Photo", type: "url" },
+              { key: "sort_order", label: "Ordre", type: "number" },
+            ]} data={data.jobs || []} onRefresh={fetchAll} />}
 
           {activeTab === "hero" && (
             <AdminCrudTable

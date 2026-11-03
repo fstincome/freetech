@@ -10,7 +10,7 @@ import { Pencil, Trash2, Plus, Upload, Loader2, Crown, UserMinus } from "lucide-
 interface FieldConfig {
   key: string;
   label: string;
-  type: "text" | "textarea" | "url" | "number" | "array" | "boolean";
+  type: "text" | "textarea" | "url" | "number" | "array" | "boolean" | "date";
 }
 
 interface AdminCrudTableProps {
@@ -120,7 +120,7 @@ const AdminCrudTable = ({ title, tableName, fields, data, onRefresh, translatabl
       } else if (f.type === "boolean") {
         payload[f.key] = !!formData[f.key];
       } else {
-        payload[f.key] = formData[f.key];
+        payload[f.key] = f.type === "date" ? (formData[f.key] || null) : formData[f.key];
       }
     });
     if (translatable.length) {
@@ -231,29 +231,29 @@ const AdminCrudTable = ({ title, tableName, fields, data, onRefresh, translatabl
                 <p className="text-xs text-muted-foreground mb-2">Langue des textes :</p>
                 <div className="grid grid-cols-3 gap-1 rounded-lg bg-muted p-1">
                   {LANGS.map(l => (
-                    <button key={l.key} type="button" onClick={() => setEditLang(l.key)}
+                    <Button variant="ghost" key={l.key} type="button" onClick={() => setEditLang(l.key)}
                       className={`rounded-md py-1.5 text-sm font-medium transition-colors ${editLang === l.key ? "bg-background text-foreground shadow-sm" : "text-muted-foreground"}`}>
                       {l.label}
-                    </button>
+                    </Button>
                   ))}
                 </div>
               </div>
             )}
             {fields.map(f => (
               <div key={f.key}>
-                <label className="text-sm font-medium text-foreground mb-1 block">
+                <label htmlFor={`field-${f.key}`} className="text-sm font-medium text-foreground mb-1 block">
                   {f.label}{isTr(f.key) && <span className="ml-2 text-xs text-cyan uppercase">{editLang}</span>}
                 </label>
                 {isTr(f.key) ? (
                   f.type === "textarea" ? (
-                    <Textarea rows={4} value={trans[editLang][f.key] ?? ""}
+                    <Textarea id={`field-${f.key}`} rows={4} value={trans[editLang][f.key] ?? ""}
                       onChange={e => setTrans(p => ({ ...p, [editLang]: { ...p[editLang], [f.key]: e.target.value } }))} />
                   ) : (
-                    <Input value={trans[editLang][f.key] ?? ""}
+                    <Input id={`field-${f.key}`} value={trans[editLang][f.key] ?? ""}
                       onChange={e => setTrans(p => ({ ...p, [editLang]: { ...p[editLang], [f.key]: e.target.value } }))} />
                   )
                 ) : f.type === "textarea" ? (
-                  <Textarea value={formData[f.key] || ""} onChange={e => setFormData(p => ({ ...p, [f.key]: e.target.value }))} rows={3} />
+                  <Textarea id={`field-${f.key}`} value={formData[f.key] || ""} onChange={e => setFormData(p => ({ ...p, [f.key]: e.target.value }))} rows={3} />
                 ) : f.type === "url" ? (
                   <div className="space-y-2">
                     {formData[f.key] && (
@@ -261,6 +261,7 @@ const AdminCrudTable = ({ title, tableName, fields, data, onRefresh, translatabl
                     )}
                     <div className="flex gap-2">
                       <Input
+                        id={`field-${f.key}`}
                         type="text"
                         value={formData[f.key] ?? ""}
                         onChange={e => setFormData(p => ({ ...p, [f.key]: e.target.value }))}
@@ -300,7 +301,8 @@ const AdminCrudTable = ({ title, tableName, fields, data, onRefresh, translatabl
                   </label>
                 ) : (
                   <Input
-                    type={f.type === "number" ? "number" : "text"}
+                        id={`field-${f.key}`}
+                    type={f.type === "number" ? "number" : f.type === "date" ? "date" : "text"}
                     value={formData[f.key] ?? ""}
                     onChange={e => setFormData(p => ({ ...p, [f.key]: e.target.value }))}
                     placeholder={f.type === "array" ? "URL1, URL2, URL3" : ""}
