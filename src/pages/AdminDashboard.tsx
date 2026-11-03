@@ -19,7 +19,7 @@ const tabs: { key: Tab; label: string }[] = [
   { key: "stats", label: "📊 Statistiques" },
   { key: "hero", label: "🎠 Hero Slides" },
   { key: "about", label: "🧭 Qui sommes-nous" },
-  { key: "theory", label: "Théorie du Changement" },
+  { key: "theory", label: "Ce que nous faisons" },
   { key: "jobs", label: "Opportunités d’emploi" },
   { key: "programs", label: "📚 Programmes" },
   { key: "workshops", label: "🔧 Workshops" },
@@ -229,7 +229,7 @@ const AdminDashboard = () => {
             </div>
           )}
 
-          {activeTab === "theory" && <AdminCrudTable title="Théorie du Changement" tableName="site_theory_sections"
+          {activeTab === "theory" && <AdminCrudTable title="Ce que nous faisons" tableName="site_theory_sections"
             translatable={["title", "description", "tag"]}
             fields={[
               { key: "section_key", label: "Section", type: "text" },
