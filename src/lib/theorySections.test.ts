@@ -7,7 +7,7 @@ describe("public Theory of Change content", () => {
     expect(isPublicTheorySection("vision")).toBe(false);
   });
   it("does not publish strategic axes or internal planning", () => {
-    for (const key of ["axes", "axis.1", "logic", "component.1.step.1", "assumption.1", "validated"]) {
+    for (const key of ["axes", "axis.1", "logic", "component.1.step.1", "assumption.1", "validated", "jobs.title", "jobs.apply"]) {
       expect(isPublicTheorySection(key)).toBe(false);
     }
   });
