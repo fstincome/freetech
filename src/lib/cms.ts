@@ -29,7 +29,7 @@ export const newBlock = (type: BlockType): CmsBlock => ({ id: crypto.randomUUID(
 export const collectionNames: Record<string, string> = {
   hero: "Diaporama d’accueil", approach: "Notre approche", about: "Qui sommes-nous", programs: "Programmes",
   video: "Vidéo", workshops: "Ateliers", events: "Événements", partners: "Partenaires", impact: "Impact",
-  reports: "Rapports", testimonials: "Témoignages", team: "Équipe", jobs: "Offres d’emploi", theory: "Théorie du Changement", biography: "Biographie",
+  reports: "Rapports", testimonials: "Témoignages", team: "Équipe", jobs: "Offres d’emploi", theory: "Ce que nous faisons", biography: "Biographie",
 };
 export const reservedSlug = (slug: string) => /^(admin(?:\/|$)|our-team\/|buja-hackathon(?:\/|$))/.test(slug) || slug.includes(":") || slug.includes("?") || slug.includes("#");
 export const normalizeSlug = (value: string) => value.trim().replace(/^\/+|\/+$/g, "").toLowerCase();
