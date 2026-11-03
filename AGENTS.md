@@ -5,3 +5,4 @@
 - CMS public reads use a published-only function; anonymous column grants and admin-only authenticated table policies prevent draft exposure for both signed-out and signed-in visitors.
 - Keep the retired hackathon URL as a redirect to opportunities, while retaining registration administration and its data.
 - Date-only application deadlines are inclusive and compared as calendar dates, so the final application day remains open.
+- Render Theory of Change CMS blocks with a shared visual pathway renderer in both administration and public views; derive stage labels and text from editable rich content to preserve publication and multilingual editing.
