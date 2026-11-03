@@ -1,5 +1,5 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -12,7 +12,7 @@ import PWAInstallButton from "@/components/PWAInstallButton";
 import Index from "./pages/Index.tsx";
 import GitegaStudySpace from "./pages/GitegaStudySpace.tsx";
 import OurTeam from "./pages/OurTeam.tsx";
-import BujaHackathon from "./pages/BujaHackathon.tsx";
+import JobOpportunities from "./pages/JobOpportunities.tsx";
 import TeamMemberBio from "./pages/TeamMemberBio.tsx";
 import AdminLogin from "./pages/AdminLogin.tsx";
 import AdminDashboard from "./pages/AdminDashboard.tsx";
@@ -31,7 +31,8 @@ const AppContent = () => {
       <Route path="/gitega-study-space" element={<><Navbar /><main><GitegaStudySpace /></main><Footer /></>} />
       <Route path="/our-team" element={<><Navbar /><main><OurTeam /></main><Footer /></>} />
       <Route path="/our-team/:slug" element={<><Navbar /><main><TeamMemberBio /></main><Footer /></>} />
-      <Route path="/buja-hackathon" element={<BujaHackathon />} />
+      <Route path="/buja-hackathon" element={<Navigate to="/job-opportunities" replace />} />
+      <Route path="/job-opportunities" element={<><Navbar /><main><JobOpportunities /></main><Footer /></>} />
       <Route path="/theorie-du-changement" element={<><Navbar /><main><TheoryOfChange /></main><Footer /></>} />
       <Route path="*" element={<><Navbar /><main><NotFound /></main><Footer /></>} />
     </Routes>
