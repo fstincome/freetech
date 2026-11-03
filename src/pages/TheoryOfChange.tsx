@@ -4,7 +4,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { tr } from "@/lib/i18n";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Check, Eye, Target, X } from "lucide-react";
+import { RotateCw } from "lucide-react";
+import { isPublicTheorySection } from "@/lib/theorySections";
 
 const TheoryOfChange = () => {
   const { lang } = useLanguage();
@@ -20,47 +21,40 @@ const TheoryOfChange = () => {
   const item = (key: string) => rows.find(r => r.section_key === key);
   const text = (key: string, field = "title") => tr(item(key), field, lang);
   useEffect(() => { if (text("title")) document.title = `${text("title")} | Free Tech Institute`; }, [rows, lang]);
-  const photos = (key: string) => {
-    const r = item(key);
-    const images = [r?.image_url, r?.image_url_2].filter(Boolean);
-    return images.length ? <div className="grid sm:grid-cols-2 gap-4 mb-6">{images.map((url, i) => <img key={i} src={url} alt={text(key)} className="w-full aspect-[4/3] object-contain bg-muted rounded-lg" />)}</div> : null;
+  const title = item("title");
+  const sections = rows.filter(r => r.section_key !== "title" && isPublicTheorySection(r.section_key));
+  const photos = (row: typeof rows[number]) => {
+    const images = [row.image_url, row.image_url_2].filter((url): url is string => Boolean(url));
+    if (!images.length) return null;
+    return <div className={`grid gap-4 ${images.length > 1 ? "sm:grid-cols-2" : ""}`}>
+      {images.map((url, i) => <img key={`${url}-${i}`} src={url} alt={tr(row, "title", lang)} loading="lazy"
+        className="w-full aspect-[4/3] object-contain rounded-lg" />)}
+    </div>;
   };
   if (isPending) return <div className="pt-32 min-h-screen text-center" role="status">…</div>;
-  if (error) return <div className="pt-32 min-h-screen text-center"><Button variant="outline" onClick={() => refetch()}>↻</Button></div>;
-  return <div className="pt-28 pb-20 px-4 md:px-8 max-w-6xl mx-auto space-y-14">
-    <header className="text-center border-b border-border pb-10">
-      <p className="text-cyan text-sm font-semibold uppercase">{text("period")}</p>
-      <h1 className="text-4xl md:text-5xl font-heading font-bold mt-3">{text("title")}</h1>
-      {photos("title")}
+  if (error) return <div className="pt-32 min-h-screen text-center"><Button variant="outline" aria-label="Retry" onClick={() => refetch()}><RotateCw /></Button></div>;
+  return <>
+    <header className="relative pt-32 pb-16 overflow-hidden bg-secondary text-secondary-foreground">
+      {title?.image_url && <img src={title.image_url} alt="" className="absolute inset-0 w-full h-full object-cover" />}
+      <div className={`relative max-w-4xl mx-auto px-4 text-center ${title?.image_url ? "bg-background/90 py-8" : ""}`}>
+        {text("title", "tag") && <p className="text-cyan text-sm font-heading font-semibold uppercase mb-4">{text("title", "tag")}</p>}
+        <h1 className="text-4xl md:text-5xl font-heading font-bold leading-tight">{text("title")}</h1>
+        {text("title", "description") && <p className="mt-5 text-lg text-muted-foreground leading-relaxed whitespace-pre-line">{text("title", "description")}</p>}
+      </div>
     </header>
-    <section className="grid md:grid-cols-2 gap-8">
-      {[{ key: "vision", Icon: Eye }, { key: "mission", Icon: Target }].map(({key, Icon}) => <div key={key}>
-        <Icon className="text-cyan mb-3" /><h2 className="text-2xl font-bold mb-3">{text(key)}</h2>
-        <p className="text-muted-foreground leading-relaxed whitespace-pre-line">{text(key, "description")}</p>{photos(key)}
-      </div>)}
-    </section>
-    <section><h2 className="text-3xl font-bold mb-6">{text("axes")}</h2>
-      <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">{rows.filter(r => r.section_key.startsWith("axis.")).map((r, i) => <article key={r.id} className="p-5 border border-border bg-card rounded-lg">
-        <p className="text-cyan text-sm mb-3">{i + 1} / {tr(r,"tag",lang)}</p><h3 className="font-bold mb-3">{tr(r,"title",lang)}</h3>
-        <p className="text-sm text-muted-foreground leading-relaxed whitespace-pre-line">{tr(r,"description",lang)}</p>{photos(r.section_key)}
-      </article>)}</div>
-    </section>
-    <section><h2 className="text-3xl font-bold mb-8">{text("logic")}</h2>
-      <div className="space-y-12">{rows.filter(r => /^component\.\d+$/.test(r.section_key)).map(r => <div key={r.id}>
-        <h3 className="font-bold text-2xl mb-3">{tr(r,"title",lang)}</h3><p className="text-muted-foreground mb-5">{tr(r,"description",lang)}</p>{photos(r.section_key)}
-        <div className="grid md:grid-cols-4 gap-6">{rows.filter(s => s.section_key.startsWith(r.section_key + ".step.")).map((s,i) => <div key={s.id} className="relative border-t-2 border-cyan pt-4">
-          <h4 className="text-cyan font-semibold mb-3">{tr(s,"title",lang)}</h4><p className="text-sm text-muted-foreground leading-relaxed">{tr(s,"description",lang)}</p>
-          {i < 3 && <ArrowRight className="hidden md:block absolute -right-5 top-4 w-4 text-cyan" />}
-        </div>)}</div>
-      </div>)}</div>
-    </section>
-    <section className="grid md:grid-cols-2 gap-8 border-t border-border pt-8">{[{ key: "weDo", Icon: Check }, { key: "weDont", Icon: X }].map(({key,Icon}) => <div key={key}>
-      <h2 className="text-xl font-bold mb-4 flex items-center gap-2"><Icon className="text-cyan" />{text(key)}</h2><p className="text-muted-foreground leading-relaxed whitespace-pre-line">{text(key,"description")}</p>{photos(key)}
-    </div>)}</section>
-    <section className="border-t border-border pt-8"><h2 className="text-2xl font-bold mb-5">{text("hypothesesTitle")}</h2>
-      <ol className="list-decimal pl-6 space-y-3 text-muted-foreground">{rows.filter(r => r.section_key.startsWith("assumption.")).map(r => <li key={r.id}>{tr(r,"title",lang)}</li>)}</ol>
-      <p className="text-sm text-muted-foreground mt-8">{text("validated")}</p>
-    </section>
-  </div>;
+    {sections.map((row, index) => {
+      const hasImages = Boolean(row.image_url || row.image_url_2);
+      return <section key={row.id} className={`section-padding ${index % 2 ? "bg-section-alt" : "bg-background"}`}>
+        <div className={`max-w-6xl mx-auto ${hasImages ? "grid lg:grid-cols-2 gap-8 lg:gap-12 items-center" : "max-w-3xl"}`}>
+          <div className={hasImages && index % 2 ? "lg:order-2" : ""}>
+            {tr(row,"tag",lang) && <p className="text-cyan font-heading font-semibold text-sm uppercase mb-3">{tr(row,"tag",lang)}</p>}
+            <h2 className="text-3xl md:text-4xl font-heading font-bold mb-6 leading-tight">{tr(row,"title",lang)}</h2>
+            <p className="text-muted-foreground leading-relaxed whitespace-pre-line">{tr(row,"description",lang)}</p>
+          </div>
+          {photos(row)}
+        </div>
+      </section>;
+    })}
+  </>;
 };
 export default TheoryOfChange;
