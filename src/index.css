@@ -105,6 +105,7 @@
   .theory-tone-positive { color: hsl(var(--theory-positive)); background: hsl(var(--theory-positive) / .12); }
   .theory-result { border-top: 3px solid hsl(var(--theory-positive)); }
   .theory-intro p, .theory-stage p:last-child, .theory-principles p:last-child { margin-bottom: 0; }
+  .theory-intro > p:first-child { color: hsl(var(--foreground)); font-family: var(--font-heading, inherit); font-size: 1.375rem; font-weight: 700; line-height: 1.25; margin-bottom: .75rem; }
   .theory-principles ol { list-style: decimal-leading-zero; padding-left: 2rem; }
   .theory-principles li { padding-left: .5rem; margin-bottom: 1rem; }
   .theory-principles li::marker { color: hsl(var(--theory-positive)); font-weight: 600; }
