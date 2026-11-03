@@ -11,6 +11,7 @@ import type { Lang } from "@/lib/i18n";
 import type { Json } from "@/integrations/supabase/types";
 import CmsRichText from "./CmsRichText";
 import CmsRenderer, { CmsBlockView } from "@/components/cms/CmsRenderer";
+import { tr } from "@/lib/i18n";
 
 const languages: {key:Lang;label:string}[]=[{key:"fr",label:"Français"},{key:"en",label:"English"},{key:"sw",label:"Kiswahili"}];
 const blockTypes: {type:BlockType;label:string;Icon:typeof FileText}[]=[{type:"heading",label:"Titre",Icon:FileText},{type:"text",label:"Texte",Icon:FileText},{type:"textImage",label:"Texte et image",Icon:LayoutTemplate},{type:"image",label:"Image",Icon:Image},{type:"gallery",label:"Galerie",Icon:Images}];
@@ -29,10 +30,16 @@ export default function PagesAdmin({onCollection}:{onCollection:(source:string)=
  const changeBlock=(patch:Partial<CmsBlock>)=>{if(page && block)update({...page,draft_blocks:page.draft_blocks.map(b=>b.id===block.id?{...b,...patch}:b)});};
  const save=async(publish=false)=>{
   if(!page)return;setBusy(true);
-  const payload={name:page.name,titles:page.titles as Json,draft_blocks:page.draft_blocks as unknown as Json,...(publish?{published_titles:page.titles as Json,published_blocks:page.draft_blocks as unknown as Json}:{})};
+  if(publish){for(const b of page.draft_blocks.filter(b=>b.theoryId)){
+    const translations=Object.fromEntries(languages.map(l=>[l.key,{title:b.type==="heading"?b.content[l.key]||"":b.title?.[l.key]||"",description:b.type==="heading"?"":b.content[l.key]||""}]));
+    const {error}=await supabase.from("site_theory_sections").update({title:localized(b.type==="heading"?b.content:b.title,"en"),description:b.type==="heading"?"":localized(b.content,"en"),translations,image_url:b.images?.[0]||"",image_url_2:b.images?.[1]||""}).eq("id",b.theoryId || "");
+    if(error){setBusy(false);toast({title:"Publication impossible",description:error.message,variant:"destructive"});return;}
+  }}
+  const published=page.draft_blocks.map(b=>b.theoryId?{...b,content:{},title:undefined,images:undefined}:b);
+  const payload={name:page.name,titles:page.titles as Json,draft_blocks:page.draft_blocks as unknown as Json,...(publish?{published_titles:page.titles as Json,published_blocks:published as unknown as Json}:{})};
   const {data,error}=await supabase.from("cms_pages").update(payload).eq("id",page.id).select("*").single();setBusy(false);
   if(error){toast({title:"Enregistrement impossible",description:error.message,variant:"destructive"});return;}
-  setPage(data as unknown as CmsPageRecord);setDirty(false);await load();queryClient.invalidateQueries({queryKey:["cms-page"]});
+  setPage(data as unknown as CmsPageRecord);setDirty(false);await load();queryClient.invalidateQueries({queryKey:["cms-page"]});queryClient.invalidateQueries({queryKey:["cms-theory-record"]});
   toast({title:publish?"Page publiée":"Brouillon enregistré"});
  };
  const upload=async(files:FileList|null)=>{

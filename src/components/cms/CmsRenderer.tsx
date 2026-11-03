@@ -16,9 +16,16 @@ import OurTeam from "@/pages/OurTeam";
 import JobOpportunities from "@/pages/JobOpportunities";
 import TheoryOfChange from "@/pages/TheoryOfChange";
 import TeamMemberBio from "@/pages/TeamMemberBio";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
+import { tr } from "@/lib/i18n";
 
 const sources = {hero:HeroCarousel,approach:ApproachSection,about:WhoWeAreSection,programs:ProgramsSection,video:VideoSection,workshops:WorkshopsSection,events:EventsSection,partners:PartnersSection,impact:ImpactSection,reports:ReportsSection,testimonials:TestimonialsSection,team:OurTeam,jobs:JobOpportunities,theory:TheoryOfChange,biography:TeamMemberBio};
 export function CmsBlockView({block,lang}: {block:CmsBlock;lang:Lang}) {
+  const {data:theory}=useQuery({queryKey:["cms-theory-record",block.theoryId],enabled:Boolean(block.theoryId),queryFn:async()=>{
+    const {data,error}=await supabase.from("site_theory_sections").select("*").eq("id",block.theoryId || "").maybeSingle();if(error)throw error;return data;
+  }});
+  if(theory && !Object.keys(block.content).length)block={...block,content:{[lang]:block.type==="heading"?tr(theory,"title",lang):tr(theory,"description",lang)},title:block.type==="heading"?undefined:{[lang]:tr(theory,"title",lang)},images:[theory.image_url,theory.image_url_2].filter(Boolean)};
   const text=localized(block.content,lang);
   const images=(block.images || []).filter(url=> /^https?:\/\//.test(url) || url.startsWith("/"));
   if(block.type==="collection") {

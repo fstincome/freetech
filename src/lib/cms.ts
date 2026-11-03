@@ -11,6 +11,7 @@ export interface CmsBlock {
   source?: string;
   anchor?: string;
   hidden?: boolean;
+  theoryId?: string;
 }
 export interface CmsPageRecord {
   id: string;
