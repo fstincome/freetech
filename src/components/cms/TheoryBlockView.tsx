@@ -9,12 +9,19 @@ const html = (content: string) => ({ __html: DOMPurify.sanitize(content) });
 export default function TheoryBlockView({ block, sectionKey, lang }: { block: CmsBlock; sectionKey: string; lang: Lang }) {
   const content = localized(block.content, lang);
   const title = localized(block.title, lang);
-  if (sectionKey === "title") return <header id={block.anchor} className="theory-title border-b border-border bg-card px-5 py-12 md:py-16">
-    <div className="max-w-6xl mx-auto flex items-center gap-6 md:gap-10">
-      <div className="hidden sm:flex h-24 w-24 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary"><Network className="h-12 w-12" strokeWidth={1.4} /></div>
-      <h1 className="text-4xl md:text-5xl font-heading font-bold leading-tight max-w-3xl break-words">{content}</h1>
-    </div>
-  </header>;
+  if (sectionKey === "title") {
+    const bg = (block.images || []).find(url => /^https?:\/\//.test(url) || url.startsWith("/"));
+    return <header id={block.anchor} className={`theory-title relative overflow-hidden border-b border-border bg-card px-5 ${bg ? "py-20 md:py-28" : "py-12 md:py-16"}`}>
+      {bg && <>
+        <img src={bg} alt="" aria-hidden="true" className="absolute inset-0 h-full w-full object-cover" />
+        <div className="absolute inset-0 bg-gradient-to-r from-background via-background/85 to-background/40" />
+      </>}
+      <div className="relative max-w-6xl mx-auto flex items-center gap-6 md:gap-10">
+        <div className="hidden sm:flex h-24 w-24 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary backdrop-blur-sm"><Network className="h-12 w-12" strokeWidth={1.4} /></div>
+        <h1 className="text-4xl md:text-5xl font-heading font-bold leading-tight max-w-3xl break-words">{content}</h1>
+      </div>
+    </header>;
+  }
 
   if (sectionKey.startsWith("component.") && !sectionKey.includes(".step.")) {
     const document = new DOMParser().parseFromString(DOMPurify.sanitize(content), "text/html");
