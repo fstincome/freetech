@@ -62,7 +62,7 @@ export default function PagesAdmin({onCollection}:{onCollection:(source:string)=
   setCreating(false);setName("");setSlug("");await load();setPage(data as unknown as CmsPageRecord);setSelected(initial.id);setDirty(false);
  };
  const removePage=async(p:CmsPageRecord)=>{
-  if(["","gitega-study-space","our-team","our-team/:slug","job-opportunities","theorie-du-changement"].includes(p.slug))return;
+  if(["","gitega-study-space","our-team","our-team/:slug","job-opportunities","what-we-do"].includes(p.slug))return;
   if(!confirm(`Supprimer la page « ${p.name} » ?`))return;
   const {error}=await supabase.from("cms_pages").delete().eq("id",p.id);if(error)toast({title:"Suppression impossible",description:error.message,variant:"destructive"});else{await load();queryClient.invalidateQueries({queryKey:["cms-page"]});}
  };
