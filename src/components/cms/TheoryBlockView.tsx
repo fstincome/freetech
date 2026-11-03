@@ -39,7 +39,7 @@ export default function TheoryBlockView({ block, sectionKey, lang }: { block: Cm
       <div className="max-w-6xl mx-auto">
         <div className="flex items-start gap-4 md:gap-5 mb-9">
           <div className={`theory-component-icon ${second ? "theory-tone-positive" : "theory-tone-primary"}`}><Icon className="h-7 w-7" strokeWidth={1.6} /></div>
-          <div className="min-w-0"><h2 className="text-2xl md:text-3xl font-heading font-bold leading-tight mb-3">{title}</h2><div className="theory-intro text-muted-foreground leading-relaxed max-w-3xl" dangerouslySetInnerHTML={html(intro.join(""))} /></div>
+          <div className="min-w-0"><div className="theory-intro text-muted-foreground leading-relaxed max-w-3xl" dangerouslySetInnerHTML={html(intro.join(""))} /></div>
         </div>
         <ol className="grid md:grid-cols-2 xl:grid-cols-4 gap-5 xl:gap-6">
           {stages.map((stage, index) => {
