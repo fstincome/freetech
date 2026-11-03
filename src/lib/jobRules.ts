@@ -1,0 +1,1 @@
+export const applicationsOpen = (deadline: string | null, today = new Date().toISOString().slice(0, 10)) => !deadline || today <= deadline;
