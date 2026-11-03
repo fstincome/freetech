@@ -41,7 +41,7 @@ export default function PagesAdmin({onCollection}:{onCollection:(source:string)=
   setPage(data as unknown as CmsPageRecord);setDirty(false);await load();queryClient.invalidateQueries({queryKey:["cms-page"]});queryClient.invalidateQueries({queryKey:["cms-theory-record"]});
   toast({title:publish?"Page publiée":"Brouillon enregistré"});
  };
- const upload=async(files:FileList|null)=>{
+  const upload=async(files:FileList|null,stageIndex?:number)=>{
   if(!files || !block || !page)return;setBusy(true);
   const urls:string[]=[];
   try{for(const file of Array.from(files)){
@@ -49,7 +49,8 @@ export default function PagesAdmin({onCollection}:{onCollection:(source:string)=
     const path=`cms/${page.id}/${crypto.randomUUID()}.${file.name.split(".").pop()}`;
     const {error}=await supabase.storage.from("site-images").upload(path,file);if(error)throw error;
     urls.push(supabase.storage.from("site-images").getPublicUrl(path).data.publicUrl);
-  }changeBlock({images:block.type==="gallery"?[...(block.images||[]),...urls]:urls});}
+   }if(stageIndex!==undefined)changeBlock({stageImages:{...block.stageImages,[stageIndex]:urls[0]}});
+   else changeBlock({images:block.type==="gallery"?[...(block.images||[]),...urls]:urls});}
   catch(e){toast({title:"Image non envoyée",description:e instanceof Error?e.message:"Réessayez",variant:"destructive"});}
   finally{setBusy(false);}
  };
@@ -93,6 +94,7 @@ export default function PagesAdmin({onCollection}:{onCollection:(source:string)=
      {(block.type==="text"||block.type==="textImage")&&<><label className="block text-sm">Titre<Input value={block.title?.[lang]||""} onChange={e=>changeBlock({title:{...block.title,[lang]:e.target.value}})}/></label><CmsRichText key={`${block.id}-${lang}`} value={block.content[lang]||""} onChange={value=>changeBlock({content:{...block.content,[lang]:value}})}/></>}
      {(block.type==="heading"||block.type==="image"||block.type==="gallery")&&<label className="block text-sm">{block.type==="heading"?"Titre":"Légende"}<Input value={block.content[lang]||""} onChange={e=>changeBlock({content:{...block.content,[lang]:e.target.value}})}/></label>}
      {(["image","gallery","textImage"].includes(block.type)||Boolean(block.theoryId))&&<><label className="flex items-center gap-2 text-sm border border-border rounded-md p-3 cursor-pointer"><Upload className="w-4 h-4"/>Ajouter des images<input aria-label="Ajouter des images" className="sr-only" type="file" accept="image/*" multiple={block.type==="gallery"} disabled={busy} onChange={e=>upload(e.target.files)}/></label>{(block.images||[]).map((url,i)=><div key={`${url}-${i}`} className="flex items-center gap-2"><img src={url} alt="" className="h-12 w-16 object-contain"/><Button variant="ghost" size="icon" aria-label={`Retirer l’image ${i+1}`} onClick={()=>changeBlock({images:block.images?.filter((_,n)=>n!==i)})}><Trash2/></Button></div>)}</>}
+      {page.slug==="theorie-du-changement" && block.theoryId && /<h3[\s>]/i.test(localized(block.content,lang)) && <div className="space-y-3 border-t border-border pt-4"><h3 className="text-sm font-semibold">Images des étapes</h3>{[0,1,2,3].map(index=><div key={index} className="space-y-2"><label className="flex items-center gap-2 text-sm border border-border rounded-md p-3 cursor-pointer"><Upload className="h-4 w-4 shrink-0"/>Image — carte {index+1}<input aria-label={`Image de la carte ${index+1}`} className="sr-only" type="file" accept="image/*" disabled={busy} onChange={e=>upload(e.target.files,index)}/></label>{block.stageImages?.[index] && <div className="flex items-center gap-2"><img src={block.stageImages[index]} alt={`Carte ${index+1}`} className="h-16 w-24 object-contain"/><Button variant="ghost" size="icon" aria-label={`Retirer l’image de la carte ${index+1}`} onClick={()=>{const next={...block.stageImages};delete next[index];changeBlock({stageImages:next});}}><Trash2/></Button></div>}</div>)}</div>}
     </>}
    </aside>
   </div>

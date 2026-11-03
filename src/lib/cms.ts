@@ -8,6 +8,7 @@ export interface CmsBlock {
   content: LocalizedText;
   title?: LocalizedText;
   images?: string[];
+  stageImages?: Partial<Record<number, string>>;
   source?: string;
   anchor?: string;
   hidden?: boolean;
