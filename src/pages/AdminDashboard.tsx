@@ -456,6 +456,8 @@ const AdminDashboard = () => {
           {activeTab === "menu" && <MenuAdmin />}
 
           {activeTab === "settings" && (
+            <div>
+            <div className="flex flex-wrap gap-2 mb-6"><Button variant="outline" onClick={()=>setActiveTab("hackathon_trainers")}>Formateurs</Button><Button variant="outline" onClick={()=>setActiveTab("team")}>Équipe et Board</Button></div>
             <AdminCrudTable
               title="Paramètres du Site"
               tableName="site_settings"
@@ -466,6 +468,7 @@ const AdminDashboard = () => {
               data={data.settings || []}
               onRefresh={fetchAll}
             />
+            </div>
           )}
         </main>
       </div>

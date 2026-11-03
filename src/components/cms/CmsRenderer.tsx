@@ -44,5 +44,5 @@ export function CmsBlockView({block,lang}: {block:CmsBlock;lang:Lang}) {
   </section>;
 }
 export default function CmsRenderer({blocks,lang,preview=false}:{blocks:CmsBlock[];lang:Lang;preview?:boolean}) {
- return <div className={preview ? "" : "pt-20"}>{blocks.filter(b=>!b.hidden).map(block=><CmsBlockView key={block.id} block={block} lang={lang} />)}</div>;
+ return <div className={`${preview ? "" : "pt-20"} overflow-x-clip`}>{blocks.filter(b=>!b.hidden).map(block=><CmsBlockView key={block.id} block={block} lang={lang} />)}</div>;
 }
