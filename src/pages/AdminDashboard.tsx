@@ -228,7 +228,7 @@ const AdminDashboard = () => {
               { key: "image_url", label: "Photo 1", type: "url" },
               { key: "image_url_2", label: "Photo 2", type: "url" },
               { key: "sort_order", label: "Ordre", type: "number" },
-            ]} data={data.theory || []} onRefresh={fetchAll} />}
+            ]} data={(data.theory || []).filter((row: { section_key: string }) => isPublicTheorySection(row.section_key))} onRefresh={fetchAll} />}
           {activeTab === "jobs" && <AdminCrudTable title="Opportunités d’emploi" tableName="site_job_opportunities"
             translatable={["title", "introduction", "role", "responsibilities", "expectations", "location", "contract"]}
             fields={[
