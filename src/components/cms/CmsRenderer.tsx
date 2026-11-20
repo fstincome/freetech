@@ -20,8 +20,9 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { tr } from "@/lib/i18n";
 import TheoryBlockView from "./TheoryBlockView";
+import TrainingApplication from "@/pages/TrainingApplication";
 
-const sources = {hero:HeroCarousel,approach:ApproachSection,about:WhoWeAreSection,programs:ProgramsSection,video:VideoSection,workshops:WorkshopsSection,events:EventsSection,partners:PartnersSection,impact:ImpactSection,reports:ReportsSection,testimonials:TestimonialsSection,team:OurTeam,jobs:JobOpportunities,theory:TheoryOfChange,biography:TeamMemberBio};
+const sources = {hero:HeroCarousel,approach:ApproachSection,about:WhoWeAreSection,programs:ProgramsSection,video:VideoSection,workshops:WorkshopsSection,events:EventsSection,partners:PartnersSection,impact:ImpactSection,reports:ReportsSection,testimonials:TestimonialsSection,team:OurTeam,jobs:JobOpportunities,theory:TheoryOfChange,biography:TeamMemberBio,training:TrainingApplication};
 export function CmsBlockView({block,lang}: {block:CmsBlock;lang:Lang}) {
   const {data:theory}=useQuery({queryKey:["cms-theory-record",block.theoryId],enabled:Boolean(block.theoryId),queryFn:async()=>{
     const {data,error}=await supabase.from("site_theory_sections").select("*").eq("id",block.theoryId || "").maybeSingle();if(error)throw error;return data;

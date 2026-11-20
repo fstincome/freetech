@@ -12,10 +12,12 @@ import { LogOut, BarChart3, Globe, Eye, Calendar } from "lucide-react";
 import logo from "@/assets/logo.png";
 import { isPublicTheorySection } from "@/lib/theorySections";
 import PagesAdmin from "@/components/admin/PagesAdmin";
+import TrainingApplicationsAdmin from "@/components/admin/TrainingApplicationsAdmin";
 
-type Tab = "pages" | "theory" | "jobs" | "stats" | "hero" | "about" | "programs" | "workshops" | "events" | "partners" | "testimonials" | "impact" | "reports" | "team" | "menu" | "settings" | "hackathon_regs" | "hackathon_trainers";
+type Tab = "pages" | "training" | "theory" | "jobs" | "stats" | "hero" | "about" | "programs" | "workshops" | "events" | "partners" | "testimonials" | "impact" | "reports" | "team" | "menu" | "settings" | "hackathon_regs" | "hackathon_trainers";
 
 const tabs: { key: Tab; label: string }[] = [
+  { key: "training", label: "Candidatures formations" },
   { key: "stats", label: "📊 Statistiques" },
   { key: "hero", label: "🎠 Hero Slides" },
   { key: "about", label: "🧭 Qui sommes-nous" },
@@ -105,7 +107,7 @@ const AdminDashboard = () => {
 
   if (loading) return <div className="min-h-screen flex items-center justify-center bg-background"><p>Chargement...</p></div>;
   if (!user || !isAdmin) return null;
-  const cmsTabs: {key:Tab;label:string}[] = [{key:"pages",label:"Pages"},{key:"menu",label:"Navigation"},{key:"hackathon_regs",label:"Inscriptions"},{key:"stats",label:"Statistiques"},{key:"settings",label:"Réglages"}];
+  const cmsTabs: {key:Tab;label:string}[] = [{key:"pages",label:"Pages"},{key:"menu",label:"Navigation"},{key:"training",label:"Candidatures formations"},{key:"hackathon_regs",label:"Inscriptions Hackathon"},{key:"stats",label:"Statistiques"},{key:"settings",label:"Réglages"}];
   const openCollection = (source:string) => {
     const key=source==="approach"?"about":source==="video"?"settings":source==="biography"?"team":source;
     if(tabs.some(t=>t.key===key))setActiveTab(key as Tab);
@@ -452,6 +454,7 @@ const AdminDashboard = () => {
           )}
 
           {activeTab === "hackathon_regs" && <HackathonRegistrationsAdmin />}
+          {activeTab === "training" && <TrainingApplicationsAdmin />}
 
           {activeTab === "menu" && <MenuAdmin />}
 

@@ -664,6 +664,72 @@ export type Database = {
         }
         Relationships: []
       }
+      training_applications: {
+        Row: {
+          accessibility_needs: string
+          age: number
+          availability: string
+          city: string
+          computer_access: string
+          computer_level: string
+          consent: boolean
+          created_at: string
+          design_level: string
+          education: string
+          email: string
+          full_name: string
+          id: string
+          language: string
+          modules: string[]
+          motivation: string
+          occupation: string
+          phone: string
+          status: string
+        }
+        Insert: {
+          accessibility_needs?: string
+          age: number
+          availability: string
+          city: string
+          computer_access: string
+          computer_level: string
+          consent: boolean
+          created_at?: string
+          design_level: string
+          education: string
+          email: string
+          full_name: string
+          id?: string
+          language?: string
+          modules: string[]
+          motivation: string
+          occupation: string
+          phone: string
+          status?: string
+        }
+        Update: {
+          accessibility_needs?: string
+          age?: number
+          availability?: string
+          city?: string
+          computer_access?: string
+          computer_level?: string
+          consent?: boolean
+          created_at?: string
+          design_level?: string
+          education?: string
+          email?: string
+          full_name?: string
+          id?: string
+          language?: string
+          modules?: string[]
+          motivation?: string
+          occupation?: string
+          phone?: string
+          status?: string
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           id: string

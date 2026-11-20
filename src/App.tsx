@@ -19,6 +19,7 @@ import AdminDashboard from "./pages/AdminDashboard.tsx";
 import NotFound from "./pages/NotFound.tsx";
 import TheoryOfChange from "./pages/TheoryOfChange.tsx";
 import CmsPage from "@/components/cms/CmsPage";
+import TrainingApplication from "./pages/TrainingApplication";
 
 const queryClient = new QueryClient();
 
@@ -28,6 +29,7 @@ const AppContent = () => {
     <Routes>
       <Route path="/admin/login" element={<AdminLogin />} />
       <Route path="/admin" element={<AdminDashboard />} />
+      <Route path="/formations" element={<><Navbar /><main><CmsPage fallback={<TrainingApplication />} /></main><Footer /></>} />
       <Route path="/" element={<><Navbar /><main><CmsPage slug="" fallback={<Index />} /></main><Footer /></>} />
       <Route path="/gitega-study-space" element={<><Navbar /><main><CmsPage fallback={<GitegaStudySpace />} /></main><Footer /></>} />
       <Route path="/our-team" element={<><Navbar /><main><CmsPage fallback={<OurTeam />} /></main><Footer /></>} />
