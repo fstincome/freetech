@@ -1,7 +1,7 @@
 # Website content update
 - [x] Create a trilingual training application form and private admin reception, with no automatic emails.
 - [x] Verify submission and admin read-back, content editing, and private access for December 2026–January 2027.
-- [ ] Publish and verify the shareable training application link.
+- [x] Publish and verify the shareable training application link at /formations.
 - [x] Create a clean page-oriented CMS with visual text/image/gallery editing in three languages.
 - [x] Connect all public pages, import existing page layouts, and retain authoritative collections and registrations.
 - [x] Verify authenticated editing, publishing and public read-back.
