@@ -6,9 +6,9 @@ const schema = z.object({
   full_name: z.string().trim().min(2).max(120), email: z.string().trim().email().max(255).transform(v => v.toLowerCase()),
   phone: z.string().trim().min(6).max(30).regex(/^[+0-9() .-]+$/), age: z.coerce.number().int().min(1).max(120),
   city: z.string().trim().min(2).max(120), occupation: z.string().trim().min(2).max(120), education: z.string().trim().min(2).max(120),
-  modules: z.array(z.enum(["basic_computing", "graphic_design"])).min(1).max(2).refine(v => new Set(v).size === v.length),
+  modules: z.array(z.enum(["basic_computing", "graphic_design"])).length(1).refine(v => new Set(v).size === v.length),
   computer_level: z.enum(["beginner", "some", "independent"]), design_level: z.enum(["beginner", "some", "independent"]), computer_access: z.enum(["yes", "shared", "no"]),
-  availability: z.string().trim().min(2).max(500), motivation: z.string().trim().min(2).max(1500), accessibility_needs: z.string().trim().max(500).default(""), consent: z.literal(true), language: z.enum(["fr", "en", "sw"]),
+  availability: z.string().trim().max(500).default(""), contact_owner: z.enum(["self", "parent", "relative", "other"]).default("self"), motivation: z.string().trim().min(2).max(1500), accessibility_needs: z.string().trim().max(500).default(""), consent: z.literal(true), language: z.enum(["fr", "en", "sw"]),
 }).strict();
 const response = (body: object, status: number) => new Response(JSON.stringify(body), { status, headers: { ...cors, "Content-Type": "application/json" } });
 

@@ -53,6 +53,7 @@ export default {
         },
         cyan: "hsl(var(--cyan))",
         navy: "hsl(var(--navy))",
+        "hero-foreground": "hsl(var(--hero-foreground))",
         "navy-light": "hsl(var(--navy-light))",
         "section-alt": "hsl(var(--section-alt))",
         sidebar: {

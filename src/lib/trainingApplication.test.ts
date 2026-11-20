@@ -5,8 +5,8 @@ const application = { full_name: "Test Participant", email: "participant@example
 describe("Training applications", () => {
   it("accepts the Informatique de Base module", () => expect(trainingApplicationSchema.parse(application).modules).toEqual(["basic_computing"]));
   it("accepts the Design Graphique module", () => expect(trainingApplicationSchema.parse({ ...application, modules: ["graphic_design"] }).modules).toEqual(["graphic_design"]));
-  it("allows both modules without duplicates", () => {
-    expect(trainingApplicationSchema.parse({ ...application, modules: ["basic_computing", "graphic_design"] }).modules).toHaveLength(2);
+  it("allows only one module", () => {
+    expect(trainingApplicationSchema.safeParse({ ...application, modules: ["basic_computing", "graphic_design"] }).success).toBe(false);
     expect(trainingApplicationSchema.safeParse({ ...application, modules: ["basic_computing", "basic_computing"] }).success).toBe(false);
   });
   it("requires a module and a valid email for manual replies", () => {
@@ -19,4 +19,6 @@ describe("Training applications", () => {
     expect(trainingApplicationSchema.safeParse({ ...application, motivation: "a".repeat(1501) }).success).toBe(false);
   });
   it("neutralizes spreadsheet formulas in exported cells", () => expect(csvCell("=1+1")).toBe('"\'=1+1"'));
+});describe("Training contact owner", () => {
+  it("accepts a parent's contact details and no availability", () => expect(trainingApplicationSchema.parse({ ...application, availability: undefined, contact_owner: "parent" }).contact_owner).toBe("parent"));
 });

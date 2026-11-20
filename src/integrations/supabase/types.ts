@@ -673,6 +673,7 @@ export type Database = {
           computer_access: string
           computer_level: string
           consent: boolean
+          contact_owner: string
           created_at: string
           design_level: string
           education: string
@@ -689,11 +690,12 @@ export type Database = {
         Insert: {
           accessibility_needs?: string
           age: number
-          availability: string
+          availability?: string
           city: string
           computer_access: string
           computer_level: string
           consent: boolean
+          contact_owner?: string
           created_at?: string
           design_level: string
           education: string
@@ -715,6 +717,7 @@ export type Database = {
           computer_access?: string
           computer_level?: string
           consent?: boolean
+          contact_owner?: string
           created_at?: string
           design_level?: string
           education?: string
