@@ -57,6 +57,13 @@
       "when": 1795185992331,
       "tag": "0007_training_location_fields",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1795187733154,
+      "tag": "0008_allow_empty_training_availability",
+      "breakpoints": true
     }
   ]
 }

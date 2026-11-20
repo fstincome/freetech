@@ -1,0 +1,2 @@
+ALTER TABLE public.training_applications DROP CONSTRAINT training_availability_length;
+ALTER TABLE public.training_applications ADD CONSTRAINT training_availability_length CHECK (char_length(TRIM(BOTH FROM availability)) = 0 OR (char_length(TRIM(BOTH FROM availability)) >= 2 AND char_length(TRIM(BOTH FROM availability)) <= 500));
