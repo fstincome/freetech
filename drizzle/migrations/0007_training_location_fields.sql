@@ -1,0 +1,1 @@
+ALTER TABLE public.training_applications ADD COLUMN IF NOT EXISTS province text NOT NULL DEFAULT '', ADD COLUMN IF NOT EXISTS commune text NOT NULL DEFAULT '', ADD COLUMN IF NOT EXISTS quartier text NOT NULL DEFAULT '';

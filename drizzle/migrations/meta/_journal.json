@@ -50,6 +50,13 @@
       "when": 1795185699978,
       "tag": "0006_training_contact_owner",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1795185992331,
+      "tag": "0007_training_location_fields",
+      "breakpoints": true
     }
   ]
 }

@@ -5,7 +5,7 @@ export const trainingApplicationSchema = z.object({
   email: z.string().trim().email().max(255).transform(v => v.toLowerCase()),
   phone: z.string().trim().min(6).max(30).regex(/^[+0-9() .-]+$/),
   age: z.coerce.number().int().min(1).max(120),
-  city: z.string().trim().min(2).max(120),
+  city: z.string().trim().max(120).default(""), province: z.string().trim().min(2).max(120), commune: z.string().trim().min(2).max(120), quartier: z.string().trim().min(2).max(120),
   occupation: z.string().trim().min(2).max(120),
   education: z.string().trim().min(2).max(120),
   modules: z.array(z.enum(["basic_computing", "graphic_design"])).length(1).refine(v => new Set(v).size === v.length),

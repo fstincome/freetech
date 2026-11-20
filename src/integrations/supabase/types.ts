@@ -670,6 +670,7 @@ export type Database = {
           age: number
           availability: string
           city: string
+          commune: string
           computer_access: string
           computer_level: string
           consent: boolean
@@ -685,6 +686,8 @@ export type Database = {
           motivation: string
           occupation: string
           phone: string
+          province: string
+          quartier: string
           status: string
         }
         Insert: {
@@ -692,6 +695,7 @@ export type Database = {
           age: number
           availability?: string
           city: string
+          commune?: string
           computer_access: string
           computer_level: string
           consent: boolean
@@ -707,6 +711,8 @@ export type Database = {
           motivation: string
           occupation: string
           phone: string
+          province?: string
+          quartier?: string
           status?: string
         }
         Update: {
@@ -714,6 +720,7 @@ export type Database = {
           age?: number
           availability?: string
           city?: string
+          commune?: string
           computer_access?: string
           computer_level?: string
           consent?: boolean
@@ -729,6 +736,8 @@ export type Database = {
           motivation?: string
           occupation?: string
           phone?: string
+          province?: string
+          quartier?: string
           status?: string
         }
         Relationships: []
