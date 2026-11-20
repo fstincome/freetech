@@ -128,3 +128,17 @@
     @apply bg-card/80 backdrop-blur-xl border border-border/50 rounded-2xl;
   }
 }
+
+@page {
+  size: A4;
+  margin: 10mm;
+}
+
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  body {
+    background: white;
+  }
+}
